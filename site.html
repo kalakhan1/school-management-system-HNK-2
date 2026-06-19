@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Campus Hub | Streamline Matrix</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=300;400;500;600;700;800&display=swap');
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #020617; 
+            overflow-x: hidden;
+        }
+        /* Full Page Section Snap Engine */
+        .snap-container {
+            height: 100vh;
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+        }
+        .snap-section {
+            height: 100vh;
+            scroll-snap-align: start;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+        /* Hide Scrollbar for clean UI */
+        .snap-container::-webkit-scrollbar { display: none; }
+        .snap-container { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Custom glass styling */
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px border rgba(255, 255, 255, 0.05);
+        }
+        .active-dot {
+            background-color: #10b981 !important;
+            transform: scale(1.25);
+        }
+    </style>
+</head>
+<body class="text-slate-100">
+
+    <script>
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx6OSzyntoj7b0HhyognqXN5F_dnbsZ6gWgw9QFE7rjb1_HC1Ju-9LNHpDdzxpVygJS/exec";
+    </script>
+
+    <nav class="fixed right-6 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-4 bg-slate-950/80 border border-slate-800 p-3 rounded-full backdrop-blur-md max-sm:bottom-4 max-sm:top-auto max-sm:right-1/2 max-sm:translate-x-1/2 max-sm:flex-row max-sm:translate-y-0">
+        <a href="#intro" onclick="setActiveDot(this)" class="nav-dot w-3 h-3 bg-slate-700 rounded-full block transition-all duration-300 active-dot" title="School Intro"></a>
+        <a href="#students" onclick="setActiveDot(this)" class="nav-dot w-3 h-3 bg-slate-700 rounded-full block transition-all duration-300" title="Roster Metrics"></a>
+        <a href="#teachers" onclick="setActiveDot(this)" class="nav-dot w-3 h-3 bg-slate-700 rounded-full block transition-all duration-300" title="Faculty Matrix"></a>
+        <a href="#fees" onclick="setActiveDot(this)" class="nav-dot w-3 h-3 bg-slate-700 rounded-full block transition-all duration-300" title="Fee Ledger System"></a>
+        <a href="#notice" onclick="setActiveDot(this)" class="nav-dot w-3 h-3 bg-slate-700 rounded-full block transition-all duration-300" title="Bulletin Ticker"></a>
+    </nav>
+
+    <div id="globalLoader" class="fixed top-4 left-4 z-50 bg-slate-950/90 border border-emerald-800/40 text-xs font-mono px-4 py-2 rounded-xl flex items-center gap-3 shadow-2xl transition-all duration-300">
+        <div class="w-3.5 h-3.5 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+        <span class="text-slate-300">Syncing Ecosystem Sheets Data Base...</span>
+    </div>
+
+    <div class="snap-container" id="mainSnapEngine">
+
+        <section id="intro" class="snap-section bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
+            <div class="max-w-4xl w-full text-center space-y-6 px-4">
+                <div class="inline-flex items-center gap-3 bg-slate-900 border border-slate-800 px-4 py-1.5 rounded-full mb-2">
+                    <span class="flex h-2 w-2 relative">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                    </span>
+                    <p class="text-[10px] font-mono font-bold tracking-widest text-slate-400 uppercase">Live Academic Portal Active</p>
+                </div>
+                <h1 id="introSchoolName" class="text-4xl md:text-6xl font-black tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-500 bg-clip-text text-transparent uppercase">---</h1>
+                <p id="introCityName" class="text-sm md:text-base font-mono font-bold tracking-wider text-emerald-400">---</p>
+                <div class="w-20 h-1 bg-emerald-500 mx-auto rounded-full"></div>
+                <p class="text-xs md:text-sm text-slate-400 leading-relaxed max-w-2xl mx-auto font-medium">
+                    Welcome to the next-generation centralized institutional framework. This portal operates as a fully dynamic web environment delivering fast, distributed access to organizational rosters, dynamic fee structures, structural validation pipelines, and secure cloud bulletin components.
+                </p>
+                <div class="pt-4 flex flex-wrap justify-center gap-6 text-xs text-slate-400 font-mono">
+                    <p><i class="fa-solid fa-phone text-sky-400 mr-2"></i>Contact Mapping: <span id="introContact" class="text-white">---</span></p>
+                </div>
+                <div class="pt-6">
+                    <a href="#students" class="inline-flex items-center gap-2 text-xs font-bold text-emerald-400 bg-slate-900 border border-slate-800 px-5 py-3 rounded-xl hover:bg-slate-850 transition-all">Enter Records Console <i class="fa-solid fa-arrow-down"></i></a>
+                </div>
+            </div>
+        </section>
+
+        <section id="students" class="snap-section bg-slate-950">
+            <div class="max-w-6xl w-full h-full flex flex-col justify-between py-12 px-4">
+                <div class="space-y-4">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-900 pb-4">
+                        <div>
+                            <h2 class="text-xl font-black text-white uppercase tracking-wider flex items-center gap-2"><i class="fa-solid fa-user-graduate text-emerald-500"></i> Student Roster</h2>
+                            <p class="text-[11px] text-slate-500 font-medium">Filtered access arrays mapping the structural classroom domains.</p>
+                        </div>
+                        <div class="flex flex-wrap gap-2 w-full sm:w-auto">
+                            <input type="text" id="stdClassFilter" oninput="renderStudentPipeline()" placeholder="Filter Class" class="bg-slate-900 border border-slate-800 text-xs px-3 py-2 rounded-xl text-white outline-none w-28">
+                            <input type="text" id="stdSecFilter" oninput="renderStudentPipeline()" placeholder="Filter Sec" class="bg-slate-900 border border-slate-800 text-xs px-3 py-2 rounded-xl text-white outline-none w-24">
+                        </div>
+                    </div>
+                    <div id="studentContainerDeck" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 overflow-y-auto max-h-[60vh] pr-1">
+                        </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="teachers" class="snap-section bg-slate-900/40">
+            <div class="max-w-6xl w-full h-full flex flex-col justify-between py-12 px-4">
+                <div class="space-y-4">
+                    <div class="border-b border-slate-900 pb-4">
+                        <h2 class="text-xl font-black text-white uppercase tracking-wider flex items-center gap-2"><i class="fa-solid fa-user-shield text-sky-500"></i> Faculty Grid Matrix</h2>
+                        <p class="text-[11px] text-slate-500 font-medium">Full repository stack detailing active certified educators and technical headers.</p>
+                    </div>
+                    <div id="facultyContainerDeck" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 overflow-y-auto max-h-[65vh] pr-1">
+                        </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="fees" class="snap-section bg-slate-950">
+            <div class="max-w-6xl w-full h-full flex flex-col justify-between py-12 px-4">
+                <div class="space-y-4">
+                    <div class="flex flex-col gap-4 border-b border-slate-900 pb-4">
+                        <div>
+                            <h2 class="text-xl font-black text-white uppercase tracking-wider flex items-center gap-2"><i class="fa-solid fa-file-invoice-dollar text-amber-500"></i> Accounting Gateway</h2>
+                            <p class="text-[11px] text-slate-500 font-medium">Verify structural outstandings instantly using parameters configuration queries.</p>
+                        </div>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-2 w-full">
+                            <input type="text" id="feeNameFilter" oninput="renderFeePipeline()" placeholder="Search Name..." class="bg-slate-900 border border-slate-800 text-xs p-2.5 rounded-xl text-white outline-none">
+                            <input type="text" id="feeIdFilter" oninput="renderFeePipeline()" placeholder="Search Tracking ID..." class="bg-slate-900 border border-slate-800 text-xs p-2.5 rounded-xl text-white outline-none">
+                            <input type="text" id="feeClassFilter" oninput="renderFeePipeline()" placeholder="Class Target" class="bg-slate-900 border border-slate-800 text-xs p-2.5 rounded-xl text-white outline-none">
+                            <input type="text" id="feeSecFilter" oninput="renderFeePipeline()" placeholder="Section Room" class="bg-slate-900 border border-slate-800 text-xs p-2.5 rounded-xl text-white outline-none">
+                        </div>
+                    </div>
+                    <div id="feeContainerDeck" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 overflow-y-auto max-h-[55vh] pr-1">
+                        </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="notice" class="snap-section bg-gradient-to-t from-slate-950 via-slate-900 to-slate-950 flex flex-col justify-between">
+            <div class="my-auto max-w-3xl w-full text-center space-y-6 px-4">
+                <div class="w-16 h-16 bg-red-950/40 border border-red-900 text-red-400 text-xl rounded-2xl flex items-center justify-center mx-auto mb-4 animate-pulse">
+                    <i class="fa-solid fa-bullhorn"></i>
+                </div>
+                <h2 class="text-xs font-black tracking-widest text-red-400 uppercase">Broadcast Directive Node</h2>
+                <div class="bg-slate-950/60 border border-slate-800/60 p-6 md:p-8 rounded-3xl shadow-2xl relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-1 h-full bg-red-500"></div>
+                    <p id="noticeTickerDisplay" class="text-sm md:text-lg text-slate-200 font-semibold tracking-wide italic leading-relaxed">---</p>
+                </div>
+                <p class="text-[10px] font-mono text-slate-500">Live configuration string pushed directly via core administration deck forms.</p>
+            </div>
+
+            <footer class="w-full text-center border-t border-slate-900/80 py-6 text-[11px] text-slate-500 font-bold tracking-wider px-4">
+                <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+                    <p id="bottomConfigurationBranding" class="text-slate-400 uppercase tracking-widest">---</p>
+                    <p class="tracking-widest text-emerald-400 font-black uppercase text-xs">A PROJECT BY HNK & SHEEKAN TECH AND STUDIO</p>
+                </div>
+            </footer>
+        </section>
+
+    </div>
+
+    <script>
+        let dbState = { students: [], teachers: [], config: {} };
+
+        // Handle Active Dot Visual Trackers on Click Execution
+        function setActiveDot(anchorElement) {
+            document.querySelectorAll('.nav-dot').forEach(el => el.classList.remove('active-dot'));
+            anchorElement.classList.add('active-dot');
+        }
+
+        // Handle Intersection Observer tracking to auto-highlight dots during pure wheel scrolling
+        const observerConfig = { font: null, threshold: 0.5 };
+        const scrollObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const targetId = entry.target.getAttribute('id');
+                    const associatedAnchor = document.querySelector(`.nav-dot[href="#${targetId}"]`);
+                    if(associatedAnchor) {
+                        document.querySelectorAll('.nav-dot').forEach(el => el.classList.remove('active-dot'));
+                        associatedAnchor.classList.add('active-dot');
+                    }
+                }
+            });
+        }, observerConfig);
+
+        document.querySelectorAll('section').forEach(section => scrollObserver.observe(section));
+
+        // Master Handshake Execution Loop
+        document.addEventListener('DOMContentLoaded', () => {
+            fetch(GOOGLE_SCRIPT_URL)
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById('globalLoader').style.opacity = '0';
+                    setTimeout(() => document.getElementById('globalLoader').remove(), 300);
+
+                    dbState.students = data.students || [];
+                    dbState.teachers = data.teachers || [];
+                    dbState.config = data.config || {};
+
+                    compileSystemBrandingAndIntro();
+                    renderStudentPipeline();
+                    renderFacultyPipeline();
+                    renderFeePipeline();
+                })
+                .catch(err => {
+                    console.error("Core Engine Connection Dropped.", err);
+                });
+        });
+
+        function compileSystemBrandingAndIntro() {
+            const conf = dbState.config;
+            document.getElementById('introSchoolName').innerText = conf.school_name || "CENTRAL CAMPUS SYSTEM";
+            document.getElementById('introCityName').innerText = conf.city_name || "MAIN DEPLOYMENT NODE";
+            document.getElementById('introContact').innerText = conf.contact_no || "N/A REGISTRY";
+            document.getElementById('noticeTickerDisplay').innerText = conf.notice_board || "No global bulletin notifications found on servers cache arrays.";
+            document.getElementById('bottomConfigurationBranding').innerText = conf.footer_text || "SYSTEM BLOCK STREAM v13.0";
+        }
+
+        function renderStudentPipeline() {
+            const container = document.getElementById('studentContainerDeck');
+            container.innerHTML = "";
+            const cls = document.getElementById('stdClassFilter').value.toLowerCase();
+            const sec = document.getElementById('stdSecFilter').value.toLowerCase();
+
+            dbState.students.forEach(st => {
+                if (st.class.toLowerCase().includes(cls) && st.section.toLowerCase().includes(sec)) {
+                    let stCard = document.createElement('div');
+                    stCard.className = "bg-slate-900/40 border border-slate-800 p-4 rounded-2xl flex flex-col justify-between gap-3 shadow-md";
+                    stCard.innerHTML = `
+                        <div class="flex items-start justify-between border-b border-slate-950 pb-2">
+                            <div>
+                                <h3 class="text-xs font-black text-white">${st.name}</h3>
+                                <p class="text-[10px] text-slate-500 font-medium font-mono mt-0.5">ID: ${st.id}</p>
+                            </div>
+                            <span class="text-[10px] px-2 py-0.5 rounded font-mono font-bold bg-emerald-950/80 text-emerald-400 border border-emerald-900/60">${st.class}-${st.section}</span>
+                        </div>
+                        <div class="text-[11px] text-slate-400 space-y-1">
+                            <p><span class="text-slate-600 font-bold">Guardian:</span> ${st.son_of}</p>
+                            <p><span class="text-slate-600 font-bold">Contact:</span> ${st.contact}</p>
+                            <p class="truncate"><span class="text-slate-600 font-bold">Address:</span> ${st.address}</p>
+                        </div>
+                    `;
+                    container.appendChild(stCard);
+                }
+            });
+            if(container.innerHTML === "") container.innerHTML = `<div class="col-span-full text-center py-12 text-xs font-mono text-slate-600">No student datasets match query.</div>`;
+        }
+
+        function renderFacultyPipeline() {
+            const container = document.getElementById('facultyContainerDeck');
+            container.innerHTML = "";
+
+            dbState.teachers.forEach(tc => {
+                let tcCard = document.createElement('div');
+                tcCard.className = "bg-slate-900/40 border border-slate-800 p-4 rounded-2xl flex flex-col justify-between gap-3 shadow-md";
+                tcCard.innerHTML = `
+                    <div class="flex items-start justify-between border-b border-slate-950 pb-2">
+                        <div>
+                            <h3 class="text-xs font-black text-white">${tc.name}</h3>
+                            <p class="text-[10px] text-sky-400 font-mono font-bold mt-0.5">${tc.extra_field || 'Faculty Executive'}</p>
+                        </div>
+                        <span class="text-[10px] px-2 py-0.5 rounded font-bold bg-slate-950 text-slate-400 border border-slate-800">${tc.class}-${tc.section}</span>
+                    </div>
+                    <div class="text-[11px] text-slate-400 space-y-1">
+                        <p><span class="text-slate-600 font-bold">Contact Route:</span> ${tc.contact}</p>
+                        <p class="truncate"><span class="text-slate-600 font-bold">CNIC Token:</span> ${tc.cnic}</p>
+                        <p class="truncate"><span class="text-slate-600 font-bold">Address Map:</span> ${tc.address}</p>
+                    </div>
+                `;
+                container.appendChild(tcCard);
+            });
+            if(container.innerHTML === "") container.innerHTML = `<div class="col-span-full text-center py-12 text-xs font-mono text-slate-600">No faculty datasets on server.</div>`;
+        }
+
+        function renderFeePipeline() {
+            const container = document.getElementById('feeContainerDeck');
+            container.innerHTML = "";
+
+            const nameQ = document.getElementById('feeNameFilter').value.toLowerCase();
+            const idQ = document.getElementById('feeIdFilter').value.toLowerCase();
+            const classQ = document.getElementById('feeClassFilter').value.toLowerCase();
+            const secQ = document.getElementById('feeSecFilter').value.toLowerCase();
+
+            dbState.students.forEach(st => {
+                if(st.name.toLowerCase().includes(nameQ) && st.id.toLowerCase().includes(idQ) && st.class.toLowerCase().includes(classQ) && st.section.toLowerCase().includes(secQ)) {
+                    let colorSet = st.fee_status === 'Paid' ? 'border-emerald-800 bg-emerald-950/30 text-emerald-400' : st.fee_status === 'Balance' ? 'border-amber-800 bg-amber-950/30 text-amber-400' : 'border-rose-800 bg-rose-950/30 text-rose-400';
+                    let fCard = document.createElement('div');
+                    fCard.className = "bg-slate-900/40 border border-slate-800 p-4 rounded-2xl space-y-3 shadow-md";
+                    fCard.innerHTML = `
+                        <div class="flex justify-between items-center border-b border-slate-950 pb-2">
+                            <div>
+                                <h3 class="text-xs font-black text-white">${st.name}</h3>
+                                <p class="text-[9px] text-slate-500 font-mono">Token: ${st.id}</p>
+                            </div>
+                            <span class="text-[9px] font-bold px-2 py-0.5 rounded-md border ${colorSet}">${st.fee_status}</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 text-[11px] font-mono bg-slate-950/50 p-2.5 rounded-xl border border-slate-900">
+                            <div><p class="text-slate-600 text-[10px]">Total Demanded</p><p class="text-slate-300 font-bold">Rs. ${st.fee_total || 0}</p></div>
+                            <div><p class="text-slate-600 text-[10px]">Paid Volume</p><p class="text-emerald-400 font-bold">Rs. ${st.fee_paid || 0}</p></div>
+                            <div class="col-span-2 border-t border-slate-900/60 pt-1.5 mt-1.5 flex justify-between items-center">
+                                <span class="text-[10px] text-slate-500 font-sans">Remaining Due:</span>
+                                <span class="text-rose-400 font-black">Rs. ${st.fee_balance || 0}</span>
+                            </div>
+                        </div>
+                        <p class="text-[9px] text-slate-500 font-medium text-right font-sans">Statement Month: <span class="text-indigo-400 font-bold">${st.fee_month || 'N/A'}</span></p>
+                    `;
+                    container.appendChild(fCard);
+                }
+            });
+            if(container.innerHTML === "") container.innerHTML = `<div class="col-span-full text-center py-12 text-xs font-mono text-slate-600">No fee ledger mappings match query.</div>`;
+        }
+    </script>
+</body>
+</html>
