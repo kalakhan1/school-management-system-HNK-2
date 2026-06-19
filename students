@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise Data Stream Viewer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;600;700;800&display=swap');
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #020617; 
+        }
+        /* Custom Custom Scrollbar for heavy data loads */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #020617; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #334155; }
+    </style>
+</head>
+<body class="text-slate-100 min-h-screen flex flex-col justify-between">
+
+    <script>
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx6OSzyntoj7b0HhyognqXN5F_dnbsZ6gWgw9QFE7rjb1_HC1Ju-9LNHpDdzxpVygJS/exec";
+    </script>
+
+    <header class="border-b border-slate-900 bg-slate-950/80 backdrop-blur-md sticky top-0 z-50 p-5 shadow-xl">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row gap-4 items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-3.5 h-3.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                <h1 class="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent uppercase">
+                    Student Ledger Stream Monitor
+                </h1>
+            </div>
+            <div class="flex items-center gap-3">
+                <button onclick="copyFilteredDataToClipboard()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm px-5 py-3 rounded-xl shadow-lg shadow-emerald-950/40 transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-copy text-base"></i> Copy Filtered Sheet
+                </button>
+                <div id="masterStateLoader" class="w-10 h-10 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+        </div>
+    </header>
+
+    <div id="toastBox" class="fixed top-24 right-6 z-50 max-w-sm text-sm font-bold p-4 rounded-xl bg-slate-950 border border-slate-800 opacity-0 transition-all duration-300 transform translate-x-5 pointer-events-none shadow-2xl"></div>
+
+    <main class="max-w-7xl w-full mx-auto p-4 md:p-6 space-y-6 flex-grow">
+        
+        <section class="bg-slate-900/60 border border-slate-800/80 p-5 rounded-2xl shadow-2xl space-y-4">
+            <div class="flex items-center gap-2 text-slate-400 font-bold text-sm tracking-wider uppercase">
+                <i class="fa-solid fa-filter text-emerald-400"></i> Query Filter Optimization Hub
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+                <input type="text" id="fltName" oninput="executeDataPipeline()" placeholder="Search Name..." class="w-full text-base bg-slate-950 border border-slate-800 rounded-xl p-3 text-white outline-none focus:border-emerald-500 transition-colors">
+                <input type="text" id="fltId" oninput="executeDataPipeline()" placeholder="Search ID..." class="w-full text-base bg-slate-950 border border-slate-800 rounded-xl p-3 text-white outline-none focus:border-emerald-500 transition-colors">
+                <input type="text" id="fltClass" oninput="executeDataPipeline()" placeholder="Class Node" class="w-full text-base bg-slate-950 border border-slate-800 rounded-xl p-3 text-white outline-none focus:border-emerald-500 transition-colors">
+                <input type="text" id="fltSec" oninput="executeDataPipeline()" placeholder="Section" class="w-full text-base bg-slate-950 border border-slate-800 rounded-xl p-3 text-white outline-none focus:border-emerald-500 transition-colors">
+                
+                <select id="fltStatus" onchange="executeDataPipeline()" class="w-full text-base bg-slate-950 border border-slate-800 rounded-xl p-3 text-white outline-none focus:border-emerald-500 transition-colors">
+                    <option value="">All Flags</option>
+                    <option value="Paid">Paid Only</option>
+                    <option value="Unpaid">Unpaid Only</option>
+                    <option value="Balance">With Balance</option>
+                </select>
+
+                <select id="fltMonth" onchange="executeDataPipeline()" class="w-full text-base bg-slate-950 border border-slate-800 rounded-xl p-3 text-white outline-none focus:border-emerald-500 transition-colors">
+                    <option value="">All Months</option>
+                    <option value="January">January</option><option value="February">February</option><option value="March">March</option><option value="April">April</option><option value="May">May</option><option value="June">June</option><option value="July">July</option><option value="August">August</option><option value="September">September</option><option value="October">October</option><option value="November">November</option><option value="December">December</option>
+                </select>
+            </div>
+            <div class="flex justify-between items-center text-xs font-mono text-slate-500 pt-1">
+                <p>Live Metrics Matching: <span id="runtimeCount" class="text-emerald-400 font-bold text-sm">0</span> Records Fetched.</p>
+                <p class="hidden sm:block">Tab Separated Export Ready Buffer Mode</p>
+            </div>
+        </section>
+
+        <section id="masterRosterOutputDeck" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+            </section>
+    </main>
+
+    <footer class="border-t border-slate-900 bg-slate-950/90 py-5 text-center text-sm text-slate-500 font-bold tracking-wider px-4">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+            <p>Data Stream Terminal Core Engine v14.2</p>
+            <p class="tracking-widest text-emerald-400 font-black uppercase text-xs">A PROJECT BY HNK & SHEEKAN TECH AND STUDIO</p>
+        </div>
+    </footer>
+
+    <script>
+        let globalDataset = [];
+        let currentlyFilteredData = [];
+
+        document.addEventListener('DOMContentLoaded', bootstrapDataStream);
+
+        function bootstrapDataStream() {
+            fetch(GOOGLE_SCRIPT_URL)
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById('masterStateLoader').className = "hidden";
+                    globalDataset = data.students || [];
+                    executeDataPipeline();
+                })
+                .catch(err => {
+                    document.getElementById('masterStateLoader').className = "hidden";
+                    triggerToastAlert("Database synchronization offline.", "text-rose-400");
+                });
+        }
+
+        function executeDataPipeline() {
+            const container = document.getElementById('masterRosterOutputDeck');
+            container.innerHTML = "";
+
+            const queryName = document.getElementById('fltName').value.toLowerCase();
+            const queryId = document.getElementById('fltId').value.toLowerCase();
+            const queryClass = document.getElementById('fltClass').value.toLowerCase();
+            const querySec = document.getElementById('fltSec').value.toLowerCase();
+            const queryStatus = document.getElementById('fltStatus').value;
+            const queryMonth = document.getElementById('fltMonth').value;
+
+            currentlyFilteredData = globalDataset.filter(st => {
+                const matchesName = st.name.toLowerCase().includes(queryName);
+                const matchesId = st.id.toLowerCase().includes(queryId);
+                const matchesClass = st.class.toLowerCase().includes(queryClass);
+                const matchesSec = st.section.toLowerCase().includes(querySec);
+                const matchesStatus = queryStatus === "" ? true : st.fee_status === queryStatus;
+                const matchesMonth = queryMonth === "" ? true : (st.fee_month || '').toLowerCase() === queryMonth.toLowerCase();
+
+                return matchesName && matchesId && matchesClass && matchesSec && matchesStatus && matchesMonth;
+            });
+
+            document.getElementById('runtimeCount').innerText = currentlyFilteredData.length;
+
+            currentlyFilteredData.forEach(st => {
+                let statusBadgeStyle = "";
+                if(st.fee_status === 'Paid') {
+                    statusBadgeStyle = "bg-emerald-950/80 text-emerald-400 border-2 border-emerald-500 shadow-lg shadow-emerald-950/60";
+                } else if(st.fee_status === 'Balance') {
+                    statusBadgeStyle = "bg-amber-950/80 text-amber-400 border-2 border-amber-500 shadow-lg shadow-amber-950/60";
+                } else {
+                    statusBadgeStyle = "bg-rose-950/80 text-rose-400 border-2 border-rose-500 shadow-lg shadow-rose-950/60";
+                }
+
+                let displayBlock = document.createElement('div');
+                displayBlock.className = "bg-slate-900/40 border border-slate-800 p-6 rounded-2xl flex flex-col justify-between gap-5 transition-all duration-200 hover:border-slate-700/80 shadow-xl";
+                displayBlock.innerHTML = `
+                    <div class="flex items-start justify-between border-b border-slate-950 pb-4 gap-2">
+                        <div class="space-y-1">
+                            <h2 class="text-xl font-extrabold text-white tracking-wide">${st.name}</h2>
+                            <p class="text-xs text-indigo-400 font-mono font-bold">REGISTRATION TOKEN: ${st.id}</p>
+                        </div>
+                        <span class="text-xs px-3 py-1 rounded-lg font-mono font-black bg-slate-950 border border-slate-800 shrink-0 text-slate-300">
+                            ${st.class}-${st.section}
+                        </span>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3 text-sm text-slate-300 font-medium bg-slate-950/40 p-3.5 rounded-xl border border-slate-900">
+                        <p class="truncate"><span class="text-slate-600 font-bold block text-[11px] uppercase tracking-wider">Guardian Name</span> ${st.son_of}</p>
+                        <p><span class="text-slate-600 font-bold block text-[11px] uppercase tracking-wider">Contact Mapping</span> ${st.contact}</p>
+                        <p class="col-span-2 truncate border-t border-slate-900 pt-2"><span class="text-slate-600 font-bold block text-[11px] uppercase tracking-wider">Residence Address</span> ${st.address}</p>
+                    </div>
+
+                    <div class="flex justify-between items-center bg-slate-950 p-3 rounded-xl border border-slate-900">
+                        <div class="text-left">
+                            <span class="text-[10px] text-slate-500 font-mono block uppercase">Statement Cycle</span>
+                            <span class="text-base font-bold text-slate-300">${st.fee_month || 'N/A'}</span>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-[10px] text-slate-500 font-mono block uppercase">Remaining Due</span>
+                            <span class="text-lg font-black text-rose-400 font-mono">Rs. ${st.fee_balance || 0}</span>
+                        </div>
+                    </div>
+
+                    <div class="text-center py-2.5 px-4 rounded-xl text-base font-black uppercase tracking-widest ${statusBadgeStyle}">
+                        <i class="fa-solid fa-money-check-dollar mr-2"></i> STATUS ENGINE: ${st.fee_status}
+                    </div>
+                `;
+                container.appendChild(displayBlock);
+            });
+
+            if(currentlyFilteredData.length === 0) {
+                container.innerHTML = `<div class="col-span-full text-center py-24 border-2 border-dashed border-slate-900 rounded-3xl text-sm font-mono text-slate-500">No synchronized student blocks correspond to criteria selectors.</div>`;
+            }
+        }
+
+        // CLIPBOARD SHEET TRANSFER PIPELINE ENGINE
+        function copyFilteredDataToClipboard() {
+            if(currentlyFilteredData.length === 0) {
+                triggerToastAlert("No data matching filters to transfer.", "text-amber-400");
+                return;
+            }
+
+            // Creating valid Tab Separated Value matrix format for direct Google Sheets standard parsing
+            let stringHeaderBuffer = "Student ID\tFull Name\tFather Name\tClass\tSection\tContact\tAddress\tFee Status\tFee Month\tTotal Fee\tPaid Fee\tBalance Fee\n";
+            let rowsMapString = currentlyFilteredData.map(st => 
+                `${st.id}\t${st.name}\t${st.son_of}\t${st.class}\t${st.section}\t${st.contact}\t${st.address}\t${st.fee_status}\t${st.fee_month}\t${st.fee_total}\t${st.fee_paid}\t${st.fee_balance}`
+            ).join("\n");
+
+            let ultimatePasteString = stringHeaderBuffer + rowsMapString;
+
+            navigator.clipboard.writeText(ultimatePasteString)
+                .then(() => {
+                    triggerToastAlert(`Transferred ${currentlyFilteredData.length} records successfully. Paste directly inside Google Sheets.`, "text-emerald-400");
+                })
+                .catch(err => {
+                    triggerToastAlert("System clipboard write access denied.", "text-rose-400");
+                });
+        }
+
+        function triggerToastAlert(message, statusColorClass) {
+            const el = document.getElementById('toastBox');
+            el.className = "fixed top-24 right-6 z-50 max-w-sm text-sm font-bold p-4 rounded-xl bg-slate-950 border border-slate-800 shadow-2xl " + statusColorClass;
+            el.innerText = message;
+            el.style.opacity = '1';
+            el.style.transform = 'translateX(0)';
+            setTimeout(() => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateX(20px)';
+            }, 4500);
+        }
+    </script>
+</body>
+</html>
