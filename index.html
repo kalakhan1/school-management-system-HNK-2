@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dynamic Management Node v10.0 | HNK & SHEEKAN</title>
+    <title>Dynamic Management Node v11.0 | HNK & SHEEKAN</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
@@ -11,38 +11,42 @@
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #020617; }
         .glow-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .glow-card:hover { transform: translateY(-2px); box-shadow: 0 12px 24px -10px rgba(99, 102, 241, 0.15); border-color: rgba(99, 102, 241, 0.3); }
+        
+        /* 3D CARD PERSPECTIVE FLIP SYSTEM */
+        .id-card-wrapper { perspective: 1000px; width: 340px; height: 490px; }
+        .id-card-inner { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
+        .id-card-wrapper.flipped .id-card-inner { transform: rotateY(180deg); }
+        .id-card-front, .id-card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 1.5rem; overflow: hidden; }
+        .id-card-back { transform: rotateY(180deg); }
     </style>
 </head>
 <body class="text-slate-100 min-h-screen flex flex-col justify-between">
 
     <script>
-        // ==========================================
-        // PASTE YOUR GOOGLE WEB APP EXEC URL HERE
-        // ==========================================
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxOxA-QIc2gLOpEbGlc88uKXz9YyczXM6AirXrlN_pTuGQqgqvmOmO84XZUihjbJo0b/exec";
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzPUapd56dzeyLiKQOchq3ubHES1cy3gTYYaWzzjtpF-gNig4ItYsk0Q_86xJF_cSUs/exec";
     </script>
 
     <header class="border-b border-slate-900 bg-slate-950/90 backdrop-blur-md sticky top-0 z-50 shadow-2xl">
         <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row gap-5 items-center justify-between">
             <div class="flex items-center gap-4 text-center md:text-left flex-col sm:flex-row">
-                <img id="topSchoolLogo" src="https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=150" class="w-14 h-14 object-cover rounded-2xl border border-slate-800 shadow-md bg-slate-900">
+                <img id="topSchoolLogo" src="" class="w-14 h-14 object-cover rounded-2xl border border-slate-800 bg-slate-900">
                 <div>
-                    <h1 id="topSchoolName" class="text-xl font-black tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">HNK SCHOOLS SANAWAN</h1>
+                    <h1 id="topSchoolName" class="text-xl font-black tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">---</h1>
                     <div class="flex flex-wrap justify-center md:justify-start gap-x-4 gap-y-1 text-xs text-slate-400 font-medium mt-0.5">
-                        <p><i class="fa-solid fa-location-dot text-emerald-500 mr-1"></i><span id="topCityName">Sanawan</span></p>
-                        <p><i class="fa-solid fa-phone text-sky-400 mr-1"></i><span id="topContactNo">+92 300 0000000</span></p>
+                        <p><i class="fa-solid fa-location-dot text-emerald-500 mr-1"></i><span id="topCityName">---</span></p>
+                        <p><i class="fa-solid fa-phone text-sky-400 mr-1"></i><span id="topContactNo">---</span></p>
                     </div>
                 </div>
             </div>
-            <div class="flex flex-col items-center md:items-end gap-2">
-                <span class="bg-slate-900 border border-slate-800 text-[10px] text-slate-400 font-mono font-bold px-3 py-1 rounded-xl">Matrices Handshake Status: <span id="countReg" class="text-emerald-400">0</span> Active Rows</span>
+            <div>
+                <span class="bg-slate-900 border border-slate-800 text-[10px] text-slate-400 font-mono font-bold px-3 py-1 rounded-xl">Registry Stream Metrics: <span id="countReg" class="text-emerald-400">0</span> Units</span>
             </div>
         </div>
         
-        <div class="bg-indigo-950/40 border-t border-slate-900 py-2 px-4 overflow-hidden">
+        <div class="bg-indigo-950/40 border-t border-slate-900 py-2 px-4">
             <div class="max-w-7xl mx-auto flex items-center gap-3">
-                <span class="bg-indigo-600 text-white font-black text-[9px] uppercase tracking-widest px-2 py-0.5 rounded-md shadow-md animate-pulse shrink-0"><i class="fa-solid fa-bullhorn mr-1"></i> NOTICE</span>
-                <marquee id="topNoticeBoard" class="text-xs text-indigo-200 font-semibold tracking-wide">Welcome to Quantum Management Studio. Admissions are open for new sessions!</marquee>
+                <span class="bg-indigo-600 text-white font-black text-[9px] uppercase tracking-widest px-2 py-0.5 rounded-md shrink-0"><i class="fa-solid fa-bullhorn mr-1"></i> NOTICE</span>
+                <marquee id="topNoticeBoard" class="text-xs text-indigo-200 font-semibold tracking-wide">Initializing engine...</marquee>
             </div>
         </div>
     </header>
@@ -55,25 +59,25 @@
             <div class="relative bg-slate-900/40 border border-slate-800 p-1 rounded-2xl hidden" id="masterLoaderBox">
                 <div class="p-3 text-xs flex items-center justify-center gap-3 text-indigo-400 font-medium">
                     <div class="w-4 h-4 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
-                    Executing Secure Real-Time Cloud Handshake Matrix...
+                    Syncing Secure Clouds Database Engine...
                 </div>
             </div>
 
-            <div class="bg-slate-900/60 border border-red-950/50 rounded-2xl p-5 shadow-xl relative overflow-hidden">
-                <div class="absolute top-0 right-0 w-16 h-16 bg-red-500/5 rounded-full blur-xl pointer-events-none"></div>
+            <div class="bg-slate-900/60 border border-red-950/50 rounded-2xl p-5 shadow-xl">
                 <h3 class="text-xs font-black text-red-400 mb-3 uppercase tracking-wider flex items-center gap-1.5"><i class="fa-solid fa-sliders"></i> Dynamic Hub Core Setup</h3>
                 <form onsubmit="commitSchoolConfig(event)" class="space-y-3">
                     <div class="grid grid-cols-2 gap-2">
-                        <input type="text" id="cfg_school_name" required placeholder="School Name Banner" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none focus:border-red-500">
-                        <input type="text" id="cfg_city_name" required placeholder="City / Territory Location" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none focus:border-red-500">
+                        <input type="text" id="cfg_school_name" required placeholder="School Name" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none focus:border-red-500">
+                        <input type="text" id="cfg_city_name" required placeholder="City / Location" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none focus:border-red-500">
                     </div>
-                    <div class="grid grid-cols-1 gap-2">
-                        <input type="text" id="cfg_contact_no" required placeholder="Contact Gateway Numbers" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none focus:border-red-500">
-                        <input type="text" id="cfg_notice_board" required placeholder="Notice Board Ticker Announcement Text..." class="w-full text-xs bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none focus:border-red-500">
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="text" id="cfg_contact_no" required placeholder="Contact Mapping" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none focus:border-red-500">
+                        <input type="text" id="cfg_footer_text" required placeholder="Footer Branding Signature" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none focus:border-red-500">
                     </div>
+                    <input type="text" id="cfg_notice_board" required placeholder="Notice Ticker Text" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none focus:border-red-500">
                     
                     <div class="bg-slate-950 border border-slate-800 rounded-xl p-2.5 space-y-2">
-                        <label class="block text-[10px] font-mono uppercase text-slate-500 tracking-wider">Dynamic Institution Logo Upload</label>
+                        <label class="block text-[10px] font-mono uppercase text-slate-500">Dynamic Institution Logo Asset</label>
                         <div class="flex items-center gap-2">
                             <label class="cursor-pointer bg-slate-900 border border-slate-800 hover:bg-slate-800 text-center rounded-lg py-1.5 px-3 text-xs font-bold block transition-all flex-grow">
                                 <i class="fa-solid fa-cloud-arrow-up text-red-400 mr-1"></i> Choose Logo File
@@ -83,9 +87,7 @@
                             <input type="hidden" id="cfg_logo_base64">
                         </div>
                     </div>
-
-                    <input type="text" id="cfg_footer_text" required placeholder="Site Footer Dynamic Copyright Line" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none focus:border-red-500">
-                    <button type="submit" class="w-full py-2 bg-gradient-to-r from-red-900 to-red-700 font-bold text-white rounded-xl text-xs hover:from-red-800 transition-all shadow-md"><i class="fa-solid fa-arrows-rotate mr-1"></i> Deploy Dynamic Branding</button>
+                    <button type="submit" class="w-full py-2 bg-gradient-to-r from-red-900 to-red-700 font-bold text-white rounded-xl text-xs hover:from-red-800 transition-all shadow-md">Deploy Branding Engine</button>
                 </form>
             </div>
 
@@ -103,12 +105,18 @@
                     </div>
                     <div class="grid grid-cols-2 gap-2">
                         <input type="text" id="reg_cnic" required placeholder="CNIC Token String" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none">
-                        <input type="text" id="reg_contact" required placeholder="Contact Number Mapping" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none">
+                        <input type="text" id="reg_contact" required placeholder="Contact Mapping" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none">
                     </div>
-                    <input type="text" id="reg_address" required placeholder="Permanent Residence Address Mapping" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none">
-                    <div class="grid grid-cols-2 gap-2">
-                        <input type="text" id="reg_class" required placeholder="Target Class Metric" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none">
-                        <input type="text" id="reg_section" required placeholder="Allocated Section" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none">
+                    <input type="text" id="reg_address" required placeholder="Residence Address" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none">
+                    <div class="grid grid-cols-3 gap-2">
+                        <input type="text" id="reg_class" required placeholder="Class" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none">
+                        <input type="text" id="reg_section" required placeholder="Sec" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none">
+                        
+                        <select id="reg_extra" class="text-xs bg-slate-950 border border-slate-800 rounded-xl p-2 text-white outline-none">
+                            <option value="Paid">Paid</option>
+                            <option value="Unpaid">Unpaid</option>
+                            <option value="Faculty Staff">Faculty</option>
+                        </select>
                     </div>
                     <div class="flex gap-2 pt-1">
                         <button type="button" onclick="clearRegistryFormState()" class="w-1/3 py-2.5 bg-slate-800 font-bold rounded-xl text-xs">Reset</button>
@@ -135,7 +143,7 @@
                     </div>
                     <div class="flex gap-2">
                         <button type="button" onclick="clearScheduleFormState()" class="w-1/3 py-2 bg-slate-800 font-bold rounded-xl text-xs">Reset</button>
-                        <button type="submit" id="schSubmitBtn" class="w-2/3 py-2 bg-purple-600 font-bold text-white rounded-xl text-xs">Secure Matrix Slot</button>
+                        <button type="submit" id="schSubmitBtn" class="w-2/3 py-2 bg-purple-600 font-bold text-white rounded-xl text-xs">Secure Slot</button>
                     </div>
                 </form>
             </div>
@@ -143,7 +151,6 @@
             <div class="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-5 shadow-xl">
                 <h3 id="cardFormTitle" class="text-xs font-black text-sky-400 mb-3 uppercase tracking-wider flex items-center gap-1.5"><i class="fa-solid fa-camera-retro"></i> Digital ID Assembly Platform</h3>
                 <form id="idCardForm" onsubmit="commitIdentityCardRecord(event)" class="space-y-3">
-                    <input type="hidden" id="card_invoice_id">
                     <div class="grid grid-cols-2 gap-2 p-1 bg-slate-950 rounded-xl border border-slate-800">
                         <button type="button" id="roleSelectStudent" onclick="toggleCardSelectionRole('student')" class="py-1 text-xs font-bold rounded bg-sky-600 text-white">Students</button>
                         <button type="button" id="roleSelectTeacher" onclick="toggleCardSelectionRole('teacher')" class="py-1 text-xs font-bold rounded text-slate-400">Faculty</button>
@@ -162,41 +169,38 @@
                             </button>
                         </div>
                         <div id="cameraDeckWrapper" class="hidden space-y-2">
-                            <video id="hardwareVideoStream" autoplay playsinline class="w-full aspect-video rounded-lg bg-black border border-slate-800 object-cover"></video>
-                            <button type="button" onclick="executeCameraCaptureSnapshot()" class="w-full py-1.5 bg-rose-600 text-white font-bold rounded-lg text-xs"><i class="fa-solid fa-circle-dot mr-1"></i> Snap Frame</button>
+                            <video id="hardwareVideoStream" autoplay playsinline class="w-full aspect-video rounded-lg bg-black object-cover"></video>
+                            <button type="button" onclick="executeCameraCaptureSnapshot()" class="w-full py-1.5 bg-rose-600 text-white font-bold text-xs">Snap Frame</button>
                         </div>
                         <canvas id="hiddenCaptureCanvas" class="hidden"></canvas>
                         <div class="flex items-center gap-3 pt-1">
                             <img id="avatarDataPreview" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100" class="w-10 h-10 rounded-full object-cover border border-slate-800">
                             <input type="hidden" id="card_avatar_base64">
-                            <span class="text-[10px] font-mono text-slate-500 truncate max-w-[200px]" id="avatarStatusLabel">No fresh asset cached.</span>
+                            <span class="text-[10px] font-mono text-slate-500 truncate" id="avatarStatusLabel">No fresh asset cached.</span>
                         </div>
                     </div>
 
                     <div class="grid grid-cols-2 gap-2">
                         <select id="card_channel" required class="w-full text-xs bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none">
-                            <option value="WhatsApp">WhatsApp Route Link</option>
+                            <option value="WhatsApp">WhatsApp Route</option>
                             <option value="Gmail">Direct Email Client</option>
                         </select>
-                        <input type="text" id="card_destination" required placeholder="Recipient Destination" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none">
+                        <input type="text" id="card_destination" required placeholder="Destination Mapping" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none">
                     </div>
-                    <div class="flex gap-2">
-                        <button type="button" onclick="clearCardFormState()" class="w-1/3 py-2 bg-slate-800 font-bold rounded-xl text-xs">Reset</button>
-                        <button type="submit" id="cardSubmitBtn" class="w-2/3 py-2 bg-sky-600 font-bold text-white rounded-xl text-xs">Compile System Identity</button>
-                    </div>
+                    <button type="submit" id="cardSubmitBtn" class="w-full py-2 bg-sky-600 font-bold text-white rounded-xl text-xs hover:bg-sky-500 transition-all">Compile System Identity</button>
                 </form>
             </div>
         </section>
 
         <section class="lg:col-span-7 space-y-6">
-            <div class="bg-slate-900/40 border border-slate-800 rounded-2xl p-4 flex flex-wrap gap-3 items-center shadow-md">
+            <div class="bg-slate-900/40 border border-slate-800 rounded-2xl p-4 flex flex-wrap gap-3 items-center">
                 <div class="flex-grow min-w-[200px] relative">
                     <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-slate-500 text-xs"></i>
-                    <input type="text" id="filterSearch" oninput="applyInterfaceRendering()" placeholder="Type query parameter string to search database instantly..." class="w-full text-xs bg-slate-950 border border-slate-800 rounded-xl py-3 pl-10 pr-4 text-white outline-none focus:border-indigo-500">
+                    <input type="text" id="filterSearch" oninput="applyInterfaceRendering()" placeholder="Type parameters string to lookup databases instantly..." class="w-full text-xs bg-slate-950 border border-slate-800 rounded-xl py-3 pl-10 pr-4 text-white outline-none">
                 </div>
-                <div class="flex gap-2 w-full sm:w-auto">
-                    <input type="text" id="filterParamOne" oninput="applyInterfaceRendering()" placeholder="Class" class="w-full sm:w-20 text-xs bg-slate-950 border border-slate-800 rounded-xl py-2 px-3 text-white outline-none">
-                    <input type="text" id="filterParamTwo" oninput="applyInterfaceRendering()" placeholder="Sec" class="w-full sm:w-16 text-xs bg-slate-950 border border-slate-800 rounded-xl py-2 px-3 text-white outline-none">
+                <div class="flex gap-2">
+                    <input type="text" id="filterParamOne" oninput="applyInterfaceRendering()" placeholder="Class" class="w-20 text-xs bg-slate-950 border border-slate-800 rounded-xl py-2 px-3 text-white outline-none">
+                    <input type="text" id="filterParamTwo" oninput="applyInterfaceRendering()" placeholder="Sec" class="w-16 text-xs bg-slate-950 border border-slate-800 rounded-xl py-2 px-3 text-white outline-none">
                 </div>
             </div>
 
@@ -204,17 +208,17 @@
                 <button onclick="switchViewTab('students')" id="tabBtnStudents" class="pb-2 text-emerald-400 border-b-2 border-emerald-500 px-1 flex items-center gap-2"><i class="fa-solid fa-graduation-cap"></i> Students</button>
                 <button onclick="switchViewTab('teachers')" id="tabBtnTeachers" class="pb-2 text-slate-500 border-b-2 border-transparent px-1 flex items-center gap-2"><i class="fa-solid fa-user-shield"></i> Faculty</button>
                 <button onclick="switchViewTab('schedules')" id="tabBtnSchedules" class="pb-2 text-slate-500 border-b-2 border-transparent px-1 flex items-center gap-2"><i class="fa-solid fa-calendar-days"></i> Matrix</button>
-                <button onclick="switchViewTab('cards')" id="tabBtnCards" class="pb-2 text-slate-500 border-b-2 border-transparent px-1 flex items-center gap-2"><i class="fa-solid fa-address-card"></i> Digital Passes</button>
+                <button onclick="switchViewTab('cards')" id="tabBtnCards" class="pb-2 text-slate-500 border-b-2 border-transparent px-1 flex items-center gap-2"><i class="fa-solid fa-address-card"></i> Passes (Double Sided)</button>
             </div>
 
-            <div class="space-y-4 max-h-[1400px] overflow-y-auto pr-1" id="cardsGridContainer"></div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start justify-items-center md:justify-items-start" id="cardsGridContainer"></div>
         </section>
     </main>
 
     <footer class="border-t border-slate-900 bg-slate-950/90 py-4 text-center text-xs text-slate-500 font-semibold tracking-wider">
         <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-            <p>Unified Management Node Engine v10.0</p>
-            <p id="bottomDynamicFooter" class="tracking-widest text-slate-400 font-black uppercase">A PROJECT BY HNK & SHEEKAN TECH AND STUDIO</p>
+            <p>Unified Node Core v11.0</p>
+            <p id="bottomDynamicFooter" class="tracking-widest text-slate-400 font-black uppercase">---</p>
         </div>
     </footer>
 
@@ -238,15 +242,22 @@
                 });
                 return await response.json();
             } catch(e) {
-                console.error(e);
-                return { success: false, message: "System error down the data pipe pipeline." };
+                return { success: false, message: "Handshake operational failure." };
             }
         }
 
         function switchRegistryRole(r) {
             state.registryCurrentRole = r;
-            document.getElementById('roleBtnStudent').className = r === 'student' ? "py-1.5 text-xs font-bold rounded bg-emerald-600 text-white" : "py-1.5 text-xs font-bold rounded text-slate-500";
-            document.getElementById('roleBtnTeacher').className = r === 'teacher' ? "py-1.5 text-xs font-bold rounded bg-blue-600 text-white" : "py-1.5 text-xs font-bold rounded text-slate-500";
+            const extraEl = document.getElementById('reg_extra');
+            if(r === 'student') {
+                document.getElementById('roleBtnStudent').className = "py-1.5 text-xs font-bold rounded bg-emerald-600 text-white transition-all";
+                document.getElementById('roleBtnTeacher').className = "py-1.5 text-xs font-bold rounded text-slate-500";
+                extraEl.innerHTML = '<option value="Paid">Paid</option><option value="Unpaid">Unpaid</option>';
+            } else {
+                document.getElementById('roleBtnStudent').className = "py-1.5 text-xs font-bold rounded text-slate-500";
+                document.getElementById('roleBtnTeacher').className = "py-1.5 text-xs font-bold rounded bg-blue-600 text-white transition-all";
+                extraEl.innerHTML = '<option value="Faculty Staff">Faculty</option><option value="Management Head">Head Faculty</option>';
+            }
         }
 
         function toggleCardSelectionRole(r) {
@@ -258,16 +269,12 @@
 
         function switchViewTab(tab) {
             state.activeTab = tab;
-            const buttons = {
-                students: ['tabBtnStudents', 'text-emerald-400', 'border-emerald-500'],
-                teachers: ['tabBtnTeachers', 'text-blue-400', 'border-blue-500'],
-                schedules: ['tabBtnSchedules', 'text-purple-400', 'border-purple-500'],
-                cards: ['tabBtnCards', 'text-sky-400', 'border-sky-500']
-            };
-            Object.keys(buttons).forEach(k => {
-                let btn = document.getElementById(buttons[k][0]);
-                if(btn) btn.className = (k === tab) ? `pb-2 ${buttons[k][1]} border-b-2 ${buttons[k][2]} px-1 flex items-center gap-2` : "pb-2 text-slate-500 border-b-2 border-transparent px-1 flex items-center gap-2";
-            });
+            const container = document.getElementById('cardsGridContainer');
+            if (tab === 'cards' || tab === 'schedules') {
+                container.className = "grid grid-cols-1 md:grid-cols-2 gap-6 w-full";
+            } else {
+                container.className = "grid grid-cols-1 gap-4 w-full";
+            }
             applyInterfaceRendering();
         }
 
@@ -281,38 +288,17 @@
                     state.schedules = res.schedules || []; state.cards = res.cards || [];
                     state.config = res.config || {};
                     
-                    // Hydrate Config Dynamic Data Dom Layout Rows
-                    if(state.config.school_name) {
-                        document.getElementById('topSchoolName').innerText = state.config.school_name;
-                        document.getElementById('cfg_school_name').value = state.config.school_name;
-                    }
-                    if(state.config.city_name) {
-                        document.getElementById('topCityName').innerText = state.config.city_name;
-                        document.getElementById('cfg_city_name').value = state.config.city_name;
-                    }
-                    if(state.config.contact_no) {
-                        document.getElementById('topContactNo').innerText = state.config.contact_no;
-                        document.getElementById('cfg_contact_no').value = state.config.contact_no;
-                    }
-                    if(state.config.notice_board) {
-                        document.getElementById('topNoticeBoard').innerText = state.config.notice_board;
-                        document.getElementById('cfg_notice_board').value = state.config.notice_board;
-                    }
-                    if(state.config.school_logo) {
-                        document.getElementById('topSchoolLogo').src = state.config.school_logo;
-                        document.getElementById('cfg_logo_preview').src = state.config.school_logo;
-                        document.getElementById('cfg_logo_base64').value = state.config.school_logo;
-                    }
-                    if(state.config.footer_text) {
-                        document.getElementById('bottomDynamicFooter').innerText = state.config.footer_text;
-                        document.getElementById('cfg_footer_text').value = state.config.footer_text;
-                    }
+                    if(state.config.school_name) { document.getElementById('topSchoolName').innerText = state.config.school_name; document.getElementById('cfg_school_name').value = state.config.school_name; }
+                    if(state.config.city_name) { document.getElementById('topCityName').innerText = state.config.city_name; document.getElementById('cfg_city_name').value = state.config.city_name; }
+                    if(state.config.contact_no) { document.getElementById('topContactNo').innerText = state.config.contact_no; document.getElementById('cfg_contact_no').value = state.config.contact_no; }
+                    if(state.config.notice_board) { document.getElementById('topNoticeBoard').innerText = state.config.notice_board; document.getElementById('cfg_notice_board').value = state.config.notice_board; }
+                    if(state.config.school_logo) { document.getElementById('topSchoolLogo').src = state.config.school_logo; document.getElementById('cfg_logo_preview').src = state.config.school_logo; document.getElementById('cfg_logo_base64').value = state.config.school_logo; }
+                    if(state.config.footer_text) { document.getElementById('bottomDynamicFooter').innerText = state.config.footer_text; document.getElementById('cfg_footer_text').value = state.config.footer_text; }
 
                     document.getElementById('countReg').innerText = state.students.length + state.teachers.length;
-                    
                     populateSchedulesTeacherDropdown(); populateCardUsersDropdown();
                     applyInterfaceRendering();
-                }).catch(err => { console.error(err); toggleOverlayLoader(false); });
+                }).catch(err => { toggleOverlayLoader(false); });
         }
 
         function processSchoolLogoFile(input) {
@@ -342,11 +328,11 @@
         }
 
         function populateSchedulesTeacherDropdown() {
-            let el = document.getElementById('sch_teacher_select'); el.innerHTML = '<option value="">-- Choose Target Faculty --</option>';
+            let el = document.getElementById('sch_teacher_select'); el.innerHTML = '<option value="">-- Faculty Mapping Target --</option>';
             state.teachers.forEach(t => { el.innerHTML += `<option value="${t.id}">${t.name} (${t.id})</option>`; });
         }
         function populateCardUsersDropdown() {
-            let el = document.getElementById('card_user_select'); el.innerHTML = '<option value="">-- Choose Object Profile Reference --</option>';
+            let el = document.getElementById('card_user_select'); el.innerHTML = '<option value="">-- Choose Target Object Profile --</option>';
             let list = state.cardCurrentRole === 'student' ? state.students : state.teachers;
             list.forEach(x => { el.innerHTML += `<option value="${x.id}">${x.name} (${x.id})</option>`; });
         }
@@ -357,7 +343,7 @@
                 reader.onload = function(e) {
                     document.getElementById('avatarDataPreview').src = e.target.result;
                     document.getElementById('card_avatar_base64').value = e.target.result;
-                    document.getElementById('avatarStatusLabel').innerText = "Asset loaded from storage disk.";
+                    document.getElementById('avatarStatusLabel').innerText = "Asset loaded.";
                 };
                 reader.readAsDataURL(input.files[0]);
             }
@@ -372,7 +358,7 @@
                 state.localVideoStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false });
                 video.srcObject = state.localVideoStream;
             } catch (err) {
-                triggerToast("Camera hardware layer blocked.", "text-rose-400");
+                triggerToast("Camera blocked.", "text-rose-400");
                 wrapper.classList.add('hidden');
             }
         }
@@ -386,7 +372,7 @@
             const dataUrl = canvas.toDataURL('image/jpeg');
             document.getElementById('avatarDataPreview').src = dataUrl;
             document.getElementById('card_avatar_base64').value = dataUrl;
-            document.getElementById('avatarStatusLabel').innerText = "Snapshot framed.";
+            document.getElementById('avatarStatusLabel').innerText = "Snapshot captured.";
             if(state.localVideoStream) { state.localVideoStream.getTracks().forEach(t => t.stop()); }
             document.getElementById('cameraDeckWrapper').classList.add('hidden');
         }
@@ -398,17 +384,11 @@
                 name: document.getElementById('reg_name').value, son_of: document.getElementById('reg_son_of').value,
                 cnic: document.getElementById('reg_cnic').value, contact: document.getElementById('reg_contact').value,
                 address: document.getElementById('reg_address').value, class_assigned: document.getElementById('reg_class').value,
-                section_assigned: document.getElementById('reg_section').value, extra_field: 'Active'
+                section_assigned: document.getElementById('reg_section').value, extra_field: document.getElementById('reg_extra').value
             };
             let response = await cloudFetchEngine("saveRegistry", payload);
-            if(response.success) {
-                triggerToast(response.message, "text-emerald-400");
-                clearRegistryFormState();
-                setTimeout(refreshMasterLedger, 500);
-            } else {
-                toggleOverlayLoader(false);
-                triggerToast(response.message, "text-rose-400 font-black");
-            }
+            triggerToast(response.message, response.success ? "text-emerald-400" : "text-rose-400");
+            if(response.success) { clearRegistryFormState(); setTimeout(refreshMasterLedger, 500); } else { toggleOverlayLoader(false); }
         }
 
         async function commitScheduleRecord(e) {
@@ -420,23 +400,26 @@
                 class_assigned: document.getElementById('sch_class').value, section_assigned: document.getElementById('sch_section').value
             };
             await cloudFetchEngine("saveSchedule", payload);
-            triggerToast("Operational grid row mapped.", "text-purple-400");
-            clearScheduleFormState();
-            setTimeout(refreshMasterLedger, 500);
+            triggerToast("Routine mapped.", "text-purple-400");
+            clearScheduleFormState(); setTimeout(refreshMasterLedger, 500);
         }
 
         async function commitIdentityCardRecord(e) {
             e.preventDefault(); toggleOverlayLoader(true);
             let el = document.getElementById('card_user_select');
             let payload = {
-                card_id: document.getElementById('card_invoice_id').value, role: state.cardCurrentRole, user_id: el.value,
+                role: state.cardCurrentRole, user_id: el.value,
                 name: el.options[el.selectedIndex].text.split(' (')[0], avatar: document.getElementById('card_avatar_base64').value || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100',
                 channel: document.getElementById('card_channel').value, destination: document.getElementById('card_destination').value
             };
             await cloudFetchEngine("saveCard", payload);
-            triggerToast("Identity layout compiled natively.", "text-sky-400");
-            clearCardFormState();
-            setTimeout(refreshMasterLedger, 500);
+            triggerToast("Identity Pass Compiled.", "text-sky-400");
+            clearCardFormState(); setTimeout(refreshMasterLedger, 500);
+        }
+
+        function toggleCardFlip(btn) {
+            const wrapper = btn.closest('.id-card-wrapper');
+            wrapper.classList.toggle('flipped');
         }
 
         function applyInterfaceRendering() {
@@ -447,33 +430,41 @@
             const logo = state.config.school_logo || 'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=150';
             const sName = state.config.school_name || 'HNK SCHOOLS SANAWAN';
             const sCity = state.config.city_name || 'Sanawan';
-            
+            const sContact = state.config.contact_no || '+92 300 0000000';
+
             if (state.activeTab === 'students' || state.activeTab === 'teachers') {
                 let targetArray = state.activeTab === 'students' ? state.students : state.teachers;
                 let isStudent = state.activeTab === 'students';
                 targetArray.forEach(item => {
                     if ((item.name.toLowerCase().includes(search) || item.id.toLowerCase().includes(search) || item.cnic.includes(search)) && item.class.toLowerCase().includes(p1) && item.section.toLowerCase().includes(p2)) {
                         let card = document.createElement('div');
-                        card.className = `glow-card bg-slate-900/30 border border-slate-800/80 p-5 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4`;
+                        card.className = `glow-card bg-slate-900/30 border border-slate-800/80 p-5 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 w-full`;
+                        
+                        // RESTORED FEE BADGE OR FACULTY TITLE IN ROSTER CARD LIST
+                        let statusBadge = isStudent 
+                            ? `<span class="text-[10px] font-bold px-2 py-0.5 rounded-md ${item.fee_status==='Paid'?'bg-emerald-950 text-emerald-400 border border-emerald-800':'bg-rose-950 text-rose-400 border border-rose-800'}"><i class="fa-solid fa-money-check-dollar mr-1"></i>${item.fee_status}</span>`
+                            : `<span class="text-[10px] font-bold px-2 py-0.5 rounded-md bg-blue-950 text-blue-400 border border-blue-800"><i class="fa-solid fa-user-tie mr-1"></i>${item.extra_field || 'Faculty'}</span>`;
+
                         card.innerHTML = `
                             <div class="space-y-2 flex-grow w-full">
                                 <div class="flex items-center justify-between border-b border-slate-950 pb-2">
                                     <div class="flex items-center gap-2">
                                         <span class="text-[9px] font-mono px-2 py-0.5 rounded-md font-bold ${isStudent?'bg-emerald-950 text-emerald-400':'bg-blue-950 text-blue-400'}">${item.id}</span>
-                                        <h4 class="text-xs font-extrabold text-white tracking-tight">${item.name}</h4>
+                                        <h4 class="text-xs font-extrabold text-white">${item.name}</h4>
+                                        ${statusBadge}
                                     </div>
-                                    <span class="text-[10px] text-slate-500 font-bold"><i class="fa-solid fa-graduation-cap text-slate-700 mr-1"></i>${item.class}-${item.section}</span>
+                                    <span class="text-[10px] text-slate-500 font-bold">${item.class}-${item.section}</span>
                                 </div>
-                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1 text-xs text-slate-400 font-medium">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1 text-xs text-slate-400">
                                     <p><span class="text-slate-600 font-bold">Father:</span> ${item.son_of}</p>
-                                    <p><span class="text-slate-600 font-bold">CNIC Token:</span> ${item.cnic}</p>
-                                    <p><span class="text-slate-600 font-bold">Contact Node:</span> ${item.contact}</p>
-                                    <p class="truncate"><span class="text-slate-600 font-bold">Location:</span> ${item.address}</p>
+                                    <p><span class="text-slate-600 font-bold">CNIC:</span> ${item.cnic}</p>
+                                    <p><span class="text-slate-600 font-bold">Contact:</span> ${item.contact}</p>
+                                    <p class="truncate"><span class="text-slate-600 font-bold">Address:</span> ${item.address}</p>
                                 </div>
                             </div>
-                            <div class="flex items-center gap-1.5 self-end sm:self-center bg-slate-950/60 p-1.5 rounded-xl border border-slate-800 shrink-0">
-                                <button onclick="triggerRegistryEdit('${item.id}', '${state.activeTab}')" class="w-8 h-8 rounded-lg bg-slate-900 text-slate-400 hover:text-white flex items-center justify-center transition-all"><i class="fa-solid fa-pencil text-[11px]"></i></button>
-                                <button onclick="triggerRegistryDelete('${item.id}', '${state.activeTab}')" class="w-8 h-8 rounded-lg bg-slate-900 text-slate-500 hover:text-rose-400 flex items-center justify-center transition-all"><i class="fa-solid fa-trash-can text-[11px]"></i></button>
+                            <div class="flex items-center gap-1.5 bg-slate-950/60 p-1.5 rounded-xl border border-slate-800 shrink-0">
+                                <button onclick="triggerRegistryEdit('${item.id}', '${state.activeTab}')" class="w-8 h-8 rounded-lg bg-slate-900 text-slate-400 hover:text-white flex items-center justify-center"><i class="fa-solid fa-pencil text-[11px]"></i></button>
+                                <button onclick="triggerRegistryDelete('${item.id}', '${state.activeTab}')" class="w-8 h-8 rounded-lg bg-slate-900 text-slate-500 hover:text-rose-400 flex items-center justify-center"><i class="fa-solid fa-trash-can text-[11px]"></i></button>
                             </div>`;
                         container.appendChild(card);
                     }
@@ -482,7 +473,7 @@
                 state.schedules.forEach(item => {
                     if ((item.teacher_name.toLowerCase().includes(search) || item.subject.toLowerCase().includes(search)) && item.class.toLowerCase().includes(p1) && item.section.toLowerCase().includes(p2)) {
                         let card = document.createElement('div');
-                        card.className = "glow-card bg-slate-900/30 border border-slate-800 p-4 rounded-2xl flex justify-between items-center";
+                        card.className = "glow-card bg-slate-900/30 border border-slate-800 p-4 rounded-2xl flex justify-between items-center w-full";
                         card.innerHTML = `
                             <div class="space-y-1">
                                 <div class="flex items-center gap-1.5">
@@ -490,10 +481,9 @@
                                     <span class="text-[10px] font-bold text-slate-500 font-mono">${item.time_slot}</span>
                                 </div>
                                 <h4 class="text-xs font-extrabold text-white">${item.subject} <span class="text-slate-500 font-medium text-[11px]">by ${item.teacher_name}</span></h4>
-                                <p class="text-[11px] text-indigo-400 font-bold">Target Grid Matrix: ${item.class}-${item.section}</p>
+                                <p class="text-[11px] text-indigo-400 font-bold">Class: ${item.class}-${item.section}</p>
                             </div>
                             <div class="flex gap-1.5 bg-slate-950/60 p-1 rounded-xl border border-slate-800">
-                                <button onclick="triggerScheduleEdit('${item.sch_id}')" class="w-7 h-7 rounded-lg bg-slate-900 text-slate-400 hover:text-purple-400 flex items-center justify-center"><i class="fa-solid fa-pencil text-[10px]"></i></button>
                                 <button onclick="triggerScheduleDelete('${item.sch_id}')" class="w-7 h-7 rounded-lg bg-slate-900 text-slate-500 hover:text-rose-500 flex items-center justify-center"><i class="fa-solid fa-trash-can text-[10px]"></i></button>
                             </div>`;
                         container.appendChild(card);
@@ -502,47 +492,93 @@
             } else if (state.activeTab === 'cards') {
                 state.cards.forEach(item => {
                     if (item.name.toLowerCase().includes(search) || item.card_id.toLowerCase().includes(search)) {
-                        let card = document.createElement('div'); 
-                        var qrSrc = "https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=" + encodeURIComponent(item.user_id);
-                        card.id = `pass-card-${item.card_id}`;
-                        card.className = "bg-gradient-to-b from-slate-900 via-slate-950 to-black border-2 border-slate-800/80 rounded-3xl p-5 shadow-2xl flex flex-col gap-4 relative overflow-hidden";
-                        card.innerHTML = `
-                            <div class="flex items-center gap-2.5 border-b border-slate-900 pb-3 w-full">
-                                <img src="${logo}" class="w-8 h-8 rounded-lg object-cover border border-slate-800 bg-slate-900">
-                                <div>
-                                    <h5 class="text-[11px] font-black tracking-tight text-white uppercase">${sName}</h5>
-                                    <p class="text-[9px] text-slate-500 font-medium">${sCity}</p>
+                        let qrSrc = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + encodeURIComponent(item.user_id);
+                        
+                        // Sync real-time dynamic fee or profile status directly inside card compiled data structure
+                        let matchedObject = item.role === 'student' ? state.students.find(s=>s.id===item.user_id) : state.teachers.find(t=>t.id===item.user_id);
+                        let subInfoValue = matchedObject ? (item.role==='student' ? `Fee: ${matchedObject.fee_status}` : (matchedObject.extra_field || 'Faculty')) : 'Active';
+                        let classValue = matchedObject ? `${matchedObject.class}-${matchedObject.section}` : 'N/A';
+                        let cnicValue = matchedObject ? matchedObject.cnic : '---';
+                        let contactValue = matchedObject ? matchedObject.contact : '---';
+
+                        let cardWrapper = document.createElement('div');
+                        cardWrapper.className = "flex flex-col items-center gap-3";
+                        cardWrapper.innerHTML = `
+                            <div class="id-card-wrapper" id="wrap-${item.card_id}">
+                                <div class="id-card-inner">
+                                    
+                                    <div class="id-card-front bg-slate-950 border-2 border-slate-800 flex flex-col justify-between p-5 relative">
+                                        <div class="flex items-center gap-3 border-b border-slate-900 pb-3">
+                                            <img src="${logo}" class="w-10 h-10 rounded-xl object-cover border border-slate-800 bg-slate-900">
+                                            <div class="text-left">
+                                                <h5 class="text-[11px] font-black tracking-tight text-white uppercase truncate max-w-[180px]">${sName}</h5>
+                                                <p class="text-[9px] text-slate-500 font-bold">${sCity}</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="flex flex-col items-center text-center my-2 space-y-2">
+                                            <div class="relative">
+                                                <img src="${item.avatar}" class="w-24 h-24 rounded-2xl object-cover border-2 ${item.role==='student'?'border-emerald-500':'border-blue-500'} shadow-2xl bg-slate-900">
+                                                <span class="absolute -bottom-2 left-1/2 transform -translate-x-1/2 text-[9px] font-black uppercase tracking-widest ${item.role==='student'?'bg-emerald-600':'bg-blue-600'} text-white px-2 py-0.5 rounded-full shadow-lg border border-slate-950">${item.role}</span>
+                                            </div>
+                                            <div class="pt-1">
+                                                <h4 class="text-sm font-black text-white">${item.name}</h4>
+                                                <p class="text-[10px] text-slate-500 font-mono tracking-tight mt-0.5">ID: ${item.user_id}</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="bg-slate-900/60 border border-slate-900 rounded-xl p-3 space-y-1.5 text-left text-xs">
+                                            <div class="flex justify-between"><span class="text-slate-500 font-bold">Class / Dept:</span><span class="text-white font-extrabold">${classValue}</span></div>
+                                            <div class="flex justify-between"><span class="text-slate-500 font-bold">Identity Code:</span><span class="text-slate-300 font-mono text-[11px]">${cnicValue}</span></div>
+                                            <div class="flex justify-between"><span class="text-slate-500 font-bold">Contact Gateway:</span><span class="text-slate-300">${contactValue}</span></div>
+                                            <div class="flex justify-between"><span class="text-slate-500 font-bold">Status:</span><span class="${subInfoValue.includes('Unpaid')?'text-rose-400':'text-emerald-400'} font-black">${subInfoValue}</span></div>
+                                        </div>
+
+                                        <div class="flex items-center justify-between border-t border-slate-900 pt-2.5 text-[9px] font-mono text-slate-500">
+                                            <span>PASS TOKEN: ${item.card_id}</span>
+                                            <span class="text-indigo-400 font-bold">AUTHORIZED BADGE</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="id-card-back bg-slate-950 border-2 border-slate-800 flex flex-col justify-between p-6 text-center relative">
+                                        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
+                                        
+                                        <div class="flex flex-col items-center justify-center my-auto space-y-4">
+                                            <img src="${logo}" class="w-16 h-16 rounded-2xl object-cover border border-slate-800 shadow-xl bg-slate-900">
+                                            <div>
+                                                <h4 class="text-xs font-black text-white tracking-widest uppercase">${sName}</h4>
+                                                <p class="text-[9px] text-slate-400 mt-0.5 font-bold"><i class="fa-solid fa-phone text-sky-400 mr-1"></i>${sContact}</p>
+                                            </div>
+                                            
+                                            <div class="bg-white p-2 rounded-2xl shadow-2xl inline-block border-4 border-slate-900">
+                                                <img src="${qrSrc}" class="w-20 h-20">
+                                            </div>
+                                        </div>
+
+                                        <div class="space-y-2 text-left border-t border-slate-900 pt-4">
+                                            <p class="text-[9px] text-slate-500 leading-relaxed font-medium">1. This badge card asset remains the sole property of the issuing institution. If found, return immediately.</p>
+                                            <p class="text-[9px] text-slate-500 leading-relaxed font-medium">2. Misuse, unauthorized replication, or alteration of this token will trigger security network suspension protocols.</p>
+                                        </div>
+
+                                        <p class="text-[8px] font-black tracking-widest text-slate-600 uppercase mt-2 border-t border-slate-900/50 pt-2">POWERED BY QUANTUM HUB CONSOLE</p>
+                                    </div>
+
                                 </div>
                             </div>
                             
-                            <div class="flex flex-col sm:flex-row gap-5 items-center justify-between w-full">
-                                <div class="flex flex-col sm:flex-row items-center text-center sm:text-left gap-4">
-                                    <img src="${item.avatar}" class="w-16 h-16 rounded-2xl object-cover border-2 border-sky-500 shadow-xl bg-slate-900" onerror="this.src='https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100'">
-                                    <div class="space-y-1">
-                                        <h4 class="text-xs font-black text-white tracking-tight flex items-center justify-center sm:justify-start gap-1.5">
-                                            ${item.name} 
-                                            <span class="text-[9px] font-mono tracking-widest uppercase text-sky-400 bg-sky-950/80 px-1.5 py-0.5 rounded-md border border-sky-900/50">${item.role}</span>
-                                        </h4>
-                                        <p class="text-[11px] text-slate-400 font-mono">UID: ${item.user_id} | Token: ${item.card_id}</p>
-                                        <p class="text-[10px] text-slate-500 font-medium"><i class="fa-solid fa-paper-plane mr-1"></i>${item.channel}: ${item.destination}</p>
-                                    </div>
-                                </div>
-                                
-                                <div class="flex flex-col sm:flex-row items-center gap-4 shrink-0 w-full sm:w-auto justify-end">
-                                    <div class="bg-white p-1 rounded-xl shadow-lg"><img src="${qrSrc}" class="w-12 h-12"></div>
-                                    <div class="grid grid-cols-2 sm:flex sm:flex-col gap-1 w-full sm:w-auto">
-                                        <button onclick="executeLocalCardDownload('${item.card_id}')" class="py-1 px-2.5 rounded-lg bg-slate-900 border border-slate-800 text-[10px] font-bold text-slate-300 flex items-center justify-center gap-1"><i class="fa-solid fa-download text-emerald-400"></i> Save Pass</button>
-                                        <button onclick="executeDirectSocialShare('${item.card_id}', 'whatsapp')" class="py-1 px-2.5 rounded-lg bg-slate-900 border border-slate-800 text-[10px] font-bold text-slate-300 flex items-center justify-center gap-1"><i class="fa-brands fa-whatsapp text-emerald-500"></i> WhatsApp</button>
-                                        <button onclick="executeDirectSocialShare('${item.card_id}', 'gmail')" class="py-1 px-2.5 rounded-lg bg-slate-900 border border-slate-800 text-[10px] font-bold text-slate-300 flex items-center justify-center gap-1"><i class="fa-regular fa-envelope text-rose-400"></i> Email</button>
-                                        <button onclick="triggerCardDelete('${item.card_id}')" class="py-1 px-2.5 rounded-lg bg-slate-950 border border-rose-950 text-[10px] font-bold text-rose-400 flex items-center justify-center gap-1"><i class="fa-solid fa-trash"></i> Drop</button>
-                                    </div>
+                            <div class="flex items-center gap-1.5 bg-slate-950 border border-slate-800 p-1.5 rounded-xl w-[340px] justify-between">
+                                <button onclick="toggleCardFlip(this)" class="py-1 px-3 rounded-lg bg-slate-900 border border-slate-800 text-[10px] font-bold text-indigo-400 flex items-center gap-1"><i class="fa-solid fa-arrows-rotate"></i> Flip Card</button>
+                                <div class="flex gap-1">
+                                    <button onclick="executeDirectSocialShare('${item.card_id}', 'whatsapp')" class="w-7 h-7 rounded-lg bg-slate-900 text-emerald-500 hover:bg-slate-800 flex items-center justify-center text-xs"><i class="fa-brands fa-whatsapp"></i></button>
+                                    <button onclick="executeDirectSocialShare('${item.card_id}', 'gmail')" class="w-7 h-7 rounded-lg bg-slate-900 text-rose-400 hover:bg-slate-800 flex items-center justify-center text-xs"><i class="fa-regular fa-envelope"></i></button>
+                                    <button onclick="triggerCardDelete('${item.card_id}')" class="w-7 h-7 rounded-lg bg-slate-950 border border-rose-950 text-rose-400 flex items-center justify-center text-xs"><i class="fa-solid fa-trash-can"></i></button>
                                 </div>
                             </div>`;
-                        container.appendChild(card);
+                        container.appendChild(cardWrapper);
                     }
                 });
             }
-            if(container.innerHTML === "") container.innerHTML = `<div class="text-center py-16 border border-dashed border-slate-800 rounded-2xl text-xs text-slate-500 font-medium">No parameters matched.</div>`;
+            if(container.innerHTML === "") container.innerHTML = `<div class="text-center py-16 border border-dashed border-slate-800 rounded-2xl text-xs text-slate-500 font-medium w-full col-span-2">No parameters matched matrix lookup.</div>`;
         }
 
         function triggerRegistryEdit(id, tab) {
@@ -557,42 +593,19 @@
             document.getElementById('reg_address').value = match.address;
             document.getElementById('reg_class').value = match.class; 
             document.getElementById('reg_section').value = match.section;
-            document.getElementById('regFormTitle').innerHTML = `<i class="fa-solid fa-user-pen"></i> Overhaul Registry Block: ${match.id}`; 
-            document.getElementById('regSubmitBtn').innerText = "Override Spreadsheet Row";
+            document.getElementById('reg_extra').value = tab === 'students' ? match.fee_status : match.extra_field;
+            document.getElementById('regFormTitle').innerHTML = `<i class="fa-solid fa-user-pen"></i> Overhaul Block: ${match.id}`; 
+            document.getElementById('regSubmitBtn').innerText = "Override Roster Row";
             window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function triggerScheduleEdit(id) {
-            let match = state.schedules.find(x => x.sch_id === id); if(!match) return;
-            document.getElementById('sch_id').value = match.sch_id; 
-            document.getElementById('sch_teacher_select').value = match.teacher_id;
-            document.getElementById('sch_day').value = match.day; 
-            document.getElementById('sch_time_slot').value = match.time_slot;
-            document.getElementById('sch_subject').value = match.subject; 
-            document.getElementById('sch_class').value = match.class;
-            document.getElementById('sch_section').value = match.section; 
-            document.getElementById('schFormTitle').innerText = "Modify Schedule Slot"; 
-            document.getElementById('schSubmitBtn').innerText = "Override Slot";
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function executeLocalCardDownload(cardId) {
-            const cardElement = document.getElementById(`pass-card-${cardId}`); if(!cardElement) return;
-            const cleanContent = cardElement.cloneNode(true);
-            cleanContent.querySelector('.grid')?.remove(); // clean actions block for clean card
-            const htmlContent = `<html><head><script src="https://cdn.tailwindcss.com"><\/script></head><body class="bg-slate-950 p-8 text-white flex justify-center items-center h-screen"><div class="w-[450px] bg-slate-900 border border-slate-800 p-5 rounded-3xl">${cleanContent.innerHTML}</div></body></html>`;
-            const blob = new Blob([htmlContent], { type: 'text/html' });
-            const link = document.createElement('a'); link.href = URL.createObjectURL(blob);
-            link.download = `Identity_Pass_${cardId}.html`; link.click();
         }
 
         function executeDirectSocialShare(cardId, type) {
             let match = state.cards.find(x => x.card_id === cardId); if(!match) return;
-            let message = `Hello ${match.name}, Your Dynamic Digital Security ID Pass Card has been successfully compiled under Identity Token ${match.card_id}. Base profile allocation: ${match.user_id}.`;
+            let message = `Hello ${match.name}, Your Dynamic Double-Sided Digital Identity Card Pass Asset has been fully updated and assigned on the cloud core servers under tracking token ${match.card_id}.`;
             if(type === 'whatsapp') {
                 window.open(`https://api.whatsapp.com/send?phone=${match.destination.replace(/[^0-9]/g, '')}&text=${encodeURIComponent(message)}`, '_blank');
             } else if(type === 'gmail') {
-                window.open(`mailto:${match.destination}?subject=Security ID Asset Compiled&body=${encodeURIComponent(message)}`, '_blank');
+                window.open(`mailto:${match.destination}?subject=Security ID Asset Deployed&body=${encodeURIComponent(message)}`, '_blank');
             }
         }
 
@@ -601,8 +614,8 @@
         async function triggerCardDelete(id) { if(confirm('Revoke identity pass?')) { toggleOverlayLoader(true); await cloudFetchEngine("deleteCard", {card_id: id}); setTimeout(refreshMasterLedger, 500); } }
 
         function clearRegistryFormState() { document.getElementById('registryForm').reset(); document.getElementById('reg_id').value = ""; document.getElementById('regFormTitle').innerHTML = `<i class="fa-solid fa-address-book"></i> Registry Onboarding Rails`; document.getElementById('regSubmitBtn').innerText = "Deploy Record Block"; }
-        function clearScheduleFormState() { document.getElementById('scheduleForm').reset(); document.getElementById('sch_id').value = ""; document.getElementById('schFormTitle').innerText = "Routine Assignment Console"; document.getElementById('schSubmitBtn').innerText = "Secure Matrix Slot"; }
-        function clearCardFormState() { document.getElementById('idCardForm').reset(); document.getElementById('card_invoice_id').value = ""; document.getElementById('card_avatar_base64').value = ""; document.getElementById('avatarDataPreview').src = "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100"; document.getElementById('avatarStatusLabel').innerText = "No fresh asset cached."; if(state.localVideoStream) { state.localVideoStream.getTracks().forEach(t => t.stop()); } document.getElementById('cameraDeckWrapper').classList.add('hidden'); }
+        function clearScheduleFormState() { document.getElementById('scheduleForm').reset(); document.getElementById('sch_id').value = ""; document.getElementById('schFormTitle').innerText = "Routine Assignment Console"; document.getElementById('schSubmitBtn').innerText = "Secure Slot"; }
+        function clearCardFormState() { document.getElementById('idCardForm').reset(); document.getElementById('card_avatar_base64').value = ""; document.getElementById('avatarDataPreview').src = "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100"; document.getElementById('avatarStatusLabel').innerText = "No fresh asset cached."; if(state.localVideoStream) { state.localVideoStream.getTracks().forEach(t => t.stop()); } document.getElementById('cameraDeckWrapper').classList.add('hidden'); }
         function toggleOverlayLoader(show) { const box = document.getElementById('masterLoaderBox'); if(box) { if(show) box.classList.remove('hidden'); else box.classList.add('hidden'); } }
         function triggerToast(m, c) { const b = document.getElementById('alertBox'); b.className = "fixed top-28 right-4 z-50 max-w-sm text-xs font-bold p-3 rounded-xl bg-slate-950 border border-slate-800 shadow-2xl transition-all duration-300 transform translate-x-0 " + c; b.innerText = m; b.style.opacity = '1'; setTimeout(() => { b.style.opacity = '0'; b.style.transform = 'translateX(20px)'; }, 5000); }
     </script>
