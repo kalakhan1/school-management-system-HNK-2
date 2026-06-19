@@ -3,27 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dynamic Management Node v11.0 | HNK & SHEEKAN</title>
+    <title>Quantum Node Studio v11.5 | Double-Sided System</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #020617; }
-        .glow-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .glow-card:hover { transform: translateY(-2px); box-shadow: 0 12px 24px -10px rgba(99, 102, 241, 0.15); border-color: rgba(99, 102, 241, 0.3); }
+        .glow-card { transition: all 0.3s ease; }
+        .glow-card:hover { transform: translateY(-2px); border-color: rgba(99, 102, 241, 0.3); }
         
-        /* 3D CARD PERSPECTIVE FLIP SYSTEM */
-        .id-card-wrapper { perspective: 1000px; width: 340px; height: 490px; }
-        .id-card-inner { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
-        .id-card-wrapper.flipped .id-card-inner { transform: rotateY(180deg); }
-        .id-card-front, .id-card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 1.5rem; overflow: hidden; }
+        /* SECURE 3D ENGINE TRANSFORM LAYOUT FLIP MECHANICS */
+        .id-card-wrapper { perspective: 1200px; width: 320px; height: 460px; }
+        .id-card-inner { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+        .id-card-front, .id-card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 1.25rem; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); }
         .id-card-back { transform: rotateY(180deg); }
+        .flipped .id-card-inner { transform: rotateY(180deg); }
     </style>
 </head>
 <body class="text-slate-100 min-h-screen flex flex-col justify-between">
 
     <script>
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzPUapd56dzeyLiKQOchq3ubHES1cy3gTYYaWzzjtpF-gNig4ItYsk0Q_86xJF_cSUs/exec";
+        // PASTE YOUR GOOGLE DEPLOYED WEB APP EXECUTION LINK BELOW
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyEPcd7PHB5pvh56h_uyi9d0S12R5mMsRMDMOYNiYKDIje27zGw_5rtT3RMJX6wtvUZ/exec";
     </script>
 
     <header class="border-b border-slate-900 bg-slate-950/90 backdrop-blur-md sticky top-0 z-50 shadow-2xl">
@@ -42,11 +44,10 @@
                 <span class="bg-slate-900 border border-slate-800 text-[10px] text-slate-400 font-mono font-bold px-3 py-1 rounded-xl">Registry Stream Metrics: <span id="countReg" class="text-emerald-400">0</span> Units</span>
             </div>
         </div>
-        
         <div class="bg-indigo-950/40 border-t border-slate-900 py-2 px-4">
             <div class="max-w-7xl mx-auto flex items-center gap-3">
                 <span class="bg-indigo-600 text-white font-black text-[9px] uppercase tracking-widest px-2 py-0.5 rounded-md shrink-0"><i class="fa-solid fa-bullhorn mr-1"></i> NOTICE</span>
-                <marquee id="topNoticeBoard" class="text-xs text-indigo-200 font-semibold tracking-wide">Initializing engine...</marquee>
+                <marquee id="topNoticeBoard" class="text-xs text-indigo-200 font-semibold tracking-wide">Initializing cloud storage modules...</marquee>
             </div>
         </div>
     </header>
@@ -77,7 +78,7 @@
                     <input type="text" id="cfg_notice_board" required placeholder="Notice Ticker Text" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none focus:border-red-500">
                     
                     <div class="bg-slate-950 border border-slate-800 rounded-xl p-2.5 space-y-2">
-                        <label class="block text-[10px] font-mono uppercase text-slate-500">Dynamic Institution Logo Asset</label>
+                        <label class="block text-[10px] font-mono uppercase text-slate-500">Institution Logo Asset</label>
                         <div class="flex items-center gap-2">
                             <label class="cursor-pointer bg-slate-900 border border-slate-800 hover:bg-slate-800 text-center rounded-lg py-1.5 px-3 text-xs font-bold block transition-all flex-grow">
                                 <i class="fa-solid fa-cloud-arrow-up text-red-400 mr-1"></i> Choose Logo File
@@ -111,11 +112,9 @@
                     <div class="grid grid-cols-3 gap-2">
                         <input type="text" id="reg_class" required placeholder="Class" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none">
                         <input type="text" id="reg_section" required placeholder="Sec" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none">
-                        
                         <select id="reg_extra" class="text-xs bg-slate-950 border border-slate-800 rounded-xl p-2 text-white outline-none">
                             <option value="Paid">Paid</option>
                             <option value="Unpaid">Unpaid</option>
-                            <option value="Faculty Staff">Faculty</option>
                         </select>
                     </div>
                     <div class="flex gap-2 pt-1">
@@ -176,7 +175,7 @@
                         <div class="flex items-center gap-3 pt-1">
                             <img id="avatarDataPreview" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100" class="w-10 h-10 rounded-full object-cover border border-slate-800">
                             <input type="hidden" id="card_avatar_base64">
-                            <span class="text-[10px] font-mono text-slate-500 truncate" id="avatarStatusLabel">No fresh asset cached.</span>
+                            <span class="text-[10px] font-mono text-slate-500 truncate" id="avatarStatusLabel">No asset cached.</span>
                         </div>
                     </div>
 
@@ -217,7 +216,7 @@
 
     <footer class="border-t border-slate-900 bg-slate-950/90 py-4 text-center text-xs text-slate-500 font-semibold tracking-wider">
         <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-            <p>Unified Node Core v11.0</p>
+            <p>Unified Node Core v11.5</p>
             <p id="bottomDynamicFooter" class="tracking-widest text-slate-400 font-black uppercase">---</p>
         </div>
     </footer>
@@ -242,7 +241,7 @@
                 });
                 return await response.json();
             } catch(e) {
-                return { success: false, message: "Handshake operational failure." };
+                return { success: false, message: "Handshake matrix core broken." };
             }
         }
 
@@ -270,11 +269,7 @@
         function switchViewTab(tab) {
             state.activeTab = tab;
             const container = document.getElementById('cardsGridContainer');
-            if (tab === 'cards' || tab === 'schedules') {
-                container.className = "grid grid-cols-1 md:grid-cols-2 gap-6 w-full";
-            } else {
-                container.className = "grid grid-cols-1 gap-4 w-full";
-            }
+            container.className = (tab === 'cards' || tab === 'schedules') ? "grid grid-cols-1 md:grid-cols-2 gap-6 w-full" : "grid grid-cols-1 gap-4 w-full";
             applyInterfaceRendering();
         }
 
@@ -315,12 +310,9 @@
         async function commitSchoolConfig(e) {
             e.preventDefault(); toggleOverlayLoader(true);
             let payload = {
-                school_name: document.getElementById('cfg_school_name').value,
-                city_name: document.getElementById('cfg_city_name').value,
-                contact_no: document.getElementById('cfg_contact_no').value,
-                notice_board: document.getElementById('cfg_notice_board').value,
-                school_logo: document.getElementById('cfg_logo_base64').value,
-                footer_text: document.getElementById('cfg_footer_text').value
+                school_name: document.getElementById('cfg_school_name').value, city_name: document.getElementById('cfg_city_name').value,
+                contact_no: document.getElementById('cfg_contact_no').value, notice_board: document.getElementById('cfg_notice_board').value,
+                school_logo: document.getElementById('cfg_logo_base64').value, footer_text: document.getElementById('cfg_footer_text').value
             };
             let res = await cloudFetchEngine("saveSchoolConfig", payload);
             triggerToast(res.message, "text-red-400");
@@ -343,7 +335,7 @@
                 reader.onload = function(e) {
                     document.getElementById('avatarDataPreview').src = e.target.result;
                     document.getElementById('card_avatar_base64').value = e.target.result;
-                    document.getElementById('avatarStatusLabel').innerText = "Asset loaded.";
+                    document.getElementById('avatarStatusLabel').innerText = "Asset locked.";
                 };
                 reader.readAsDataURL(input.files[0]);
             }
@@ -372,7 +364,6 @@
             const dataUrl = canvas.toDataURL('image/jpeg');
             document.getElementById('avatarDataPreview').src = dataUrl;
             document.getElementById('card_avatar_base64').value = dataUrl;
-            document.getElementById('avatarStatusLabel').innerText = "Snapshot captured.";
             if(state.localVideoStream) { state.localVideoStream.getTracks().forEach(t => t.stop()); }
             document.getElementById('cameraDeckWrapper').classList.add('hidden');
         }
@@ -417,9 +408,34 @@
             clearCardFormState(); setTimeout(refreshMasterLedger, 500);
         }
 
-        function toggleCardFlip(btn) {
-            const wrapper = btn.closest('.id-card-wrapper');
-            wrapper.classList.toggle('flipped');
+        // DIRECT JS FLIP FIX (BYPASSING OVERLAPPING LAYER COLLISION)
+        function toggleCardFlip(cardId) {
+            const el = document.getElementById(`wrap-${cardId}`);
+            if(el) el.classList.toggle('flipped');
+        }
+
+        // DEEP IMAGE EXTRACTION NODE ENGINE FOR ALL MOBILE PHONES
+        function downloadCardSideAsPNG(cardId, sideClass, fileName) {
+            const wrapper = document.getElementById(`wrap-${cardId}`);
+            const targetSide = wrapper.querySelector(`.${sideClass}`);
+            
+            // Generate snapshot rendering via html2canvas engine
+            html2canvas(targetSide, {
+                useCORS: true,
+                allowTaint: true,
+                backgroundColor: "#020617",
+                scale: 3 // High definition resolution scaling
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = `${fileName}.png`;
+                link.href = canvas.toDataURL('image/png');
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                triggerToast("Download triggered!", "text-emerald-400");
+            }).catch(err => {
+                triggerToast("Download initialization error.", "text-rose-400");
+            });
         }
 
         function applyInterfaceRendering() {
@@ -440,7 +456,6 @@
                         let card = document.createElement('div');
                         card.className = `glow-card bg-slate-900/30 border border-slate-800/80 p-5 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 w-full`;
                         
-                        // RESTORED FEE BADGE OR FACULTY TITLE IN ROSTER CARD LIST
                         let statusBadge = isStudent 
                             ? `<span class="text-[10px] font-bold px-2 py-0.5 rounded-md ${item.fee_status==='Paid'?'bg-emerald-950 text-emerald-400 border border-emerald-800':'bg-rose-950 text-rose-400 border border-rose-800'}"><i class="fa-solid fa-money-check-dollar mr-1"></i>${item.fee_status}</span>`
                             : `<span class="text-[10px] font-bold px-2 py-0.5 rounded-md bg-blue-950 text-blue-400 border border-blue-800"><i class="fa-solid fa-user-tie mr-1"></i>${item.extra_field || 'Faculty'}</span>`;
@@ -493,8 +508,6 @@
                 state.cards.forEach(item => {
                     if (item.name.toLowerCase().includes(search) || item.card_id.toLowerCase().includes(search)) {
                         let qrSrc = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + encodeURIComponent(item.user_id);
-                        
-                        // Sync real-time dynamic fee or profile status directly inside card compiled data structure
                         let matchedObject = item.role === 'student' ? state.students.find(s=>s.id===item.user_id) : state.teachers.find(t=>t.id===item.user_id);
                         let subInfoValue = matchedObject ? (item.role==='student' ? `Fee: ${matchedObject.fee_status}` : (matchedObject.extra_field || 'Faculty')) : 'Active';
                         let classValue = matchedObject ? `${matchedObject.class}-${matchedObject.section}` : 'N/A';
@@ -507,71 +520,69 @@
                             <div class="id-card-wrapper" id="wrap-${item.card_id}">
                                 <div class="id-card-inner">
                                     
-                                    <div class="id-card-front bg-slate-950 border-2 border-slate-800 flex flex-col justify-between p-5 relative">
+                                    <div class="id-card-front bg-slate-950 border-2 border-slate-800 flex flex-col justify-between p-5 text-left">
                                         <div class="flex items-center gap-3 border-b border-slate-900 pb-3">
                                             <img src="${logo}" class="w-10 h-10 rounded-xl object-cover border border-slate-800 bg-slate-900">
-                                            <div class="text-left">
-                                                <h5 class="text-[11px] font-black tracking-tight text-white uppercase truncate max-w-[180px]">${sName}</h5>
+                                            <div>
+                                                <h5 class="text-[11px] font-black tracking-tight text-white uppercase truncate max-w-[170px]">${sName}</h5>
                                                 <p class="text-[9px] text-slate-500 font-bold">${sCity}</p>
                                             </div>
                                         </div>
-
                                         <div class="flex flex-col items-center text-center my-2 space-y-2">
                                             <div class="relative">
-                                                <img src="${item.avatar}" class="w-24 h-24 rounded-2xl object-cover border-2 ${item.role==='student'?'border-emerald-500':'border-blue-500'} shadow-2xl bg-slate-900">
-                                                <span class="absolute -bottom-2 left-1/2 transform -translate-x-1/2 text-[9px] font-black uppercase tracking-widest ${item.role==='student'?'bg-emerald-600':'bg-blue-600'} text-white px-2 py-0.5 rounded-full shadow-lg border border-slate-950">${item.role}</span>
+                                                <img src="${item.avatar}" class="w-24 h-24 rounded-2xl object-cover border-2 ${item.role==='student'?'border-emerald-500':'border-blue-500'} bg-slate-900">
+                                                <span class="absolute -bottom-2 left-1/2 transform -translate-x-1/2 text-[9px] font-black uppercase tracking-widest ${item.role==='student'?'bg-emerald-600':'bg-blue-600'} text-white px-2 py-0.5 rounded-full border border-slate-950 shadow-md">${item.role}</span>
                                             </div>
                                             <div class="pt-1">
                                                 <h4 class="text-sm font-black text-white">${item.name}</h4>
-                                                <p class="text-[10px] text-slate-500 font-mono tracking-tight mt-0.5">ID: ${item.user_id}</p>
+                                                <p class="text-[10px] text-slate-500 font-mono tracking-tight">ID: ${item.user_id}</p>
                                             </div>
                                         </div>
-
-                                        <div class="bg-slate-900/60 border border-slate-900 rounded-xl p-3 space-y-1.5 text-left text-xs">
+                                        <div class="bg-slate-900/60 border border-slate-900 rounded-xl p-3 space-y-1.5 text-xs">
                                             <div class="flex justify-between"><span class="text-slate-500 font-bold">Class / Dept:</span><span class="text-white font-extrabold">${classValue}</span></div>
-                                            <div class="flex justify-between"><span class="text-slate-500 font-bold">Identity Code:</span><span class="text-slate-300 font-mono text-[11px]">${cnicValue}</span></div>
+                                            <div class="flex justify-between"><span class="text-slate-500 font-bold">Identity Code:</span><span class="text-slate-300 font-mono">${cnicValue}</span></div>
                                             <div class="flex justify-between"><span class="text-slate-500 font-bold">Contact Gateway:</span><span class="text-slate-300">${contactValue}</span></div>
                                             <div class="flex justify-between"><span class="text-slate-500 font-bold">Status:</span><span class="${subInfoValue.includes('Unpaid')?'text-rose-400':'text-emerald-400'} font-black">${subInfoValue}</span></div>
                                         </div>
-
                                         <div class="flex items-center justify-between border-t border-slate-900 pt-2.5 text-[9px] font-mono text-slate-500">
-                                            <span>PASS TOKEN: ${item.card_id}</span>
-                                            <span class="text-indigo-400 font-bold">AUTHORIZED BADGE</span>
+                                            <span>TOKEN: ${item.card_id}</span>
+                                            <span class="text-indigo-400 font-bold">SECURE PASS</span>
                                         </div>
                                     </div>
 
-                                    <div class="id-card-back bg-slate-950 border-2 border-slate-800 flex flex-col justify-between p-6 text-center relative">
-                                        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
-                                        
+                                    <div class="id-card-back bg-slate-950 border-2 border-slate-800 flex flex-col justify-between p-6 text-center">
                                         <div class="flex flex-col items-center justify-center my-auto space-y-4">
-                                            <img src="${logo}" class="w-16 h-16 rounded-2xl object-cover border border-slate-800 shadow-xl bg-slate-900">
+                                            <img src="${logo}" class="w-16 h-16 rounded-2xl object-cover border border-slate-800 bg-slate-900">
                                             <div>
                                                 <h4 class="text-xs font-black text-white tracking-widest uppercase">${sName}</h4>
-                                                <p class="text-[9px] text-slate-400 mt-0.5 font-bold"><i class="fa-solid fa-phone text-sky-400 mr-1"></i>${sContact}</p>
+                                                <p class="text-[9px] text-slate-400 font-bold"><i class="fa-solid fa-phone text-sky-400 mr-1"></i>${sContact}</p>
                                             </div>
-                                            
-                                            <div class="bg-white p-2 rounded-2xl shadow-2xl inline-block border-4 border-slate-900">
+                                            <div class="bg-white p-1.5 rounded-xl inline-block border border-slate-800">
                                                 <img src="${qrSrc}" class="w-20 h-20">
                                             </div>
                                         </div>
-
-                                        <div class="space-y-2 text-left border-t border-slate-900 pt-4">
-                                            <p class="text-[9px] text-slate-500 leading-relaxed font-medium">1. This badge card asset remains the sole property of the issuing institution. If found, return immediately.</p>
-                                            <p class="text-[9px] text-slate-500 leading-relaxed font-medium">2. Misuse, unauthorized replication, or alteration of this token will trigger security network suspension protocols.</p>
+                                        <div class="space-y-1.5 text-left border-t border-slate-900 pt-3">
+                                            <p class="text-[8px] text-slate-500 leading-relaxed font-medium">1. Loss of this pass must be reported instantly to the control desk row.</p>
+                                            <p class="text-[8px] text-slate-500 leading-relaxed font-medium">2. Card validation requires active digital status profiling ledger tracking.</p>
                                         </div>
-
-                                        <p class="text-[8px] font-black tracking-widest text-slate-600 uppercase mt-2 border-t border-slate-900/50 pt-2">POWERED BY QUANTUM HUB CONSOLE</p>
+                                        <p class="text-[8px] font-black tracking-widest text-slate-600 uppercase mt-2 pt-2 border-t border-slate-900/40">HNK & SHEEKAN STUDIO</p>
                                     </div>
 
                                 </div>
                             </div>
                             
-                            <div class="flex items-center gap-1.5 bg-slate-950 border border-slate-800 p-1.5 rounded-xl w-[340px] justify-between">
-                                <button onclick="toggleCardFlip(this)" class="py-1 px-3 rounded-lg bg-slate-900 border border-slate-800 text-[10px] font-bold text-indigo-400 flex items-center gap-1"><i class="fa-solid fa-arrows-rotate"></i> Flip Card</button>
-                                <div class="flex gap-1">
-                                    <button onclick="executeDirectSocialShare('${item.card_id}', 'whatsapp')" class="w-7 h-7 rounded-lg bg-slate-900 text-emerald-500 hover:bg-slate-800 flex items-center justify-center text-xs"><i class="fa-brands fa-whatsapp"></i></button>
-                                    <button onclick="executeDirectSocialShare('${item.card_id}', 'gmail')" class="w-7 h-7 rounded-lg bg-slate-900 text-rose-400 hover:bg-slate-800 flex items-center justify-center text-xs"><i class="fa-regular fa-envelope"></i></button>
-                                    <button onclick="triggerCardDelete('${item.card_id}')" class="w-7 h-7 rounded-lg bg-slate-950 border border-rose-950 text-rose-400 flex items-center justify-center text-xs"><i class="fa-solid fa-trash-can"></i></button>
+                            <div class="bg-slate-950 border border-slate-800 p-1.5 rounded-xl w-[320px] space-y-2">
+                                <div class="flex justify-between items-center gap-2">
+                                    <button onclick="toggleCardFlip('${item.card_id}')" class="py-1 px-3 rounded-lg bg-slate-900 border border-slate-800 text-[10px] font-bold text-indigo-400 flex items-center gap-1 shrink-0"><i class="fa-solid fa-arrows-rotate"></i> Flip Pass</button>
+                                    <div class="flex gap-1">
+                                        <button onclick="executeDirectSocialShare('${item.card_id}', 'whatsapp')" class="w-7 h-7 rounded-lg bg-slate-900 text-emerald-500 flex items-center justify-center text-xs"><i class="fa-brands fa-whatsapp"></i></button>
+                                        <button onclick="executeDirectSocialShare('${item.card_id}', 'gmail')" class="w-7 h-7 rounded-lg bg-slate-900 text-rose-400 flex items-center justify-center text-xs"><i class="fa-regular fa-envelope"></i></button>
+                                        <button onclick="triggerCardDelete('${item.card_id}')" class="w-7 h-7 rounded-lg bg-slate-900 text-slate-500 hover:text-rose-400 flex items-center justify-center text-xs"><i class="fa-solid fa-trash-can"></i></button>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-1.5 border-t border-slate-900 pt-1.5">
+                                    <button onclick="downloadCardSideAsPNG('${item.card_id}', 'id-card-front', 'Front_${item.name.replace(/\\s+/g, '_')}')" class="py-1 bg-slate-900 hover:bg-slate-800 text-[10px] text-slate-300 font-bold rounded-md flex items-center justify-center gap-1"><i class="fa-solid fa-download text-sky-400"></i> Front PNG</button>
+                                    <button onclick="downloadCardSideAsPNG('${item.card_id}', 'id-card-back', 'Back_${item.name.replace(/\\s+/g, '_')}')" class="py-1 bg-slate-900 hover:bg-slate-800 text-[10px] text-slate-300 font-bold rounded-md flex items-center justify-center gap-1"><i class="fa-solid fa-download text-purple-400"></i> Back PNG</button>
                                 </div>
                             </div>`;
                         container.appendChild(cardWrapper);
@@ -601,11 +612,11 @@
 
         function executeDirectSocialShare(cardId, type) {
             let match = state.cards.find(x => x.card_id === cardId); if(!match) return;
-            let message = `Hello ${match.name}, Your Dynamic Double-Sided Digital Identity Card Pass Asset has been fully updated and assigned on the cloud core servers under tracking token ${match.card_id}.`;
+            let message = `Hello ${match.name}, Your Dynamic Double-Sided Identity Pass Card Asset has been processed and hosted under tracking token ${match.card_id}.`;
             if(type === 'whatsapp') {
                 window.open(`https://api.whatsapp.com/send?phone=${match.destination.replace(/[^0-9]/g, '')}&text=${encodeURIComponent(message)}`, '_blank');
             } else if(type === 'gmail') {
-                window.open(`mailto:${match.destination}?subject=Security ID Asset Deployed&body=${encodeURIComponent(message)}`, '_blank');
+                window.open(`mailto:${match.destination}?subject=Security Identity Token&body=${encodeURIComponent(message)}`, '_blank');
             }
         }
 
