@@ -13,7 +13,7 @@
         .glow-card { transition: all 0.3s ease; }
         .glow-card:hover { transform: translateY(-2px); border-color: rgba(99, 102, 241, 0.3); }
         
-        /* FIX: Ultimate Double Sided Flip Card 3D Engine */
+        /* Ultimate Double Sided Flip Card 3D Engine */
         .id-card-wrapper { perspective: 1200px; width: 320px; height: 460px; }
         .id-card-inner { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
         .id-card-front, .id-card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 1.25rem; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); }
@@ -26,7 +26,7 @@
 <body class="text-slate-100 min-h-screen flex flex-col justify-between">
 
     <script>
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyEPcd7PHB5pvh56h_uyi9d0S12R5mMsRMDMOYNiYKDIje27zGw_5rtT3RMJX6wtvUZ/exec";
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx6OSzyntoj7b0HhyognqXN5F_dnbsZ6gWgw9QFE7rjb1_HC1Ju-9LNHpDdzxpVygJS/exec";
     </script>
 
     <header class="border-b border-slate-900 bg-slate-950/90 backdrop-blur-md sticky top-0 z-50 shadow-2xl">
@@ -121,21 +121,6 @@
                         <div class="grid grid-cols-2 gap-2">
                             <input type="number" id="reg_fee_paid" oninput="calculateFormBalance()" placeholder="Paid Amount" class="w-full text-xs bg-slate-900 border border-slate-800 rounded-lg p-2 text-white outline-none">
                             <input type="number" id="reg_fee_balance" readonly placeholder="Remaining Due" class="w-full text-xs bg-slate-900 border border-slate-800 rounded-lg p-2 bg-slate-950/40 text-rose-400 font-bold font-mono outline-none">
-                        </div>
-                    </div>
-
-                    <div id="facultyPeriodAddons" class="bg-slate-950 border border-slate-800 rounded-xl p-3 space-y-2 hidden">
-                        <p class="text-[10px] font-mono tracking-widest text-blue-500 uppercase">Period Assignment Matrix</p>
-                        <div class="grid grid-cols-3 gap-1.5">
-                            <input type="text" id="reg_teacher_subject" placeholder="Subject" class="w-full text-xs bg-slate-900 border border-slate-800 rounded-lg p-2 text-white outline-none">
-                            <input type="text" id="reg_teacher_slot" placeholder="e.g. 09:00 AM" class="w-full text-xs bg-slate-900 border border-slate-800 rounded-lg p-2 text-white outline-none">
-                            <select id="reg_teacher_period" class="w-full text-xs bg-slate-900 border border-slate-800 rounded-lg p-2 text-white outline-none">
-                                <option value="1st Period">1st Per.</option>
-                                <option value="2nd Period">2nd Per.</option>
-                                <option value="3rd Period">3rd Per.</option>
-                                <option value="4th Period">4th Per.</option>
-                                <option value="5th Period">5th Per.</option>
-                            </select>
                         </div>
                     </div>
 
@@ -287,20 +272,17 @@
             state.registryCurrentRole = r;
             const extraEl = document.getElementById('reg_extra');
             const feeAddon = document.getElementById('feeDynamicAddons');
-            const facAddon = document.getElementById('facultyPeriodAddons');
             
             if(r === 'student') {
                 document.getElementById('roleBtnStudent').className = "py-1.5 text-xs font-bold rounded bg-emerald-600 text-white";
                 document.getElementById('roleBtnTeacher').className = "py-1.5 text-xs font-bold rounded text-slate-500";
                 extraEl.innerHTML = '<option value="Paid">Paid</option><option value="Unpaid">Unpaid</option><option value="Balance">Balance</option>';
                 feeAddon.classList.remove('hidden');
-                facAddon.classList.add('hidden');
             } else {
                 document.getElementById('roleBtnStudent').className = "py-1.5 text-xs font-bold rounded text-slate-500";
                 document.getElementById('roleBtnTeacher').className = "py-1.5 text-xs font-bold rounded bg-blue-600 text-white";
                 extraEl.innerHTML = '<option value="Faculty Staff">Faculty</option><option value="Management Head">Head Faculty</option>';
                 feeAddon.classList.add('hidden');
-                facAddon.classList.remove('hidden');
             }
         }
 
@@ -369,10 +351,9 @@
                             </div>
                         ` : `
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1 text-xs text-slate-400">
-                                <p><span class="text-slate-600 font-bold">Assigned Period:</span> <span class="text-blue-400 font-medium">${item.teacher_period || 'None'}</span></p>
-                                <p><span class="text-slate-600 font-bold">Subject / Slot:</span> ${item.teacher_subject || 'N/A'} (${item.teacher_slot || 'N/A'})</p>
                                 <p><span class="text-slate-600 font-bold">Contact:</span> ${item.contact}</p>
                                 <p class="truncate"><span class="text-slate-600 font-bold">CNIC Token:</span> ${item.cnic}</p>
+                                <p class="truncate"><span class="text-slate-600 font-bold">Address:</span> ${item.address}</p>
                             </div>
                         `;
 
@@ -404,7 +385,7 @@
                         
                         let subInfoValue = 'Active';
                         if(matchedObject) {
-                            subInfoValue = item.role==='student' ? `Fee: ${matchedObject.fee_status}` : `${matchedObject.teacher_period || 'Faculty'}`;
+                            subInfoValue = item.role==='student' ? `Fee: ${matchedObject.fee_status}` : `${matchedObject.extra_field || 'Faculty'}`;
                         }
                         let classValue = matchedObject ? `${matchedObject.class}-${matchedObject.section}` : 'N/A';
 
@@ -519,10 +500,7 @@
                 address: document.getElementById('reg_address').value, class_assigned: document.getElementById('reg_class').value,
                 section_assigned: document.getElementById('reg_section').value, extra_field: document.getElementById('reg_extra').value,
                 fee_month: document.getElementById('reg_fee_month').value, fee_total: document.getElementById('reg_fee_total').value,
-                fee_paid: document.getElementById('reg_fee_paid').value, fee_balance: document.getElementById('reg_fee_balance').value,
-                teacher_subject: document.getElementById('reg_teacher_subject').value,
-                teacher_slot: document.getElementById('reg_teacher_slot').value,
-                teacher_period: document.getElementById('reg_teacher_period').value
+                fee_paid: document.getElementById('reg_fee_paid').value, fee_balance: document.getElementById('reg_fee_balance').value
             };
             let response = await cloudFetchEngine("saveRegistry", payload);
             triggerToast(response.message, response.success ? "text-emerald-400" : "text-rose-400");
@@ -548,10 +526,6 @@
                 document.getElementById('reg_fee_total').value = match.fee_total || 0;
                 document.getElementById('reg_fee_paid').value = match.fee_paid || 0;
                 document.getElementById('reg_fee_balance').value = match.fee_balance || 0;
-            } else {
-                document.getElementById('reg_teacher_subject').value = match.teacher_subject || '';
-                document.getElementById('reg_teacher_slot').value = match.teacher_slot || '';
-                document.getElementById('reg_teacher_period').value = match.teacher_period || '1st Period';
             }
             document.getElementById('regFormTitle').innerHTML = `<i class="fa-solid fa-user-pen"></i> Overhaul Block: ${match.id}`; 
             document.getElementById('regSubmitBtn').innerText = "Override Roster Row";
