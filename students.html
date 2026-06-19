@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Records Matrix | Console</title>
+    <title>Enterprise Data Stream Viewer</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
@@ -12,28 +12,29 @@
             font-family: 'Plus Jakarta Sans', sans-serif; 
             background-color: #020617; 
         }
-        /* Custom Scrollbar for heavy tables */
-        ::-webkit-scrollbar { height: 6px; width: 6px; }
+        /* Custom Custom Scrollbar for heavy data loads */
+        ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #020617; }
         ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #334155; }
     </style>
 </head>
 <body class="text-slate-100 min-h-screen flex flex-col justify-between">
 
     <script>
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx6OSzyntoj7b0HhyognXN5F_dnbsZ6gWgw9QFE7rjb1_HC1Ju-9LNHpDdzxpVygJS/exec";
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx6OSzyntoj7b0HhyognqXN5F_dnbsZ6gWgw9QFE7rjb1_HC1Ju-9LNHpDdzxpVygJS/exec";
     </script>
 
     <header class="border-b border-slate-900 bg-slate-950/80 backdrop-blur-md sticky top-0 z-50 p-5 shadow-xl">
-        <div class="max-w-[96%] mx-auto flex flex-col sm:flex-row gap-4 items-center justify-between">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row gap-4 items-center justify-between">
             <div class="flex items-center gap-3">
                 <div class="w-3.5 h-3.5 rounded-full bg-emerald-500 animate-pulse"></div>
                 <h1 class="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent uppercase">
-                    Student Ledger Matrix
+                    Student Ledger Stream Monitor
                 </h1>
             </div>
             <div class="flex items-center gap-3">
-                <button onclick="copyFilteredDataToClipboard()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm px-5 py-3 rounded-xl shadow-lg transition-all flex items-center gap-2">
+                <button onclick="copyFilteredDataToClipboard()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm px-5 py-3 rounded-xl shadow-lg shadow-emerald-950/40 transition-all flex items-center gap-2">
                     <i class="fa-solid fa-copy text-base"></i> Copy Filtered Sheet
                 </button>
                 <div id="masterStateLoader" class="w-10 h-10 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
@@ -43,68 +44,44 @@
 
     <div id="toastBox" class="fixed top-24 right-6 z-50 max-w-sm text-sm font-bold p-4 rounded-xl bg-slate-950 border border-slate-800 opacity-0 transition-all duration-300 transform translate-x-5 pointer-events-none shadow-2xl"></div>
 
-    <main class="max-w-[96%] w-full mx-auto p-4 md:p-6 space-y-6 flex-grow">
+    <main class="max-w-7xl w-full mx-auto p-4 md:p-6 space-y-6 flex-grow">
         
         <section class="bg-slate-900/60 border border-slate-800/80 p-5 rounded-2xl shadow-2xl space-y-4">
-            <div class="flex items-center gap-2 text-slate-400 font-bold text-base tracking-wider uppercase">
-                <i class="fa-solid fa-filter text-emerald-400"></i> Advanced Query Controls
+            <div class="flex items-center gap-2 text-slate-400 font-bold text-sm tracking-wider uppercase">
+                <i class="fa-solid fa-filter text-emerald-400"></i> Query Filter Optimization Hub
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-                <input type="text" id="fltName" oninput="executeDataPipeline()" placeholder="Search Name..." class="w-full text-lg bg-slate-950 border border-slate-800 rounded-xl p-3 text-white outline-none focus:border-emerald-500 transition-colors">
-                <input type="text" id="fltId" oninput="executeDataPipeline()" placeholder="Search ID..." class="w-full text-lg bg-slate-950 border border-slate-800 rounded-xl p-3 text-white outline-none focus:border-emerald-500 transition-colors">
-                <input type="text" id="fltClass" oninput="executeDataPipeline()" placeholder="Class" class="w-full text-lg bg-slate-950 border border-slate-800 rounded-xl p-3 text-white outline-none focus:border-emerald-500 transition-colors">
-                <input type="text" id="fltSec" oninput="executeDataPipeline()" placeholder="Section" class="w-full text-lg bg-slate-950 border border-slate-800 rounded-xl p-3 text-white outline-none focus:border-emerald-500 transition-colors">
+                <input type="text" id="fltName" oninput="executeDataPipeline()" placeholder="Search Name..." class="w-full text-base bg-slate-950 border border-slate-800 rounded-xl p-3 text-white outline-none focus:border-emerald-500 transition-colors">
+                <input type="text" id="fltId" oninput="executeDataPipeline()" placeholder="Search ID..." class="w-full text-base bg-slate-950 border border-slate-800 rounded-xl p-3 text-white outline-none focus:border-emerald-500 transition-colors">
+                <input type="text" id="fltClass" oninput="executeDataPipeline()" placeholder="Class Node" class="w-full text-base bg-slate-950 border border-slate-800 rounded-xl p-3 text-white outline-none focus:border-emerald-500 transition-colors">
+                <input type="text" id="fltSec" oninput="executeDataPipeline()" placeholder="Section" class="w-full text-base bg-slate-950 border border-slate-800 rounded-xl p-3 text-white outline-none focus:border-emerald-500 transition-colors">
                 
-                <select id="fltStatus" onchange="executeDataPipeline()" class="w-full text-lg bg-slate-950 border border-slate-800 rounded-xl p-3 text-white outline-none focus:border-emerald-500 transition-colors">
+                <select id="fltStatus" onchange="executeDataPipeline()" class="w-full text-base bg-slate-950 border border-slate-800 rounded-xl p-3 text-white outline-none focus:border-emerald-500 transition-colors">
                     <option value="">All Flags</option>
                     <option value="Paid">Paid Only</option>
                     <option value="Unpaid">Unpaid Only</option>
                     <option value="Balance">With Balance</option>
                 </select>
 
-                <select id="fltMonth" onchange="executeDataPipeline()" class="w-full text-lg bg-slate-950 border border-slate-800 rounded-xl p-3 text-white outline-none focus:border-emerald-500 transition-colors">
+                <select id="fltMonth" onchange="executeDataPipeline()" class="w-full text-base bg-slate-950 border border-slate-800 rounded-xl p-3 text-white outline-none focus:border-emerald-500 transition-colors">
                     <option value="">All Months</option>
                     <option value="January">January</option><option value="February">February</option><option value="March">March</option><option value="April">April</option><option value="May">May</option><option value="June">June</option><option value="July">July</option><option value="August">August</option><option value="September">September</option><option value="October">October</option><option value="November">November</option><option value="December">December</option>
                 </select>
             </div>
-            <div class="flex justify-between items-center text-sm font-mono text-slate-500 pt-1">
-                <p>Matching Metrics: <span id="runtimeCount" class="text-emerald-400 font-bold text-lg">0</span> Active Records.</p>
-                <p>Large Screen Optimized Grid View</p>
+            <div class="flex justify-between items-center text-xs font-mono text-slate-500 pt-1">
+                <p>Live Metrics Matching: <span id="runtimeCount" class="text-emerald-400 font-bold text-sm">0</span> Records Fetched.</p>
+                <p class="hidden sm:block">Tab Separated Export Ready Buffer Mode</p>
             </div>
         </section>
 
-        <section class="bg-slate-900/40 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden">
-            <div class="overflow-x-auto w-full">
-                <table class="w-full text-left border-collapse min-w-[1000px]">
-                    <thead>
-                        <tr class="bg-slate-950 border-b border-slate-800 text-slate-400 font-extrabold uppercase text-xs tracking-wider font-mono">
-                            <th class="p-4 text-center">Status Flag</th>
-                            <th class="p-4">Reg ID</th>
-                            <th class="p-4">Student Name</th>
-                            <th class="p-4">Father Name</th>
-                            <th class="p-4 text-center">Class / Sec</th>
-                            <th class="p-4">Contact</th>
-                            <th class="p-4">Address</th>
-                            <th class="p-4 text-center">Month</th>
-                            <th class="p-4 text-right">Total</th>
-                            <th class="p-4 text-right">Paid</th>
-                            <th class="p-4 text-right">Balance</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tableDataRowMount" class="divide-y divide-slate-950 font-medium text-base text-slate-200">
-                        </tbody>
-                </table>
-            </div>
-            <div id="noDataFallBackMsg" class="hidden text-center py-20 text-slate-500 font-mono text-lg border-t border-slate-950">
-                No synchronized datasets match query criteria selectors.
-            </div>
-        </section>
+        <section id="masterRosterOutputDeck" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+            </section>
     </main>
 
     <footer class="border-t border-slate-900 bg-slate-950/90 py-5 text-center text-sm text-slate-500 font-bold tracking-wider px-4">
-        <div class="max-w-[96%] mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
-            <p>Data Stream Terminal Table Engine v15.0</p>
-            <p class="tracking-widest text-emerald-400 font-black uppercase text-sm">A PROJECT BY HNK & SHEEKAN TECH AND STUDIO</p>
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+            <p>Data Stream Terminal Core Engine v14.2</p>
+            <p class="tracking-widest text-emerald-400 font-black uppercase text-xs">A PROJECT BY HNK & SHEEKAN TECH AND STUDIO</p>
         </div>
     </footer>
 
@@ -114,7 +91,6 @@
 
         document.addEventListener('DOMContentLoaded', bootstrapDataStream);
 
-        // CORS issues are handled by standard JSONP/Fetch configs in modern Apps Script deployment setup
         function bootstrapDataStream() {
             fetch(GOOGLE_SCRIPT_URL)
                 .then(res => res.json())
@@ -130,9 +106,8 @@
         }
 
         function executeDataPipeline() {
-            const tbody = document.getElementById('tableDataRowMount');
-            const fallback = document.getElementById('noDataFallBackMsg');
-            tbody.innerHTML = "";
+            const container = document.getElementById('masterRosterOutputDeck');
+            container.innerHTML = "";
 
             const queryName = document.getElementById('fltName').value.toLowerCase();
             const queryId = document.getElementById('fltId').value.toLowerCase();
@@ -154,54 +129,66 @@
 
             document.getElementById('runtimeCount').innerText = currentlyFilteredData.length;
 
-            if(currentlyFilteredData.length === 0) {
-                fallback.classList.remove('hidden');
-                return;
-            } else {
-                fallback.classList.add('hidden');
-            }
-
             currentlyFilteredData.forEach(st => {
                 let statusBadgeStyle = "";
                 if(st.fee_status === 'Paid') {
-                    statusBadgeStyle = "bg-emerald-950 text-emerald-400 border border-emerald-500/40";
+                    statusBadgeStyle = "bg-emerald-950/80 text-emerald-400 border-2 border-emerald-500 shadow-lg shadow-emerald-950/60";
                 } else if(st.fee_status === 'Balance') {
-                    statusBadgeStyle = "bg-amber-950 text-amber-400 border border-amber-500/40";
+                    statusBadgeStyle = "bg-amber-950/80 text-amber-400 border-2 border-amber-500 shadow-lg shadow-amber-950/60";
                 } else {
-                    statusBadgeStyle = "bg-rose-950 text-rose-400 border border-rose-500/40";
+                    statusBadgeStyle = "bg-rose-950/80 text-rose-400 border-2 border-rose-500 shadow-lg shadow-rose-950/60";
                 }
 
-                let row = document.createElement('tr');
-                row.className = "hover:bg-slate-900/60 transition-colors";
-                row.innerHTML = `
-                    <td class="p-4 text-center whitespace-nowrap">
-                        <span class="text-xs px-3 py-1.5 rounded-xl font-extrabold uppercase tracking-wider block ${statusBadgeStyle}">
-                            ${st.fee_status}
+                let displayBlock = document.createElement('div');
+                displayBlock.className = "bg-slate-900/40 border border-slate-800 p-6 rounded-2xl flex flex-col justify-between gap-5 transition-all duration-200 hover:border-slate-700/80 shadow-xl";
+                displayBlock.innerHTML = `
+                    <div class="flex items-start justify-between border-b border-slate-950 pb-4 gap-2">
+                        <div class="space-y-1">
+                            <h2 class="text-xl font-extrabold text-white tracking-wide">${st.name}</h2>
+                            <p class="text-xs text-indigo-400 font-mono font-bold">REGISTRATION TOKEN: ${st.id}</p>
+                        </div>
+                        <span class="text-xs px-3 py-1 rounded-lg font-mono font-black bg-slate-950 border border-slate-800 shrink-0 text-slate-300">
+                            ${st.class}-${st.section}
                         </span>
-                    </td>
-                    <td class="p-4 font-mono text-sm text-indigo-400 font-bold whitespace-nowrap">${st.id}</td>
-                    <td class="p-4 font-bold text-white text-lg whitespace-nowrap">${st.name}</td>
-                    <td class="p-4 text-slate-300 whitespace-nowrap">${st.son_of}</td>
-                    <td class="p-4 text-center whitespace-nowrap">
-                        <span class="bg-slate-950 px-2.5 py-1 rounded-lg border border-slate-800 text-sm font-mono font-bold text-slate-300">${st.class}-${st.section}</span>
-                    </td>
-                    <td class="p-4 text-slate-300 font-mono text-sm whitespace-nowrap">${st.contact}</td>
-                    <td class="p-4 text-slate-400 max-w-xs truncate" title="${st.address}">${st.address}</td>
-                    <td class="p-4 text-center font-bold text-indigo-300 whitespace-nowrap">${st.fee_month || 'N/A'}</td>
-                    <td class="p-4 text-right font-mono text-slate-300 whitespace-nowrap">Rs. ${st.fee_total || 0}</td>
-                    <td class="p-4 text-right font-mono text-emerald-400 font-bold whitespace-nowrap">Rs. ${st.fee_paid || 0}</td>
-                    <td class="p-4 text-right font-mono text-rose-400 font-bold whitespace-nowrap">Rs. ${st.fee_balance || 0}</td>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3 text-sm text-slate-300 font-medium bg-slate-950/40 p-3.5 rounded-xl border border-slate-900">
+                        <p class="truncate"><span class="text-slate-600 font-bold block text-[11px] uppercase tracking-wider">Guardian Name</span> ${st.son_of}</p>
+                        <p><span class="text-slate-600 font-bold block text-[11px] uppercase tracking-wider">Contact Mapping</span> ${st.contact}</p>
+                        <p class="col-span-2 truncate border-t border-slate-900 pt-2"><span class="text-slate-600 font-bold block text-[11px] uppercase tracking-wider">Residence Address</span> ${st.address}</p>
+                    </div>
+
+                    <div class="flex justify-between items-center bg-slate-950 p-3 rounded-xl border border-slate-900">
+                        <div class="text-left">
+                            <span class="text-[10px] text-slate-500 font-mono block uppercase">Statement Cycle</span>
+                            <span class="text-base font-bold text-slate-300">${st.fee_month || 'N/A'}</span>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-[10px] text-slate-500 font-mono block uppercase">Remaining Due</span>
+                            <span class="text-lg font-black text-rose-400 font-mono">Rs. ${st.fee_balance || 0}</span>
+                        </div>
+                    </div>
+
+                    <div class="text-center py-2.5 px-4 rounded-xl text-base font-black uppercase tracking-widest ${statusBadgeStyle}">
+                        <i class="fa-solid fa-money-check-dollar mr-2"></i> STATUS ENGINE: ${st.fee_status}
+                    </div>
                 `;
-                tbody.appendChild(row);
+                container.appendChild(displayBlock);
             });
+
+            if(currentlyFilteredData.length === 0) {
+                container.innerHTML = `<div class="col-span-full text-center py-24 border-2 border-dashed border-slate-900 rounded-3xl text-sm font-mono text-slate-500">No synchronized student blocks correspond to criteria selectors.</div>`;
+            }
         }
 
+        // CLIPBOARD SHEET TRANSFER PIPELINE ENGINE
         function copyFilteredDataToClipboard() {
             if(currentlyFilteredData.length === 0) {
                 triggerToastAlert("No data matching filters to transfer.", "text-amber-400");
                 return;
             }
 
+            // Creating valid Tab Separated Value matrix format for direct Google Sheets standard parsing
             let stringHeaderBuffer = "Student ID\tFull Name\tFather Name\tClass\tSection\tContact\tAddress\tFee Status\tFee Month\tTotal Fee\tPaid Fee\tBalance Fee\n";
             let rowsMapString = currentlyFilteredData.map(st => 
                 `${st.id}\t${st.name}\t${st.son_of}\t${st.class}\t${st.section}\t${st.contact}\t${st.address}\t${st.fee_status}\t${st.fee_month}\t${st.fee_total}\t${st.fee_paid}\t${st.fee_balance}`
