@@ -3,12 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enterprise Control Vault | HNK & SHEEKAN</title>
+    <title>Dynamic Management Node v10.0 | HNK & SHEEKAN</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #030712; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #020617; }
+        .glow-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .glow-card:hover { transform: translateY(-2px); box-shadow: 0 12px 24px -10px rgba(99, 102, 241, 0.15); border-color: rgba(99, 102, 241, 0.3); }
     </style>
 </head>
 <body class="text-slate-100 min-h-screen flex flex-col justify-between">
@@ -17,215 +19,240 @@
         // ==========================================
         // PASTE YOUR GOOGLE WEB APP EXEC URL HERE
         // ==========================================
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwGE8jdnAQbKKWeYMUaoouyF1Cu9k6POefSrfzldy5Khgo49pVeeRlEh8k8b2xIup6M/exec";
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzusdtchLwWGe-3htUIEmklKQn4lrQhqofhkhAdMoHTbfT4j2XUZY8gaP-mgmPOniU-/exec";
     </script>
 
-    <header class="border-b border-slate-900 bg-slate-950/80 backdrop-blur-md sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row gap-4 items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-500 flex items-center justify-center text-white shadow-xl shadow-indigo-950/50">
-                    <i class="fa-solid fa-circle-nodes text-lg"></i>
-                </div>
-                <div class="text-center md:text-left">
-                    <h1 class="text-lg font-extrabold tracking-tight">Quantum Unified Management Core</h1>
-                    <p class="text-xs text-indigo-400 font-semibold tracking-wide">HNK & SHEEKAN TECH AND STUDIO</p>
+    <header class="border-b border-slate-900 bg-slate-950/90 backdrop-blur-md sticky top-0 z-50 shadow-2xl">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row gap-5 items-center justify-between">
+            <div class="flex items-center gap-4 text-center md:text-left flex-col sm:flex-row">
+                <img id="topSchoolLogo" src="https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=150" class="w-14 h-14 object-cover rounded-2xl border border-slate-800 shadow-md bg-slate-900">
+                <div>
+                    <h1 id="topSchoolName" class="text-xl font-black tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">HNK SCHOOLS SANAWAN</h1>
+                    <div class="flex flex-wrap justify-center md:justify-start gap-x-4 gap-y-1 text-xs text-slate-400 font-medium mt-0.5">
+                        <p><i class="fa-solid fa-location-dot text-emerald-500 mr-1"></i><span id="topCityName">Sanawan</span></p>
+                        <p><i class="fa-solid fa-phone text-sky-400 mr-1"></i><span id="topContactNo">+92 300 0000000</span></p>
+                    </div>
                 </div>
             </div>
-            <div class="flex flex-wrap justify-center gap-2 text-[11px] font-bold">
-                <span class="bg-slate-900 border border-slate-800 text-slate-400 px-2.5 py-1.5 rounded-xl">Reg: <span id="countReg" class="text-emerald-400">0</span></span>
-                <span class="bg-slate-900 border border-slate-800 text-slate-400 px-2.5 py-1.5 rounded-xl">Schedules: <span id="countSch" class="text-purple-400">0</span></span>
-                <span class="bg-slate-900 border border-slate-800 text-slate-400 px-2.5 py-1.5 rounded-xl">Invoices: <span id="countFee" class="text-orange-400">0</span></span>
-                <span class="bg-slate-900 border border-slate-800 text-slate-400 px-2.5 py-1.5 rounded-xl">Cards: <span id="countCard" class="text-sky-400">0</span></span>
+            <div class="flex flex-col items-center md:items-end gap-2">
+                <span class="bg-slate-900 border border-slate-800 text-[10px] text-slate-400 font-mono font-bold px-3 py-1 rounded-xl">Matrices Handshake Status: <span id="countReg" class="text-emerald-400">0</span> Active Rows</span>
+            </div>
+        </div>
+        
+        <div class="bg-indigo-950/40 border-t border-slate-900 py-2 px-4 overflow-hidden">
+            <div class="max-w-7xl mx-auto flex items-center gap-3">
+                <span class="bg-indigo-600 text-white font-black text-[9px] uppercase tracking-widest px-2 py-0.5 rounded-md shadow-md animate-pulse shrink-0"><i class="fa-solid fa-bullhorn mr-1"></i> NOTICE</span>
+                <marquee id="topNoticeBoard" class="text-xs text-indigo-200 font-semibold tracking-wide">Welcome to Quantum Management Studio. Admissions are open for new sessions!</marquee>
             </div>
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto w-full p-4 md:py-8 grid grid-cols-1 lg:grid-cols-12 gap-8 flex-grow">
+    <div id="alertBox" class="fixed top-28 right-4 z-50 max-w-sm text-xs font-bold p-3 rounded-xl bg-slate-950 border border-slate-800 opacity-0 transition-all duration-300 transform translate-x-5 pointer-events-none shadow-2xl"></div>
+
+    <main class="max-w-7xl mx-auto w-full p-4 md:py-6 grid grid-cols-1 lg:grid-cols-12 gap-6 flex-grow">
         
         <section class="lg:col-span-5 space-y-6">
             <div class="relative bg-slate-900/40 border border-slate-800 p-1 rounded-2xl hidden" id="masterLoaderBox">
                 <div class="p-3 text-xs flex items-center justify-center gap-3 text-indigo-400 font-medium">
                     <div class="w-4 h-4 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
-                    Processing Live Dynamic Sync Pipeline Request...
+                    Executing Secure Real-Time Cloud Handshake Matrix...
                 </div>
             </div>
 
-            <div class="bg-slate-900/80 border border-emerald-950/40 rounded-2xl p-5 shadow-xl">
-                <h3 id="regFormTitle" class="text-sm font-extrabold text-white mb-3 uppercase text-emerald-400 flex items-center gap-1.5"><i class="fa-solid fa-user-plus"></i> Base Profiles Enrollment</h3>
+            <div class="bg-slate-900/60 border border-red-950/50 rounded-2xl p-5 shadow-xl relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-16 h-16 bg-red-500/5 rounded-full blur-xl pointer-events-none"></div>
+                <h3 class="text-xs font-black text-red-400 mb-3 uppercase tracking-wider flex items-center gap-1.5"><i class="fa-solid fa-sliders"></i> Dynamic Hub Core Setup</h3>
+                <form onsubmit="commitSchoolConfig(event)" class="space-y-3">
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="text" id="cfg_school_name" required placeholder="School Name Banner" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none focus:border-red-500">
+                        <input type="text" id="cfg_city_name" required placeholder="City / Territory Location" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none focus:border-red-500">
+                    </div>
+                    <div class="grid grid-cols-1 gap-2">
+                        <input type="text" id="cfg_contact_no" required placeholder="Contact Gateway Numbers" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none focus:border-red-500">
+                        <input type="text" id="cfg_notice_board" required placeholder="Notice Board Ticker Announcement Text..." class="w-full text-xs bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none focus:border-red-500">
+                    </div>
+                    
+                    <div class="bg-slate-950 border border-slate-800 rounded-xl p-2.5 space-y-2">
+                        <label class="block text-[10px] font-mono uppercase text-slate-500 tracking-wider">Dynamic Institution Logo Upload</label>
+                        <div class="flex items-center gap-2">
+                            <label class="cursor-pointer bg-slate-900 border border-slate-800 hover:bg-slate-800 text-center rounded-lg py-1.5 px-3 text-xs font-bold block transition-all flex-grow">
+                                <i class="fa-solid fa-cloud-arrow-up text-red-400 mr-1"></i> Choose Logo File
+                                <input type="file" accept="image/*" class="hidden" onchange="processSchoolLogoFile(this)">
+                            </label>
+                            <img id="cfg_logo_preview" src="" class="w-9 h-9 rounded-lg object-cover border border-slate-800 bg-slate-900">
+                            <input type="hidden" id="cfg_logo_base64">
+                        </div>
+                    </div>
+
+                    <input type="text" id="cfg_footer_text" required placeholder="Site Footer Dynamic Copyright Line" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none focus:border-red-500">
+                    <button type="submit" class="w-full py-2 bg-gradient-to-r from-red-900 to-red-700 font-bold text-white rounded-xl text-xs hover:from-red-800 transition-all shadow-md"><i class="fa-solid fa-arrows-rotate mr-1"></i> Deploy Dynamic Branding</button>
+                </form>
+            </div>
+
+            <div class="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-5 shadow-xl">
+                <h3 id="regFormTitle" class="text-xs font-black text-emerald-400 mb-3 uppercase tracking-wider flex items-center gap-1.5"><i class="fa-solid fa-address-book"></i> Registry Onboarding Rails</h3>
                 <form id="registryForm" onsubmit="commitRegistryRecord(event)" class="space-y-3">
                     <input type="hidden" id="reg_id">
                     <div class="grid grid-cols-2 gap-2 p-1 bg-slate-950 rounded-xl border border-slate-800">
-                        <button type="button" id="roleBtnStudent" onclick="switchRegistryRole('student')" class="py-1 text-xs font-bold rounded bg-emerald-600 text-white">Student Profile</button>
-                        <button type="button" id="roleBtnTeacher" onclick="switchRegistryRole('teacher')" class="py-1 text-xs font-bold rounded text-slate-400">Faculty Profile</button>
+                        <button type="button" id="roleBtnStudent" onclick="switchRegistryRole('student')" class="py-1.5 text-xs font-bold rounded bg-emerald-600 text-white transition-all">Student Mode</button>
+                        <button type="button" id="roleBtnTeacher" onclick="switchRegistryRole('teacher')" class="py-1.5 text-xs font-bold rounded text-slate-400 transition-all">Faculty Mode</button>
                     </div>
                     <div class="grid grid-cols-2 gap-2">
-                        <input type="text" id="reg_name" required placeholder="Full Name" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white">
-                        <input type="text" id="reg_son_of" required placeholder="Father/Son of" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white">
+                        <input type="text" id="reg_name" required placeholder="Legal Full Name" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none">
+                        <input type="text" id="reg_son_of" required placeholder="Father / Guardian Name" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none">
                     </div>
                     <div class="grid grid-cols-2 gap-2">
-                        <input type="text" id="reg_cnic" required placeholder="CNIC Token String" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white">
-                        <input type="text" id="reg_contact" required placeholder="Active Contact Link" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white">
+                        <input type="text" id="reg_cnic" required placeholder="CNIC Token String" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none">
+                        <input type="text" id="reg_contact" required placeholder="Contact Number Mapping" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none">
                     </div>
-                    <input type="text" id="reg_address" required placeholder="Destination Address" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white">
+                    <input type="text" id="reg_address" required placeholder="Permanent Residence Address Mapping" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none">
                     <div class="grid grid-cols-2 gap-2">
-                        <input type="text" id="reg_class" required placeholder="Target Class" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white">
-                        <input type="text" id="reg_section" required placeholder="Allocated Section" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white">
+                        <input type="text" id="reg_class" required placeholder="Target Class Metric" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none">
+                        <input type="text" id="reg_section" required placeholder="Allocated Section" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none">
                     </div>
-                    <div class="flex gap-2">
-                        <button type="button" onclick="clearRegistryFormState()" class="w-1/3 py-2 bg-slate-800 font-bold rounded-xl text-xs">Clear</button>
-                        <button type="submit" id="regSubmitBtn" class="w-2/3 py-2 bg-emerald-600 font-bold text-white rounded-xl text-xs">Save Profile Entry</button>
+                    <div class="flex gap-2 pt-1">
+                        <button type="button" onclick="clearRegistryFormState()" class="w-1/3 py-2.5 bg-slate-800 font-bold rounded-xl text-xs">Reset</button>
+                        <button type="submit" id="regSubmitBtn" class="w-2/3 py-2.5 bg-emerald-600 font-bold text-white rounded-xl text-xs hover:bg-emerald-500 transition-all">Deploy Record Block</button>
                     </div>
                 </form>
             </div>
 
-            <div class="bg-slate-900/80 border border-purple-950/40 rounded-2xl p-5 shadow-xl">
-                <h3 id="schFormTitle" class="text-sm font-extrabold text-white mb-3 uppercase text-purple-400 flex items-center gap-1.5"><i class="fa-solid fa-clock"></i> Timetable Planner Matrix</h3>
+            <div class="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-5 shadow-xl">
+                <h3 id="schFormTitle" class="text-xs font-black text-purple-400 mb-3 uppercase tracking-wider flex items-center gap-1.5"><i class="fa-solid fa-timeline"></i> Routine Assignment Console</h3>
                 <form id="scheduleForm" onsubmit="commitScheduleRecord(event)" class="space-y-3">
                     <input type="hidden" id="sch_id">
-                    <div>
-                        <select id="sch_teacher_select" required class="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white"></select>
-                    </div>
+                    <select id="sch_teacher_select" required class="w-full text-xs bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none"></select>
                     <div class="grid grid-cols-2 gap-2">
-                        <select id="sch_day" required class="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white">
+                        <select id="sch_day" required class="w-full text-xs bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none">
                             <option value="Monday">Monday</option><option value="Tuesday">Tuesday</option><option value="Wednesday">Wednesday</option><option value="Thursday">Thursday</option><option value="Friday">Friday</option>
                         </select>
-                        <input type="text" id="sch_time_slot" required placeholder="e.g. 09:00 AM - 09:45 AM" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white">
+                        <input type="text" id="sch_time_slot" required placeholder="09:00 AM - 09:45 AM" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none">
                     </div>
                     <div class="grid grid-cols-3 gap-2">
-                        <input type="text" id="sch_subject" required placeholder="Subject" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white">
-                        <input type="text" id="sch_class" required placeholder="Class" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white">
-                        <input type="text" id="sch_section" required placeholder="Sec" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white">
+                        <input type="text" id="sch_subject" required placeholder="Subject" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none">
+                        <input type="text" id="sch_class" required placeholder="Class" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none">
+                        <input type="text" id="sch_section" required placeholder="Sec" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none">
                     </div>
                     <div class="flex gap-2">
-                        <button type="button" onclick="clearScheduleFormState()" class="w-1/3 py-2 bg-slate-800 font-bold rounded-xl text-xs">Clear</button>
-                        <button type="submit" id="schSubmitBtn" class="w-2/3 py-2 bg-purple-600 font-bold text-white rounded-xl text-xs">Lock Routine Block</button>
+                        <button type="button" onclick="clearScheduleFormState()" class="w-1/3 py-2 bg-slate-800 font-bold rounded-xl text-xs">Reset</button>
+                        <button type="submit" id="schSubmitBtn" class="w-2/3 py-2 bg-purple-600 font-bold text-white rounded-xl text-xs">Secure Matrix Slot</button>
                     </div>
                 </form>
             </div>
 
-            <div class="bg-slate-900/80 border border-orange-950/40 rounded-2xl p-5 shadow-xl">
-                <h3 id="feeFormTitle" class="text-sm font-extrabold text-white mb-3 uppercase text-orange-400 flex items-center gap-1.5"><i class="fa-solid fa-wallet"></i> Fee Collections Ledger</h3>
-                <form id="feeForm" onsubmit="commitFeeRecord(event)" class="space-y-3">
-                    <input type="hidden" id="fee_invoice_id">
-                    <div>
-                        <select id="fee_student_select" required class="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white"></select>
-                    </div>
-                    <div class="grid grid-cols-2 gap-2">
-                        <input type="text" id="fee_period" required placeholder="e.g. July 2026" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white">
-                        <select id="fee_status" required class="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white">
-                            <option value="Paid">Cleared / Paid</option>
-                            <option value="Unpaid">Pending / Defaulter</option>
-                        </select>
-                    </div>
-                    <div class="grid grid-cols-2 gap-2">
-                        <input type="number" id="fee_due" required placeholder="Due Amount" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white">
-                        <input type="number" id="fee_paid" required placeholder="Amount Paid" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white">
-                    </div>
-                    <div class="flex gap-2">
-                        <button type="button" onclick="clearFeeFormState()" class="w-1/3 py-2 bg-slate-800 font-bold rounded-xl text-xs">Clear</button>
-                        <button type="submit" id="feeSubmitBtn" class="w-2/3 py-2 bg-orange-600 font-bold text-white rounded-xl text-xs">Commit Financial Log</button>
-                    </div>
-                </form>
-            </div>
-
-            <div class="bg-slate-900/80 border border-sky-950/40 rounded-2xl p-5 shadow-xl">
-                <h3 id="cardFormTitle" class="text-sm font-extrabold text-white mb-3 uppercase text-sky-400 flex items-center gap-1.5"><i class="fa-solid fa-address-card"></i> ID & Dispatch Processing Engine</h3>
+            <div class="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-5 shadow-xl">
+                <h3 id="cardFormTitle" class="text-xs font-black text-sky-400 mb-3 uppercase tracking-wider flex items-center gap-1.5"><i class="fa-solid fa-camera-retro"></i> Digital ID Assembly Platform</h3>
                 <form id="idCardForm" onsubmit="commitIdentityCardRecord(event)" class="space-y-3">
                     <input type="hidden" id="card_invoice_id">
                     <div class="grid grid-cols-2 gap-2 p-1 bg-slate-950 rounded-xl border border-slate-800">
-                        <button type="button" id="roleSelectStudent" onclick="toggleCardSelectionRole('student')" class="py-1 text-xs font-bold rounded bg-sky-600 text-white">Target Students</button>
-                        <button type="button" id="roleSelectTeacher" onclick="toggleCardSelectionRole('teacher')" class="py-1 text-xs font-bold rounded text-slate-400">Target Faculty</button>
+                        <button type="button" id="roleSelectStudent" onclick="toggleCardSelectionRole('student')" class="py-1 text-xs font-bold rounded bg-sky-600 text-white">Students</button>
+                        <button type="button" id="roleSelectTeacher" onclick="toggleCardSelectionRole('teacher')" class="py-1 text-xs font-bold rounded text-slate-400">Faculty</button>
                     </div>
-                    <div>
-                        <select id="card_user_select" required class="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white"></select>
+                    <select id="card_user_select" required class="w-full text-xs bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none"></select>
+                    
+                    <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 space-y-2">
+                        <label class="block text-[10px] font-mono uppercase tracking-widest text-slate-400">User Avatar Capture Deck</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <label class="cursor-pointer bg-slate-900 border border-slate-800 hover:bg-slate-800 text-center rounded-lg p-2 text-xs font-bold block transition-all">
+                                <i class="fa-solid fa-image text-emerald-400 mr-1"></i> Gallery
+                                <input type="file" accept="image/*" class="hidden" onchange="processGalleryImage(this)">
+                            </label>
+                            <button type="button" onclick="initializeHardwareCamera()" class="bg-slate-900 border border-slate-800 hover:bg-slate-800 rounded-lg p-2 text-xs font-bold transition-all">
+                                <i class="fa-solid fa-camera text-sky-400 mr-1"></i> Live Cam
+                            </button>
+                        </div>
+                        <div id="cameraDeckWrapper" class="hidden space-y-2">
+                            <video id="hardwareVideoStream" autoplay playsinline class="w-full aspect-video rounded-lg bg-black border border-slate-800 object-cover"></video>
+                            <button type="button" onclick="executeCameraCaptureSnapshot()" class="w-full py-1.5 bg-rose-600 text-white font-bold rounded-lg text-xs"><i class="fa-solid fa-circle-dot mr-1"></i> Snap Frame</button>
+                        </div>
+                        <canvas id="hiddenCaptureCanvas" class="hidden"></canvas>
+                        <div class="flex items-center gap-3 pt-1">
+                            <img id="avatarDataPreview" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100" class="w-10 h-10 rounded-full object-cover border border-slate-800">
+                            <input type="hidden" id="card_avatar_base64">
+                            <span class="text-[10px] font-mono text-slate-500 truncate max-w-[200px]" id="avatarStatusLabel">No fresh asset cached.</span>
+                        </div>
                     </div>
-                    <div>
-                        <input type="url" id="card_avatar" required placeholder="Avatar Image Direct HTTPS Link URL" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white">
-                    </div>
+
                     <div class="grid grid-cols-2 gap-2">
-                        <select id="card_channel" required class="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white">
-                            <option value="Gmail">Gmail Routing ID</option>
-                            <option value="WhatsApp">WhatsApp Gateway API</option>
+                        <select id="card_channel" required class="w-full text-xs bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none">
+                            <option value="WhatsApp">WhatsApp Route Link</option>
+                            <option value="Gmail">Direct Email Client</option>
                         </select>
-                        <input type="text" id="card_destination" required placeholder="name@domain.com or Phone" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white">
+                        <input type="text" id="card_destination" required placeholder="Recipient Destination" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none">
                     </div>
                     <div class="flex gap-2">
-                        <button type="button" onclick="clearCardFormState()" class="w-1/3 py-2 bg-slate-800 font-bold rounded-xl text-xs">Clear</button>
-                        <button type="submit" id="cardSubmitBtn" class="w-2/3 py-2 bg-sky-600 font-bold text-white rounded-xl text-xs">Compile & Route Alert</button>
+                        <button type="button" onclick="clearCardFormState()" class="w-1/3 py-2 bg-slate-800 font-bold rounded-xl text-xs">Reset</button>
+                        <button type="submit" id="cardSubmitBtn" class="w-2/3 py-2 bg-sky-600 font-bold text-white rounded-xl text-xs">Compile System Identity</button>
                     </div>
                 </form>
-                <div id="alertBox" class="mt-2 text-center text-[11px] font-bold opacity-0 p-2 rounded-lg bg-slate-950 border border-slate-800"></div>
             </div>
         </section>
 
         <section class="lg:col-span-7 space-y-6">
-            <div class="bg-slate-900/40 border border-slate-800 rounded-2xl p-4 flex flex-wrap gap-3 items-center">
+            <div class="bg-slate-900/40 border border-slate-800 rounded-2xl p-4 flex flex-wrap gap-3 items-center shadow-md">
                 <div class="flex-grow min-w-[200px] relative">
-                    <i class="fa-solid fa-filter absolute left-3 top-3 text-slate-500 text-xs"></i>
-                    <input type="text" id="filterSearch" oninput="applyInterfaceRendering()" placeholder="Query data records parameters..." class="w-full text-xs bg-slate-950 border border-slate-800 rounded-xl py-2.5 pl-9 pr-4 text-white">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-slate-500 text-xs"></i>
+                    <input type="text" id="filterSearch" oninput="applyInterfaceRendering()" placeholder="Type query parameter string to search database instantly..." class="w-full text-xs bg-slate-950 border border-slate-800 rounded-xl py-3 pl-10 pr-4 text-white outline-none focus:border-indigo-500">
                 </div>
                 <div class="flex gap-2 w-full sm:w-auto">
-                    <input type="text" id="filterParamOne" oninput="applyInterfaceRendering()" placeholder="Class" class="w-full sm:w-20 text-xs bg-slate-950 border border-slate-800 rounded-xl py-2 px-3 text-white">
-                    <input type="text" id="filterParamTwo" oninput="applyInterfaceRendering()" placeholder="Sec" class="w-full sm:w-16 text-xs bg-slate-950 border border-slate-800 rounded-xl py-2 px-3 text-white">
+                    <input type="text" id="filterParamOne" oninput="applyInterfaceRendering()" placeholder="Class" class="w-full sm:w-20 text-xs bg-slate-950 border border-slate-800 rounded-xl py-2 px-3 text-white outline-none">
+                    <input type="text" id="filterParamTwo" oninput="applyInterfaceRendering()" placeholder="Sec" class="w-full sm:w-16 text-xs bg-slate-950 border border-slate-800 rounded-xl py-2 px-3 text-white outline-none">
                 </div>
             </div>
 
-            <div class="border-b border-slate-800 flex flex-wrap gap-4 text-xs font-bold uppercase tracking-wider overflow-x-auto pb-1">
-                <button onclick="switchViewTab('students')" id="tabBtnStudents" class="pb-2 text-emerald-400 border-b-2 border-emerald-500 px-1 flex items-center gap-1"><i class="fa-solid fa-graduation-cap"></i> Students</button>
-                <button onclick="switchViewTab('teachers')" id="tabBtnTeachers" class="pb-2 text-slate-400 border-b-2 border-transparent px-1 flex items-center gap-1"><i class="fa-solid fa-chalkboard-user"></i> Faculty</button>
-                <button onclick="switchViewTab('schedules')" id="tabBtnSchedules" class="pb-2 text-slate-400 border-b-2 border-transparent px-1 flex items-center gap-1"><i class="fa-solid fa-calendar"></i> Schedules</button>
-                <button onclick="switchViewTab('fees')" id="tabBtnFees" class="pb-2 text-slate-400 border-b-2 border-transparent px-1 flex items-center gap-1"><i class="fa-solid fa-coins"></i> Accounting</button>
-                <button onclick="switchViewTab('cards')" id="tabBtnCards" class="pb-2 text-slate-400 border-b-2 border-transparent px-1 flex items-center gap-1"><i class="fa-solid fa-id-badge"></i> Smart Cards</button>
+            <div class="border-b border-slate-900 flex flex-wrap gap-4 text-xs font-black uppercase tracking-widest pb-1 overflow-x-auto">
+                <button onclick="switchViewTab('students')" id="tabBtnStudents" class="pb-2 text-emerald-400 border-b-2 border-emerald-500 px-1 flex items-center gap-2"><i class="fa-solid fa-graduation-cap"></i> Students</button>
+                <button onclick="switchViewTab('teachers')" id="tabBtnTeachers" class="pb-2 text-slate-500 border-b-2 border-transparent px-1 flex items-center gap-2"><i class="fa-solid fa-user-shield"></i> Faculty</button>
+                <button onclick="switchViewTab('schedules')" id="tabBtnSchedules" class="pb-2 text-slate-500 border-b-2 border-transparent px-1 flex items-center gap-2"><i class="fa-solid fa-calendar-days"></i> Matrix</button>
+                <button onclick="switchViewTab('cards')" id="tabBtnCards" class="pb-2 text-slate-500 border-b-2 border-transparent px-1 flex items-center gap-2"><i class="fa-solid fa-address-card"></i> Digital Passes</button>
             </div>
 
-            <div class="space-y-4 max-h-[1100px] overflow-y-auto pr-1" id="cardsGridContainer"></div>
+            <div class="space-y-4 max-h-[1400px] overflow-y-auto pr-1" id="cardsGridContainer"></div>
         </section>
     </main>
 
-    <footer class="border-t border-slate-900 bg-slate-950/80 py-4 text-center text-xs text-slate-500 font-medium">
+    <footer class="border-t border-slate-900 bg-slate-950/90 py-4 text-center text-xs text-slate-500 font-semibold tracking-wider">
         <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-            <p>Unified Operational Control Vault Engine v8.0</p>
-            <p class="tracking-widest text-slate-400 font-extrabold uppercase">HNK & SHEEKAN TECH AND STUDIO</p>
+            <p>Unified Management Node Engine v10.0</p>
+            <p id="bottomDynamicFooter" class="tracking-widest text-slate-400 font-black uppercase">A PROJECT BY HNK & SHEEKAN TECH AND STUDIO</p>
         </div>
     </footer>
 
     <script>
         let state = {
             registryCurrentRole: 'student', cardCurrentRole: 'student', activeTab: 'students',
-            students: [], teachers: [], schedules: [], fees: [], cards: []
+            students: [], teachers: [], schedules: [], cards: [], config: {}, localVideoStream: null
         };
 
         document.addEventListener('DOMContentLoaded', refreshMasterLedger);
 
-        // Advanced Reliable CORS-Bypassed Gateway Engine
         async function cloudFetchEngine(actionName, payloadObj = {}) {
             try {
                 const formBody = new URLSearchParams();
                 formBody.append('action', actionName);
                 formBody.append('payload', JSON.stringify(payloadObj));
-
                 let response = await fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
                     body: formBody.toString()
                 });
-                return { success: true };
+                return await response.json();
             } catch(e) {
-                console.error("Pipeline failure: ", e);
-                return { success: false };
+                console.error(e);
+                return { success: false, message: "System error down the data pipe pipeline." };
             }
         }
 
         function switchRegistryRole(r) {
             state.registryCurrentRole = r;
-            document.getElementById('roleBtnStudent').className = r === 'student' ? "py-1 text-xs font-bold rounded bg-emerald-600 text-white" : "py-1 text-xs font-bold rounded text-slate-400";
-            document.getElementById('roleBtnTeacher').className = r === 'teacher' ? "py-1 text-xs font-bold rounded bg-blue-600 text-white" : "py-1 text-xs font-bold rounded text-slate-400";
+            document.getElementById('roleBtnStudent').className = r === 'student' ? "py-1.5 text-xs font-bold rounded bg-emerald-600 text-white" : "py-1.5 text-xs font-bold rounded text-slate-500";
+            document.getElementById('roleBtnTeacher').className = r === 'teacher' ? "py-1.5 text-xs font-bold rounded bg-blue-600 text-white" : "py-1.5 text-xs font-bold rounded text-slate-500";
         }
 
         function toggleCardSelectionRole(r) {
             state.cardCurrentRole = r;
-            document.getElementById('roleSelectStudent').className = r === 'student' ? "py-1 text-xs font-bold rounded bg-sky-600 text-white" : "py-1 text-xs font-bold rounded text-slate-400";
-            document.getElementById('roleSelectTeacher').className = r === 'teacher' ? "py-1 text-xs font-bold rounded bg-blue-600 text-white" : "py-1 text-xs font-bold rounded text-slate-400";
+            document.getElementById('roleSelectStudent').className = r === 'student' ? "py-1 text-xs font-bold rounded bg-sky-600 text-white" : "py-1 text-xs font-bold rounded text-slate-500";
+            document.getElementById('roleSelectTeacher').className = r === 'teacher' ? "py-1 text-xs font-bold rounded bg-blue-600 text-white" : "py-1 text-xs font-bold rounded text-slate-500";
             populateCardUsersDropdown();
         }
 
@@ -235,20 +262,12 @@
                 students: ['tabBtnStudents', 'text-emerald-400', 'border-emerald-500'],
                 teachers: ['tabBtnTeachers', 'text-blue-400', 'border-blue-500'],
                 schedules: ['tabBtnSchedules', 'text-purple-400', 'border-purple-500'],
-                fees: ['tabBtnFees', 'text-orange-400', 'border-orange-500'],
                 cards: ['tabBtnCards', 'text-sky-400', 'border-sky-500']
             };
             Object.keys(buttons).forEach(k => {
                 let btn = document.getElementById(buttons[k][0]);
-                if(btn) {
-                    btn.className = (k === tab) ? `pb-2 ${buttons[k][1]} border-b-2 ${buttons[k][2]} px-1 flex items-center gap-1` : "pb-2 text-slate-400 border-b-2 border-transparent px-1 flex items-center gap-1";
-                }
+                if(btn) btn.className = (k === tab) ? `pb-2 ${buttons[k][1]} border-b-2 ${buttons[k][2]} px-1 flex items-center gap-2` : "pb-2 text-slate-500 border-b-2 border-transparent px-1 flex items-center gap-2";
             });
-            const filterOne = document.getElementById('filterParamOne');
-            const filterTwo = document.getElementById('filterParamTwo');
-            if (tab === 'fees') { filterOne.placeholder = "Status"; filterTwo.style.display = "none"; }
-            else if (tab === 'cards') { filterOne.placeholder = "Role"; filterTwo.style.display = "none"; }
-            else { filterOne.placeholder = "Class"; filterTwo.style.display = "inline-block"; }
             applyInterfaceRendering();
         }
 
@@ -259,33 +278,117 @@
                 .then(res => {
                     toggleOverlayLoader(false);
                     state.students = res.students || []; state.teachers = res.teachers || [];
-                    state.schedules = res.schedules || []; state.fees = res.fees || []; state.cards = res.cards || [];
+                    state.schedules = res.schedules || []; state.cards = res.cards || [];
+                    state.config = res.config || {};
                     
+                    // Hydrate Config Dynamic Data Dom Layout Rows
+                    if(state.config.school_name) {
+                        document.getElementById('topSchoolName').innerText = state.config.school_name;
+                        document.getElementById('cfg_school_name').value = state.config.school_name;
+                    }
+                    if(state.config.city_name) {
+                        document.getElementById('topCityName').innerText = state.config.city_name;
+                        document.getElementById('cfg_city_name').value = state.config.city_name;
+                    }
+                    if(state.config.contact_no) {
+                        document.getElementById('topContactNo').innerText = state.config.contact_no;
+                        document.getElementById('cfg_contact_no').value = state.config.contact_no;
+                    }
+                    if(state.config.notice_board) {
+                        document.getElementById('topNoticeBoard').innerText = state.config.notice_board;
+                        document.getElementById('cfg_notice_board').value = state.config.notice_board;
+                    }
+                    if(state.config.school_logo) {
+                        document.getElementById('topSchoolLogo').src = state.config.school_logo;
+                        document.getElementById('cfg_logo_preview').src = state.config.school_logo;
+                        document.getElementById('cfg_logo_base64').value = state.config.school_logo;
+                    }
+                    if(state.config.footer_text) {
+                        document.getElementById('bottomDynamicFooter').innerText = state.config.footer_text;
+                        document.getElementById('cfg_footer_text').value = state.config.footer_text;
+                    }
+
                     document.getElementById('countReg').innerText = state.students.length + state.teachers.length;
-                    document.getElementById('countSch').innerText = state.schedules.length;
-                    document.getElementById('countFee').innerText = state.fees.length;
-                    document.getElementById('countCard').innerText = state.cards.length;
                     
-                    populateSchedulesTeacherDropdown(); populateFeeStudentDropdown(); populateCardUsersDropdown();
+                    populateSchedulesTeacherDropdown(); populateCardUsersDropdown();
                     applyInterfaceRendering();
-                }).catch(err => { 
-                    console.error("Fetch failed", err);
-                    toggleOverlayLoader(false); 
-                });
+                }).catch(err => { console.error(err); toggleOverlayLoader(false); });
+        }
+
+        function processSchoolLogoFile(input) {
+            if (input.files && input.files[0]) {
+                let reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('cfg_logo_preview').src = e.target.result;
+                    document.getElementById('cfg_logo_base64').value = e.target.result;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        async function commitSchoolConfig(e) {
+            e.preventDefault(); toggleOverlayLoader(true);
+            let payload = {
+                school_name: document.getElementById('cfg_school_name').value,
+                city_name: document.getElementById('cfg_city_name').value,
+                contact_no: document.getElementById('cfg_contact_no').value,
+                notice_board: document.getElementById('cfg_notice_board').value,
+                school_logo: document.getElementById('cfg_logo_base64').value,
+                footer_text: document.getElementById('cfg_footer_text').value
+            };
+            let res = await cloudFetchEngine("saveSchoolConfig", payload);
+            triggerToast(res.message, "text-red-400");
+            setTimeout(refreshMasterLedger, 500);
         }
 
         function populateSchedulesTeacherDropdown() {
-            let el = document.getElementById('sch_teacher_select'); el.innerHTML = '<option value="">-- Choose Faculty --</option>';
+            let el = document.getElementById('sch_teacher_select'); el.innerHTML = '<option value="">-- Choose Target Faculty --</option>';
             state.teachers.forEach(t => { el.innerHTML += `<option value="${t.id}">${t.name} (${t.id})</option>`; });
         }
-        function populateFeeStudentDropdown() {
-            let el = document.getElementById('fee_student_select'); el.innerHTML = '<option value="">-- Choose Student --</option>';
-            state.students.forEach(s => { el.innerHTML += `<option value="${s.id}">${s.name} (${s.id})</option>`; });
-        }
         function populateCardUsersDropdown() {
-            let el = document.getElementById('card_user_select'); el.innerHTML = '<option value="">-- Choose Object Reference --</option>';
+            let el = document.getElementById('card_user_select'); el.innerHTML = '<option value="">-- Choose Object Profile Reference --</option>';
             let list = state.cardCurrentRole === 'student' ? state.students : state.teachers;
             list.forEach(x => { el.innerHTML += `<option value="${x.id}">${x.name} (${x.id})</option>`; });
+        }
+
+        function processGalleryImage(input) {
+            if (input.files && input.files[0]) {
+                let reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('avatarDataPreview').src = e.target.result;
+                    document.getElementById('card_avatar_base64').value = e.target.result;
+                    document.getElementById('avatarStatusLabel').innerText = "Asset loaded from storage disk.";
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        async function initializeHardwareCamera() {
+            const wrapper = document.getElementById('cameraDeckWrapper');
+            const video = document.getElementById('hardwareVideoStream');
+            wrapper.classList.remove('hidden');
+            try {
+                if(state.localVideoStream) { state.localVideoStream.getTracks().forEach(t => t.stop()); }
+                state.localVideoStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false });
+                video.srcObject = state.localVideoStream;
+            } catch (err) {
+                triggerToast("Camera hardware layer blocked.", "text-rose-400");
+                wrapper.classList.add('hidden');
+            }
+        }
+
+        function executeCameraCaptureSnapshot() {
+            const video = document.getElementById('hardwareVideoStream');
+            const canvas = document.getElementById('hiddenCaptureCanvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = video.videoWidth || 640; canvas.height = video.videoHeight || 480;
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const dataUrl = canvas.toDataURL('image/jpeg');
+            document.getElementById('avatarDataPreview').src = dataUrl;
+            document.getElementById('card_avatar_base64').value = dataUrl;
+            document.getElementById('avatarStatusLabel').innerText = "Snapshot framed.";
+            if(state.localVideoStream) { state.localVideoStream.getTracks().forEach(t => t.stop()); }
+            document.getElementById('cameraDeckWrapper').classList.add('hidden');
         }
 
         async function commitRegistryRecord(e) {
@@ -295,12 +398,17 @@
                 name: document.getElementById('reg_name').value, son_of: document.getElementById('reg_son_of').value,
                 cnic: document.getElementById('reg_cnic').value, contact: document.getElementById('reg_contact').value,
                 address: document.getElementById('reg_address').value, class_assigned: document.getElementById('reg_class').value,
-                section_assigned: document.getElementById('reg_section').value, extra_field: state.registryCurrentRole === 'student' ? 'Unpaid' : 'False'
+                section_assigned: document.getElementById('reg_section').value, extra_field: 'Active'
             };
-            await cloudFetchEngine("saveRegistry", payload);
-            triggerToast("Profile data written successfully.", "text-emerald-400");
-            clearRegistryFormState();
-            setTimeout(refreshMasterLedger, 500);
+            let response = await cloudFetchEngine("saveRegistry", payload);
+            if(response.success) {
+                triggerToast(response.message, "text-emerald-400");
+                clearRegistryFormState();
+                setTimeout(refreshMasterLedger, 500);
+            } else {
+                toggleOverlayLoader(false);
+                triggerToast(response.message, "text-rose-400 font-black");
+            }
         }
 
         async function commitScheduleRecord(e) {
@@ -312,22 +420,8 @@
                 class_assigned: document.getElementById('sch_class').value, section_assigned: document.getElementById('sch_section').value
             };
             await cloudFetchEngine("saveSchedule", payload);
-            triggerToast("Timetable mapped inside repository.", "text-purple-400");
+            triggerToast("Operational grid row mapped.", "text-purple-400");
             clearScheduleFormState();
-            setTimeout(refreshMasterLedger, 500);
-        }
-
-        async function commitFeeRecord(e) {
-            e.preventDefault(); toggleOverlayLoader(true);
-            let el = document.getElementById('fee_student_select');
-            let payload = {
-                invoice_id: document.getElementById('fee_invoice_id').value, student_id: el.value, student_name: el.options[el.selectedIndex].text.split(' (')[0],
-                billing_period: document.getElementById('fee_period').value, status: document.getElementById('fee_status').value,
-                amount_due: document.getElementById('fee_due').value, amount_paid: document.getElementById('fee_paid').value
-            };
-            await cloudFetchEngine("saveFee", payload);
-            triggerToast("Accounting spreadsheet synchronized.", "text-orange-400");
-            clearFeeFormState();
             setTimeout(refreshMasterLedger, 500);
         }
 
@@ -336,11 +430,11 @@
             let el = document.getElementById('card_user_select');
             let payload = {
                 card_id: document.getElementById('card_invoice_id').value, role: state.cardCurrentRole, user_id: el.value,
-                name: el.options[el.selectedIndex].text.split(' (')[0], avatar: document.getElementById('card_avatar').value,
+                name: el.options[el.selectedIndex].text.split(' (')[0], avatar: document.getElementById('card_avatar_base64').value || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100',
                 channel: document.getElementById('card_channel').value, destination: document.getElementById('card_destination').value
             };
             await cloudFetchEngine("saveCard", payload);
-            triggerToast("ID Asset profile deployed.", "text-sky-400");
+            triggerToast("Identity layout compiled natively.", "text-sky-400");
             clearCardFormState();
             setTimeout(refreshMasterLedger, 500);
         }
@@ -350,15 +444,37 @@
             const search = document.getElementById('filterSearch').value.toLowerCase();
             const p1 = document.getElementById('filterParamOne').value.toLowerCase();
             const p2 = document.getElementById('filterParamTwo').value.toLowerCase();
+            const logo = state.config.school_logo || 'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=150';
+            const sName = state.config.school_name || 'HNK SCHOOLS SANAWAN';
+            const sCity = state.config.city_name || 'Sanawan';
             
             if (state.activeTab === 'students' || state.activeTab === 'teachers') {
                 let targetArray = state.activeTab === 'students' ? state.students : state.teachers;
-                let colorTheme = state.activeTab === 'students' ? 'border-emerald-500' : 'border-blue-500';
+                let isStudent = state.activeTab === 'students';
                 targetArray.forEach(item => {
-                    if ((item.name.toLowerCase().includes(search) || item.id.toLowerCase().includes(search)) && item.class.toLowerCase().includes(p1) && item.section.toLowerCase().includes(p2)) {
+                    if ((item.name.toLowerCase().includes(search) || item.id.toLowerCase().includes(search) || item.cnic.includes(search)) && item.class.toLowerCase().includes(p1) && item.section.toLowerCase().includes(p2)) {
                         let card = document.createElement('div');
-                        card.className = `bg-slate-900/50 border-l-4 ${colorTheme} border-y-slate-800 border-r-slate-800 border p-3.5 rounded-r-xl flex justify-between items-center`;
-                        card.innerHTML = `<div><h4 class="text-xs font-bold text-white">${item.name} (${item.id})</h4><p class="text-[11px] text-slate-400 mt-0.5">S/O: ${item.son_of} | CNIC: ${item.cnic}</p><p class="text-[11px] text-slate-500">Contact: ${item.contact} | Class Space: ${item.class}-${item.section}</p></div><div class="flex gap-1"><button onclick="triggerRegistryEdit('${item.id}', '${state.activeTab}')" class="w-7 h-7 rounded bg-slate-950 text-slate-400 hover:text-white flex items-center justify-center"><i class="fa-solid fa-pen text-[10px]"></i></button><button onclick="triggerRegistryDelete('${item.id}', '${state.activeTab}')" class="w-7 h-7 rounded bg-slate-950 text-slate-400 hover:text-rose-500 flex items-center justify-center"><i class="fa-solid fa-trash text-[10px]"></i></button></div>`;
+                        card.className = `glow-card bg-slate-900/30 border border-slate-800/80 p-5 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4`;
+                        card.innerHTML = `
+                            <div class="space-y-2 flex-grow w-full">
+                                <div class="flex items-center justify-between border-b border-slate-950 pb-2">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-[9px] font-mono px-2 py-0.5 rounded-md font-bold ${isStudent?'bg-emerald-950 text-emerald-400':'bg-blue-950 text-blue-400'}">${item.id}</span>
+                                        <h4 class="text-xs font-extrabold text-white tracking-tight">${item.name}</h4>
+                                    </div>
+                                    <span class="text-[10px] text-slate-500 font-bold"><i class="fa-solid fa-graduation-cap text-slate-700 mr-1"></i>${item.class}-${item.section}</span>
+                                </div>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1 text-xs text-slate-400 font-medium">
+                                    <p><span class="text-slate-600 font-bold">Father:</span> ${item.son_of}</p>
+                                    <p><span class="text-slate-600 font-bold">CNIC Token:</span> ${item.cnic}</p>
+                                    <p><span class="text-slate-600 font-bold">Contact Node:</span> ${item.contact}</p>
+                                    <p class="truncate"><span class="text-slate-600 font-bold">Location:</span> ${item.address}</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-1.5 self-end sm:self-center bg-slate-950/60 p-1.5 rounded-xl border border-slate-800 shrink-0">
+                                <button onclick="triggerRegistryEdit('${item.id}', '${state.activeTab}')" class="w-8 h-8 rounded-lg bg-slate-900 text-slate-400 hover:text-white flex items-center justify-center transition-all"><i class="fa-solid fa-pencil text-[11px]"></i></button>
+                                <button onclick="triggerRegistryDelete('${item.id}', '${state.activeTab}')" class="w-8 h-8 rounded-lg bg-slate-900 text-slate-500 hover:text-rose-400 flex items-center justify-center transition-all"><i class="fa-solid fa-trash-can text-[11px]"></i></button>
+                            </div>`;
                         container.appendChild(card);
                     }
                 });
@@ -366,77 +482,129 @@
                 state.schedules.forEach(item => {
                     if ((item.teacher_name.toLowerCase().includes(search) || item.subject.toLowerCase().includes(search)) && item.class.toLowerCase().includes(p1) && item.section.toLowerCase().includes(p2)) {
                         let card = document.createElement('div');
-                        card.className = "bg-slate-900/50 border-l-4 border-purple-500 border-y-slate-800 border-r-slate-800 border p-3.5 rounded-r-xl flex justify-between items-center";
-                        card.innerHTML = `<div><span class="text-[9px] font-bold bg-purple-950/40 text-purple-400 px-2 py-0.5 rounded uppercase tracking-wider">${item.day} [${item.time_slot}]</span><h4 class="text-xs font-bold text-white mt-1">${item.subject} <span class="text-slate-400 font-normal">by ${item.teacher_name}</span></h4><p class="text-[11px] text-slate-500">Target Class: ${item.class}-${item.section}</p></div><div class="flex gap-1"><button onclick="triggerScheduleEdit('${item.sch_id}')" class="w-7 h-7 rounded bg-slate-950 text-slate-400 hover:text-purple-400 flex items-center justify-center"><i class="fa-solid fa-pen text-[10px]"></i></button><button onclick="triggerScheduleDelete('${item.sch_id}')" class="w-7 h-7 rounded bg-slate-950 text-slate-400 hover:text-rose-500 flex items-center justify-center"><i class="fa-solid fa-trash text-[10px]"></i></button></div>`;
-                        container.appendChild(card);
-                    }
-                });
-            } else if (state.activeTab === 'fees') {
-                state.fees.forEach(item => {
-                    if ((item.student_name.toLowerCase().includes(search) || item.invoice_id.toLowerCase().includes(search)) && item.status.toLowerCase().includes(p1)) {
-                        let card = document.createElement('div'); let isPaid = item.status === 'Paid';
-                        card.className = "bg-slate-900/50 border-l-4 border-orange-500 border-y-slate-800 border-r-slate-800 border p-3.5 rounded-r-xl flex justify-between items-center";
-                        card.innerHTML = `<div><div class="flex items-center gap-2"><span class="text-[10px] font-mono font-bold text-orange-400 bg-orange-950/40 px-2 py-0.5 rounded">${item.invoice_id}</span><h4 class="text-xs font-bold text-white">${item.student_name}</h4><span class="text-[9px] px-2 py-0.5 rounded font-extrabold ${isPaid?'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20':'bg-rose-500/10 text-rose-400 border border-rose-500/20'}">${item.status}</span></div><p class="text-[11px] text-slate-400 mt-1">Period: ${item.billing_period} | ID Ref: ${item.student_id}</p><p class="text-[11px] text-slate-500">Due: ${item.amount_due} | Paid: <span class="text-emerald-400 font-bold">${item.amount_paid}</span></p></div><div class="flex gap-1"><button onclick="triggerFeeEdit('${item.invoice_id}')" class="w-7 h-7 rounded bg-slate-950 text-slate-400 hover:text-orange-400 flex items-center justify-center"><i class="fa-solid fa-pen text-[10px]"></i></button><button onclick="triggerFeeDelete('${item.invoice_id}')" class="w-7 h-7 rounded bg-slate-950 text-slate-400 hover:text-rose-500 flex items-center justify-center"><i class="fa-solid fa-trash text-[10px]"></i></button></div>`;
+                        card.className = "glow-card bg-slate-900/30 border border-slate-800 p-4 rounded-2xl flex justify-between items-center";
+                        card.innerHTML = `
+                            <div class="space-y-1">
+                                <div class="flex items-center gap-1.5">
+                                    <span class="text-[9px] font-mono font-black bg-purple-950 text-purple-400 px-2 py-0.5 rounded-md uppercase tracking-wider">${item.day}</span>
+                                    <span class="text-[10px] font-bold text-slate-500 font-mono">${item.time_slot}</span>
+                                </div>
+                                <h4 class="text-xs font-extrabold text-white">${item.subject} <span class="text-slate-500 font-medium text-[11px]">by ${item.teacher_name}</span></h4>
+                                <p class="text-[11px] text-indigo-400 font-bold">Target Grid Matrix: ${item.class}-${item.section}</p>
+                            </div>
+                            <div class="flex gap-1.5 bg-slate-950/60 p-1 rounded-xl border border-slate-800">
+                                <button onclick="triggerScheduleEdit('${item.sch_id}')" class="w-7 h-7 rounded-lg bg-slate-900 text-slate-400 hover:text-purple-400 flex items-center justify-center"><i class="fa-solid fa-pencil text-[10px]"></i></button>
+                                <button onclick="triggerScheduleDelete('${item.sch_id}')" class="w-7 h-7 rounded-lg bg-slate-900 text-slate-500 hover:text-rose-500 flex items-center justify-center"><i class="fa-solid fa-trash-can text-[10px]"></i></button>
+                            </div>`;
                         container.appendChild(card);
                     }
                 });
             } else if (state.activeTab === 'cards') {
                 state.cards.forEach(item => {
-                    if ((item.name.toLowerCase().includes(search) || item.card_id.toLowerCase().includes(search)) && item.role.toLowerCase().includes(p1)) {
-                        let card = document.createElement('div'); var qrSrc = "https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=" + encodeURIComponent(item.user_id);
-                        card.className = "bg-slate-950/60 border border-slate-800 p-4 rounded-2xl flex flex-col sm:flex-row gap-4 items-center justify-between";
-                        card.innerHTML = `<div class="flex items-center gap-3 w-full sm:w-auto"><img src="${item.avatar}" class="w-12 h-12 rounded-full object-cover border border-sky-500" onerror="this.src='https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100'"><div><h4 class="text-xs font-bold text-white">${item.name} <span class="text-[9px] uppercase text-sky-400 bg-sky-950/40 px-1.5 py-0.5 rounded ml-1">${item.role}</span></h4><p class="text-[11px] text-slate-400">Account: ${item.user_id} | Token: ${item.card_id}</p><p class="text-[10px] text-slate-500">Sent via ${item.channel} -> ${item.destination}</p></div></div><div class="flex items-center gap-3 w-full sm:w-auto justify-end"><div class="bg-white p-0.5 rounded-lg"><img src="${qrSrc}" class="w-11 h-11"></div><div class="flex sm:flex-col gap-1"><button onclick="triggerCardEdit('${item.card_id}')" class="w-6 h-6 rounded bg-slate-900 text-slate-400 hover:text-sky-400 flex items-center justify-center"><i class="fa-solid fa-pen text-[9px]"></i></button><button onclick="triggerCardDelete('${item.card_id}')" class="w-6 h-6 rounded bg-slate-900 text-slate-400 hover:text-rose-400 flex items-center justify-center"><i class="fa-solid fa-trash text-[9px]"></i></button></div></div>`;
+                    if (item.name.toLowerCase().includes(search) || item.card_id.toLowerCase().includes(search)) {
+                        let card = document.createElement('div'); 
+                        var qrSrc = "https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=" + encodeURIComponent(item.user_id);
+                        card.id = `pass-card-${item.card_id}`;
+                        card.className = "bg-gradient-to-b from-slate-900 via-slate-950 to-black border-2 border-slate-800/80 rounded-3xl p-5 shadow-2xl flex flex-col gap-4 relative overflow-hidden";
+                        card.innerHTML = `
+                            <div class="flex items-center gap-2.5 border-b border-slate-900 pb-3 w-full">
+                                <img src="${logo}" class="w-8 h-8 rounded-lg object-cover border border-slate-800 bg-slate-900">
+                                <div>
+                                    <h5 class="text-[11px] font-black tracking-tight text-white uppercase">${sName}</h5>
+                                    <p class="text-[9px] text-slate-500 font-medium">${sCity}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex flex-col sm:flex-row gap-5 items-center justify-between w-full">
+                                <div class="flex flex-col sm:flex-row items-center text-center sm:text-left gap-4">
+                                    <img src="${item.avatar}" class="w-16 h-16 rounded-2xl object-cover border-2 border-sky-500 shadow-xl bg-slate-900" onerror="this.src='https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100'">
+                                    <div class="space-y-1">
+                                        <h4 class="text-xs font-black text-white tracking-tight flex items-center justify-center sm:justify-start gap-1.5">
+                                            ${item.name} 
+                                            <span class="text-[9px] font-mono tracking-widest uppercase text-sky-400 bg-sky-950/80 px-1.5 py-0.5 rounded-md border border-sky-900/50">${item.role}</span>
+                                        </h4>
+                                        <p class="text-[11px] text-slate-400 font-mono">UID: ${item.user_id} | Token: ${item.card_id}</p>
+                                        <p class="text-[10px] text-slate-500 font-medium"><i class="fa-solid fa-paper-plane mr-1"></i>${item.channel}: ${item.destination}</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex flex-col sm:flex-row items-center gap-4 shrink-0 w-full sm:w-auto justify-end">
+                                    <div class="bg-white p-1 rounded-xl shadow-lg"><img src="${qrSrc}" class="w-12 h-12"></div>
+                                    <div class="grid grid-cols-2 sm:flex sm:flex-col gap-1 w-full sm:w-auto">
+                                        <button onclick="executeLocalCardDownload('${item.card_id}')" class="py-1 px-2.5 rounded-lg bg-slate-900 border border-slate-800 text-[10px] font-bold text-slate-300 flex items-center justify-center gap-1"><i class="fa-solid fa-download text-emerald-400"></i> Save Pass</button>
+                                        <button onclick="executeDirectSocialShare('${item.card_id}', 'whatsapp')" class="py-1 px-2.5 rounded-lg bg-slate-900 border border-slate-800 text-[10px] font-bold text-slate-300 flex items-center justify-center gap-1"><i class="fa-brands fa-whatsapp text-emerald-500"></i> WhatsApp</button>
+                                        <button onclick="executeDirectSocialShare('${item.card_id}', 'gmail')" class="py-1 px-2.5 rounded-lg bg-slate-900 border border-slate-800 text-[10px] font-bold text-slate-300 flex items-center justify-center gap-1"><i class="fa-regular fa-envelope text-rose-400"></i> Email</button>
+                                        <button onclick="triggerCardDelete('${item.card_id}')" class="py-1 px-2.5 rounded-lg bg-slate-950 border border-rose-950 text-[10px] font-bold text-rose-400 flex items-center justify-center gap-1"><i class="fa-solid fa-trash"></i> Drop</button>
+                                    </div>
+                                </div>
+                            </div>`;
                         container.appendChild(card);
                     }
                 });
             }
-            if(container.innerHTML === "") container.innerHTML = `<div class="text-center py-12 border border-dashed border-slate-800 rounded-2xl text-xs text-slate-500">No logs stream found inside this workspace view.</div>`;
+            if(container.innerHTML === "") container.innerHTML = `<div class="text-center py-16 border border-dashed border-slate-800 rounded-2xl text-xs text-slate-500 font-medium">No parameters matched.</div>`;
         }
 
         function triggerRegistryEdit(id, tab) {
-            let list = tab === 'students' ? state.students : state.teachers; let match = list.find(x => x.id === id); if(!match) return;
+            let list = tab === 'students' ? state.students : state.teachers; 
+            let match = list.find(x => x.id === id); if(!match) return;
             switchRegistryRole(tab === 'students' ? 'student' : 'teacher');
-            document.getElementById('reg_id').value = match.id; document.getElementById('reg_name').value = match.name;
-            document.getElementById('reg_son_of').value = match.son_of; document.getElementById('reg_cnic').value = match.cnic;
-            document.getElementById('reg_contact').value = match.contact; document.getElementById('reg_address').value = match.address;
-            document.getElementById('reg_class').value = match.class; document.getElementById('reg_section').value = match.section;
-            document.getElementById('regFormTitle').innerText = "Modify Registry Record"; document.getElementById('regSubmitBtn').innerText = "Override Log";
+            document.getElementById('reg_id').value = match.id; 
+            document.getElementById('reg_name').value = match.name;
+            document.getElementById('reg_son_of').value = match.son_of; 
+            document.getElementById('reg_cnic').value = match.cnic;
+            document.getElementById('reg_contact').value = match.contact; 
+            document.getElementById('reg_address').value = match.address;
+            document.getElementById('reg_class').value = match.class; 
+            document.getElementById('reg_section').value = match.section;
+            document.getElementById('regFormTitle').innerHTML = `<i class="fa-solid fa-user-pen"></i> Overhaul Registry Block: ${match.id}`; 
+            document.getElementById('regSubmitBtn').innerText = "Override Spreadsheet Row";
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
+
         function triggerScheduleEdit(id) {
             let match = state.schedules.find(x => x.sch_id === id); if(!match) return;
-            document.getElementById('sch_id').value = match.sch_id; document.getElementById('sch_teacher_select').value = match.teacher_id;
-            document.getElementById('sch_day').value = match.day; document.getElementById('sch_time_slot').value = match.time_slot;
-            document.getElementById('sch_subject').value = match.subject; document.getElementById('sch_class').value = match.class;
-            document.getElementById('sch_section').value = match.section; document.getElementById('schFormTitle').innerText = "Modify Schedule Slot"; document.getElementById('schSubmitBtn').innerText = "Override Slot";
-        }
-        function triggerFeeEdit(id) {
-            let match = state.fees.find(x => x.invoice_id === id); if(!match) return;
-            document.getElementById('fee_invoice_id').value = match.invoice_id; document.getElementById('fee_student_select').value = match.student_id;
-            document.getElementById('fee_period').value = match.billing_period; document.getElementById('fee_status').value = match.status;
-            document.getElementById('fee_due').value = match.amount_due; document.getElementById('fee_paid').value = match.amount_paid;
-            document.getElementById('feeFormTitle').innerText = "Modify Invoice Data"; document.getElementById('feeSubmitBtn').innerText = "Override Ledger";
-        }
-        function triggerCardEdit(id) {
-            let match = state.cards.find(x => x.card_id === id); if(!match) return;
-            toggleCardSelectionRole(match.role);
-            document.getElementById('card_invoice_id').value = match.card_id; document.getElementById('card_user_select').value = match.user_id;
-            document.getElementById('card_avatar').value = match.avatar; document.getElementById('card_channel').value = match.channel;
-            document.getElementById('card_destination').value = match.destination;
-            document.getElementById('cardFormTitle').innerText = "Modify Asset Token"; document.getElementById('cardSubmitBtn').innerText = "Override Config";
+            document.getElementById('sch_id').value = match.sch_id; 
+            document.getElementById('sch_teacher_select').value = match.teacher_id;
+            document.getElementById('sch_day').value = match.day; 
+            document.getElementById('sch_time_slot').value = match.time_slot;
+            document.getElementById('sch_subject').value = match.subject; 
+            document.getElementById('sch_class').value = match.class;
+            document.getElementById('sch_section').value = match.section; 
+            document.getElementById('schFormTitle').innerText = "Modify Schedule Slot"; 
+            document.getElementById('schSubmitBtn').innerText = "Override Slot";
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        async function triggerRegistryDelete(id, role) { if(confirm('Erase profile?')) { toggleOverlayLoader(true); await cloudFetchEngine("deleteRegistry", {role: role==='students'?'student':'teacher', id: id}); setTimeout(refreshMasterLedger, 600); } }
-        async function triggerScheduleDelete(id) { if(confirm('Drop schedule block?')) { toggleOverlayLoader(true); await cloudFetchEngine("deleteSchedule", {sch_id: id}); setTimeout(refreshMasterLedger, 600); } }
-        async function triggerFeeDelete(id) { if(confirm('Erase ledger row?')) { toggleOverlayLoader(true); await cloudFetchEngine("deleteFee", {invoice_id: id}); setTimeout(refreshMasterLedger, 600); } }
-        async function triggerCardDelete(id) { if(confirm('Revoke card token?')) { toggleOverlayLoader(true); await cloudFetchEngine("deleteCard", {card_id: id}); setTimeout(refreshMasterLedger, 600); } }
+        function executeLocalCardDownload(cardId) {
+            const cardElement = document.getElementById(`pass-card-${cardId}`); if(!cardElement) return;
+            const cleanContent = cardElement.cloneNode(true);
+            cleanContent.querySelector('.grid')?.remove(); // clean actions block for clean card
+            const htmlContent = `<html><head><script src="https://cdn.tailwindcss.com"><\/script></head><body class="bg-slate-950 p-8 text-white flex justify-center items-center h-screen"><div class="w-[450px] bg-slate-900 border border-slate-800 p-5 rounded-3xl">${cleanContent.innerHTML}</div></body></html>`;
+            const blob = new Blob([htmlContent], { type: 'text/html' });
+            const link = document.createElement('a'); link.href = URL.createObjectURL(blob);
+            link.download = `Identity_Pass_${cardId}.html`; link.click();
+        }
 
-        function clearRegistryFormState() { document.getElementById('registryForm').reset(); document.getElementById('reg_id').value = ""; document.getElementById('regFormTitle').innerText = "Base Profiles Enrollment"; document.getElementById('regSubmitBtn').innerText = "Save Profile Entry"; }
-        function clearScheduleFormState() { document.getElementById('scheduleForm').reset(); document.getElementById('sch_id').value = ""; document.getElementById('schFormTitle').innerText = "Timetable Planner Matrix"; document.getElementById('schSubmitBtn').innerText = "Lock Routine Block"; }
-        function clearFeeFormState() { document.getElementById('feeForm').reset(); document.getElementById('fee_invoice_id').value = ""; document.getElementById('feeFormTitle').innerText = "Fee Collections Ledger"; document.getElementById('feeSubmitBtn').innerText = "Commit Financial Log"; }
-        function clearCardFormState() { document.getElementById('idCardForm').reset(); document.getElementById('card_invoice_id').value = ""; document.getElementById('cardFormTitle').innerText = "ID & Dispatch Processing Engine"; document.getElementById('cardSubmitBtn').innerText = "Compile & Route Alert"; }
+        function executeDirectSocialShare(cardId, type) {
+            let match = state.cards.find(x => x.card_id === cardId); if(!match) return;
+            let message = `Hello ${match.name}, Your Dynamic Digital Security ID Pass Card has been successfully compiled under Identity Token ${match.card_id}. Base profile allocation: ${match.user_id}.`;
+            if(type === 'whatsapp') {
+                window.open(`https://api.whatsapp.com/send?phone=${match.destination.replace(/[^0-9]/g, '')}&text=${encodeURIComponent(message)}`, '_blank');
+            } else if(type === 'gmail') {
+                window.open(`mailto:${match.destination}?subject=Security ID Asset Compiled&body=${encodeURIComponent(message)}`, '_blank');
+            }
+        }
 
+        async function triggerRegistryDelete(id, role) { if(confirm('Erase profile row?')) { toggleOverlayLoader(true); await cloudFetchEngine("deleteRegistry", {role: role==='students'?'student':'teacher', id: id}); setTimeout(refreshMasterLedger, 500); } }
+        async function triggerScheduleDelete(id) { if(confirm('Drop schedule row?')) { toggleOverlayLoader(true); await cloudFetchEngine("deleteSchedule", {sch_id: id}); setTimeout(refreshMasterLedger, 500); } }
+        async function triggerCardDelete(id) { if(confirm('Revoke identity pass?')) { toggleOverlayLoader(true); await cloudFetchEngine("deleteCard", {card_id: id}); setTimeout(refreshMasterLedger, 500); } }
+
+        function clearRegistryFormState() { document.getElementById('registryForm').reset(); document.getElementById('reg_id').value = ""; document.getElementById('regFormTitle').innerHTML = `<i class="fa-solid fa-address-book"></i> Registry Onboarding Rails`; document.getElementById('regSubmitBtn').innerText = "Deploy Record Block"; }
+        function clearScheduleFormState() { document.getElementById('scheduleForm').reset(); document.getElementById('sch_id').value = ""; document.getElementById('schFormTitle').innerText = "Routine Assignment Console"; document.getElementById('schSubmitBtn').innerText = "Secure Matrix Slot"; }
+        function clearCardFormState() { document.getElementById('idCardForm').reset(); document.getElementById('card_invoice_id').value = ""; document.getElementById('card_avatar_base64').value = ""; document.getElementById('avatarDataPreview').src = "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100"; document.getElementById('avatarStatusLabel').innerText = "No fresh asset cached."; if(state.localVideoStream) { state.localVideoStream.getTracks().forEach(t => t.stop()); } document.getElementById('cameraDeckWrapper').classList.add('hidden'); }
         function toggleOverlayLoader(show) { const box = document.getElementById('masterLoaderBox'); if(box) { if(show) box.classList.remove('hidden'); else box.classList.add('hidden'); } }
-        function triggerToast(m, c) { const b = document.getElementById('alertBox'); b.className = "mt-2 text-center text-[11px] font-bold p-2 rounded-lg bg-slate-950 border border-slate-800 " + c; b.innerText = m; b.style.opacity = '1'; setTimeout(() => { b.style.opacity = '0'; }, 4000); }
+        function triggerToast(m, c) { const b = document.getElementById('alertBox'); b.className = "fixed top-28 right-4 z-50 max-w-sm text-xs font-bold p-3 rounded-xl bg-slate-950 border border-slate-800 shadow-2xl transition-all duration-300 transform translate-x-0 " + c; b.innerText = m; b.style.opacity = '1'; setTimeout(() => { b.style.opacity = '0'; b.style.transform = 'translateX(20px)'; }, 5000); }
     </script>
 </body>
 </html>
