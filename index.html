@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quantum Node Studio v12.0 | Fee Roster & Receipt Engine</title>
+    <title>Quantum Node Studio v13.0 | Roster & Card Management Core</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -12,11 +12,14 @@
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #020617; }
         .glow-card { transition: all 0.3s ease; }
         .glow-card:hover { transform: translateY(-2px); border-color: rgba(99, 102, 241, 0.3); }
+        
+        /* FIX: Ultimate Double Sided Flip Card 3D Engine */
         .id-card-wrapper { perspective: 1200px; width: 320px; height: 460px; }
         .id-card-inner { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
         .id-card-front, .id-card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 1.25rem; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); }
+        
+        /* Refined back rotation syntax to avoid mirrored upside-down text */
         .id-card-back { transform: rotateY(180deg); }
-        .id-card-back-content { transform: rotateY(180deg); width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; }
         .flipped .id-card-inner { transform: rotateY(180deg); }
     </style>
 </head>
@@ -80,7 +83,7 @@
             </div>
 
             <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 shadow-xl">
-                <h3 id="regFormTitle" class="text-xs font-black text-emerald-400 mb-3 uppercase tracking-wider flex items-center gap-1.5"><i class="fa-solid fa-address-book"></i> Registry Onboarding & Fee Matrix</h3>
+                <h3 id="regFormTitle" class="text-xs font-black text-emerald-400 mb-3 uppercase tracking-wider flex items-center gap-1.5"><i class="fa-solid fa-address-book"></i> Registry Onboarding Rails</h3>
                 <form id="registryForm" onsubmit="commitRegistryRecord(event)" class="space-y-3">
                     <input type="hidden" id="reg_id">
                     <div class="grid grid-cols-2 gap-2 p-1 bg-slate-950 rounded-xl border border-slate-800">
@@ -96,9 +99,10 @@
                         <input type="text" id="reg_contact" required placeholder="Contact Gateway" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none">
                     </div>
                     <input type="text" id="reg_address" required placeholder="Residence Address" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none">
+                    
                     <div class="grid grid-cols-3 gap-2">
-                        <input type="text" id="reg_class" required placeholder="Class" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none">
-                        <input type="text" id="reg_section" required placeholder="Sec" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none">
+                        <input type="text" id="reg_class" required placeholder="Class / Dept" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none">
+                        <input type="text" id="reg_section" required placeholder="Sec / Room" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none">
                         <select id="reg_extra" onchange="calculateFormBalance()" class="text-xs bg-slate-950 border border-slate-800 rounded-xl p-2 text-white outline-none">
                             <option value="Paid">Paid</option>
                             <option value="Unpaid">Unpaid</option>
@@ -117,6 +121,21 @@
                         <div class="grid grid-cols-2 gap-2">
                             <input type="number" id="reg_fee_paid" oninput="calculateFormBalance()" placeholder="Paid Amount" class="w-full text-xs bg-slate-900 border border-slate-800 rounded-lg p-2 text-white outline-none">
                             <input type="number" id="reg_fee_balance" readonly placeholder="Remaining Due" class="w-full text-xs bg-slate-900 border border-slate-800 rounded-lg p-2 bg-slate-950/40 text-rose-400 font-bold font-mono outline-none">
+                        </div>
+                    </div>
+
+                    <div id="facultyPeriodAddons" class="bg-slate-950 border border-slate-800 rounded-xl p-3 space-y-2 hidden">
+                        <p class="text-[10px] font-mono tracking-widest text-blue-500 uppercase">Period Assignment Matrix</p>
+                        <div class="grid grid-cols-3 gap-1.5">
+                            <input type="text" id="reg_teacher_subject" placeholder="Subject" class="w-full text-xs bg-slate-900 border border-slate-800 rounded-lg p-2 text-white outline-none">
+                            <input type="text" id="reg_teacher_slot" placeholder="e.g. 09:00 AM" class="w-full text-xs bg-slate-900 border border-slate-800 rounded-lg p-2 text-white outline-none">
+                            <select id="reg_teacher_period" class="w-full text-xs bg-slate-900 border border-slate-800 rounded-lg p-2 text-white outline-none">
+                                <option value="1st Period">1st Per.</option>
+                                <option value="2nd Period">2nd Per.</option>
+                                <option value="3rd Period">3rd Per.</option>
+                                <option value="4th Period">4th Per.</option>
+                                <option value="5th Period">5th Per.</option>
+                            </select>
                         </div>
                     </div>
 
@@ -195,7 +214,7 @@
 
     <footer class="border-t border-slate-900 bg-slate-950/90 py-4 text-center text-xs text-slate-500 font-semibold tracking-wider">
         <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-            <p>Unified Node Core v12.0</p>
+            <p>Unified Node Core v13.0</p>
             <p id="bottomDynamicFooter" class="tracking-widest text-slate-400 font-black uppercase">---</p>
         </div>
     </footer>
@@ -267,17 +286,21 @@
         function switchRegistryRole(r) {
             state.registryCurrentRole = r;
             const extraEl = document.getElementById('reg_extra');
-            const addon = document.getElementById('feeDynamicAddons');
+            const feeAddon = document.getElementById('feeDynamicAddons');
+            const facAddon = document.getElementById('facultyPeriodAddons');
+            
             if(r === 'student') {
                 document.getElementById('roleBtnStudent').className = "py-1.5 text-xs font-bold rounded bg-emerald-600 text-white";
                 document.getElementById('roleBtnTeacher').className = "py-1.5 text-xs font-bold rounded text-slate-500";
                 extraEl.innerHTML = '<option value="Paid">Paid</option><option value="Unpaid">Unpaid</option><option value="Balance">Balance</option>';
-                addon.classList.remove('hidden');
+                feeAddon.classList.remove('hidden');
+                facAddon.classList.add('hidden');
             } else {
                 document.getElementById('roleBtnStudent').className = "py-1.5 text-xs font-bold rounded text-slate-500";
                 document.getElementById('roleBtnTeacher').className = "py-1.5 text-xs font-bold rounded bg-blue-600 text-white";
                 extraEl.innerHTML = '<option value="Faculty Staff">Faculty</option><option value="Management Head">Head Faculty</option>';
-                addon.classList.add('hidden');
+                feeAddon.classList.add('hidden');
+                facAddon.classList.remove('hidden');
             }
         }
 
@@ -337,6 +360,22 @@
                             ? `<span class="text-[10px] font-bold px-2 py-0.5 rounded-md ${item.fee_status==='Paid'?'bg-emerald-950 text-emerald-400 border border-emerald-800':item.fee_status==='Balance'?'bg-amber-950 text-amber-400 border border-amber-800':'bg-rose-950 text-rose-400 border border-rose-800'}"><i class="fa-solid fa-money-check-dollar mr-1"></i>${item.fee_status} (${item.fee_month || 'N/A'})</span>`
                             : `<span class="text-[10px] font-bold px-2 py-0.5 rounded-md bg-blue-950 text-blue-400 border border-blue-800">${item.extra_field || 'Faculty'}</span>`;
 
+                        let dataSection = isStudent ? `
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1 text-xs text-slate-400">
+                                <p><span class="text-slate-600 font-bold">Total/Paid:</span> Rs. ${item.fee_total || 0} / ${item.fee_paid || 0}</p>
+                                <p><span class="text-slate-600 font-bold">Remaining Bal:</span> Rs. ${item.fee_balance || 0}</p>
+                                <p><span class="text-slate-600 font-bold">Contact:</span> ${item.contact}</p>
+                                <p class="truncate"><span class="text-slate-600 font-bold">Address:</span> ${item.address}</p>
+                            </div>
+                        ` : `
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1 text-xs text-slate-400">
+                                <p><span class="text-slate-600 font-bold">Assigned Period:</span> <span class="text-blue-400 font-medium">${item.teacher_period || 'None'}</span></p>
+                                <p><span class="text-slate-600 font-bold">Subject / Slot:</span> ${item.teacher_subject || 'N/A'} (${item.teacher_slot || 'N/A'})</p>
+                                <p><span class="text-slate-600 font-bold">Contact:</span> ${item.contact}</p>
+                                <p class="truncate"><span class="text-slate-600 font-bold">CNIC Token:</span> ${item.cnic}</p>
+                            </div>
+                        `;
+
                         card.innerHTML = `
                             <div class="space-y-2 flex-grow w-full">
                                 <div class="flex items-center justify-between border-b border-slate-950 pb-2">
@@ -347,12 +386,7 @@
                                     </div>
                                     <span class="text-[10px] text-slate-500 font-bold">${item.class}-${item.section}</span>
                                 </div>
-                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1 text-xs text-slate-400">
-                                    <p><span class="text-slate-600 font-bold">Total/Paid:</span> Rs. ${item.fee_total || 0} / ${item.fee_paid || 0}</p>
-                                    <p><span class="text-slate-600 font-bold">Remaining Bal:</span> Rs. ${item.fee_balance || 0}</p>
-                                    <p><span class="text-slate-600 font-bold">Contact:</span> ${item.contact}</p>
-                                    <p class="truncate"><span class="text-slate-600 font-bold">Address:</span> ${item.address}</p>
-                                </div>
+                                ${dataSection}
                             </div>
                             <div class="flex items-center gap-1.5 bg-slate-950/60 p-1.5 rounded-xl border border-slate-800 shrink-0">
                                 ${isStudent ? `<button onclick="processReceiptOperations('${item.id}', 'download')" class="w-8 h-8 rounded-lg bg-slate-900 text-sky-400 hover:bg-slate-800 flex items-center justify-center" title="Receipt Downloader"><i class="fa-solid fa-receipt text-[11px]"></i></button>` : ''}
@@ -367,7 +401,11 @@
                     if (item.name.toLowerCase().includes(search) || item.card_id.toLowerCase().includes(search)) {
                         let qrSrc = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + encodeURIComponent(item.user_id);
                         let matchedObject = item.role === 'student' ? state.students.find(s=>s.id===item.user_id) : state.teachers.find(t=>t.id===item.user_id);
-                        let subInfoValue = matchedObject ? (item.role==='student' ? `Fee: ${matchedObject.fee_status}` : (matchedObject.extra_field || 'Faculty')) : 'Active';
+                        
+                        let subInfoValue = 'Active';
+                        if(matchedObject) {
+                            subInfoValue = item.role==='student' ? `Fee: ${matchedObject.fee_status}` : `${matchedObject.teacher_period || 'Faculty'}`;
+                        }
                         let classValue = matchedObject ? `${matchedObject.class}-${matchedObject.section}` : 'N/A';
 
                         let cardWrapper = document.createElement('div');
@@ -392,24 +430,23 @@
                                         </div>
                                         <div class="bg-slate-900/60 border border-slate-900 rounded-xl p-3 space-y-1.5 text-xs">
                                             <div class="flex justify-between"><span class="text-slate-500 font-bold">Class / Dept:</span><span class="text-white font-extrabold">${classValue}</span></div>
-                                            <div class="flex justify-between"><span class="text-slate-500 font-bold">Status:</span><span class="text-emerald-400 font-black">${subInfoValue}</span></div>
+                                            <div class="flex justify-between"><span class="text-slate-500 font-bold">Duty Status:</span><span class="text-emerald-400 font-black">${subInfoValue}</span></div>
                                         </div>
                                         <div class="flex items-center justify-between border-t border-slate-900 pt-2.5 text-[9px] font-mono text-slate-500">
                                             <span>TOKEN: ${item.card_id}</span>
                                         </div>
                                     </div>
-                                    <div class="id-card-back bg-slate-950 border-2 border-slate-800 p-6">
-                                        <div class="id-card-back-content">
-                                            <div class="flex flex-col items-center justify-center my-auto space-y-4 w-full">
-                                                <img src="${logo}" class="w-14 h-14 rounded-2xl object-cover border border-slate-800 bg-slate-900">
-                                                <div class="text-center w-full">
-                                                    <h4 class="text-xs font-black text-white uppercase break-words px-1">${sName}</h4>
-                                                    <p class="text-[9px] text-slate-400 font-bold mt-1">${sContact}</p>
-                                                </div>
-                                                <div class="bg-white p-1.5 rounded-xl"><img src="${qrSrc}" class="w-16 h-16"></div>
+                                    
+                                    <div class="id-card-back bg-slate-950 border-2 border-slate-800 p-6 flex flex-col justify-between text-center">
+                                        <div class="flex flex-col items-center justify-center my-auto space-y-4 w-full">
+                                            <img src="${logo}" class="w-14 h-14 rounded-2xl object-cover border border-slate-800 bg-slate-900">
+                                            <div class="text-center w-full">
+                                                <h4 class="text-xs font-black text-white uppercase break-words px-1">${sName}</h4>
+                                                <p class="text-[9px] text-slate-400 font-bold mt-1">${sContact}</p>
                                             </div>
-                                            <p class="text-[8px] font-black tracking-widest text-slate-600 uppercase text-center w-full">HNK & SHEEKAN STUDIO</p>
+                                            <div class="bg-white p-1.5 rounded-xl"><img src="${qrSrc}" class="w-16 h-16"></div>
                                         </div>
+                                        <p class="text-[8px] font-black tracking-widest text-slate-600 uppercase text-center w-full">HNK & SHEEKAN STUDIO</p>
                                     </div>
                                 </div>
                             </div>
@@ -439,7 +476,6 @@
             if(container.innerHTML === "") container.innerHTML = `<div class="text-center py-16 border border-dashed border-slate-800 rounded-2xl text-xs text-slate-500 w-full">No records found.</div>`;
         }
 
-        // COMPREHENSIVE MULTI-CHANNEL RECEIPT ROUTING PARSER
         function processReceiptOperations(studentId, mode) {
             let s = state.students.find(x => x.id === studentId);
             if(!s) { triggerToast("Profile lookup failure.", "text-rose-400"); return; }
@@ -458,7 +494,7 @@
             let element = document.getElementById('receiptSecureRenderZone');
             html2canvas(element, { useCORS: true, allowTaint: true, scale: 3 }).then(canvas => {
                 let imgData = canvas.toDataURL('image/png');
-                let message = `Dear Guardian, Dynamic Fee Receipt Voucher for student ${s.name} (Class: ${s.class}-${s.section}) for the month of ${s.fee_month || 'Current'} has been finalized.\nTotal: Rs.${s.fee_total}\nPaid: Rs.${s.fee_paid}\nOutstanding Balance: Rs.${s.fee_balance}.`;
+                let message = `Dear Guardian, Fee Receipt Voucher for student ${s.name} (Class: ${s.class}-${s.section}) for the month of ${s.fee_month || 'Current'} has been generated.\nTotal: Rs.${s.fee_total}\nPaid: Rs.${s.fee_paid}\nOutstanding Balance: Rs.${s.fee_balance}.`;
                 
                 if(mode === 'download') {
                     let link = document.createElement('a');
@@ -483,7 +519,10 @@
                 address: document.getElementById('reg_address').value, class_assigned: document.getElementById('reg_class').value,
                 section_assigned: document.getElementById('reg_section').value, extra_field: document.getElementById('reg_extra').value,
                 fee_month: document.getElementById('reg_fee_month').value, fee_total: document.getElementById('reg_fee_total').value,
-                fee_paid: document.getElementById('reg_fee_paid').value, fee_balance: document.getElementById('reg_fee_balance').value
+                fee_paid: document.getElementById('reg_fee_paid').value, fee_balance: document.getElementById('reg_fee_balance').value,
+                teacher_subject: document.getElementById('reg_teacher_subject').value,
+                teacher_slot: document.getElementById('reg_teacher_slot').value,
+                teacher_period: document.getElementById('reg_teacher_period').value
             };
             let response = await cloudFetchEngine("saveRegistry", payload);
             triggerToast(response.message, response.success ? "text-emerald-400" : "text-rose-400");
@@ -509,6 +548,10 @@
                 document.getElementById('reg_fee_total').value = match.fee_total || 0;
                 document.getElementById('reg_fee_paid').value = match.fee_paid || 0;
                 document.getElementById('reg_fee_balance').value = match.fee_balance || 0;
+            } else {
+                document.getElementById('reg_teacher_subject').value = match.teacher_subject || '';
+                document.getElementById('reg_teacher_slot').value = match.teacher_slot || '';
+                document.getElementById('reg_teacher_period').value = match.teacher_period || '1st Period';
             }
             document.getElementById('regFormTitle').innerHTML = `<i class="fa-solid fa-user-pen"></i> Overhaul Block: ${match.id}`; 
             document.getElementById('regSubmitBtn').innerText = "Override Roster Row";
@@ -528,7 +571,7 @@
         async function initializeHardwareCamera() { const w = document.getElementById('cameraDeckWrapper'); const v = document.getElementById('hardwareVideoStream'); w.classList.remove('hidden'); try { if(state.localVideoStream) { state.localVideoStream.getTracks().forEach(t => t.stop()); } state.localVideoStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false }); v.srcObject = state.localVideoStream; } catch (err) { triggerToast("Camera error.", "text-rose-400"); w.classList.add('hidden'); } }
         function executeCameraCaptureSnapshot() { const v = document.getElementById('hardwareVideoStream'); const c = document.getElementById('hiddenCaptureCanvas'); const ctx = c.getContext('2d'); c.width = v.videoWidth || 640; c.height = v.videoHeight || 480; ctx.drawImage(v, 0, 0, c.width, c.height); const d = c.toDataURL('image/jpeg'); document.getElementById('avatarDataPreview').src = d; document.getElementById('card_avatar_base64').value = d; if(state.localVideoStream) { state.localVideoStream.getTracks().forEach(t => t.stop()); } document.getElementById('cameraDeckWrapper').classList.add('hidden'); }
         async function commitIdentityCardRecord(e) { e.preventDefault(); toggleOverlayLoader(true); let el = document.getElementById('card_user_select'); let payload = { role: state.cardCurrentRole, user_id: el.value, name: el.options[el.selectedIndex].text.split(' (')[0], avatar: document.getElementById('card_avatar_base64').value || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100', channel: document.getElementById('card_channel').value, destination: document.getElementById('card_destination').value }; await cloudFetchEngine("saveCard", payload); triggerToast("Identity Pass Compiled.", "text-sky-400"); clearCardFormState(); setTimeout(refreshMasterLedger, 500); }
-        function executeDirectSocialShare(cardId, type) { let match = state.cards.find(x => x.card_id === cardId); if(!match) return; let msg = `Dynamic Double-Sided Identity Pass Asset processed for ${match.name}. Tracking Token: ${match.card_id}.`; if(type === 'whatsapp') { window.open(`https://api.whatsapp.com/send?phone=${match.destination.replace(/[^0-9]/g, '')}&text=${encodeURIComponent(msg)}`, '_blank'); } else if(type === 'gmail') { window.open(`mailto:${match.destination}?subject=Security Token&body=${encodeURIComponent(msg)}`, '_blank'); } }
+        function executeDirectSocialShare(cardId, type) { let match = state.cards.find(x => x.card_id === cardId); if(!match) return; let msg = `Double-Sided Identity Pass Asset processed for ${match.name}. Tracking Token: ${match.card_id}.`; if(type === 'whatsapp') { window.open(`https://api.whatsapp.com/send?phone=${match.destination.replace(/[^0-9]/g, '')}&text=${encodeURIComponent(msg)}`, '_blank'); } else if(type === 'gmail') { window.open(`mailto:${match.destination}?subject=Security Token&body=${encodeURIComponent(msg)}`, '_blank'); } }
         async function triggerRegistryDelete(id, role) { if(confirm('Erase row?')) { toggleOverlayLoader(true); await cloudFetchEngine("deleteRegistry", {role: role==='students'?'student':'teacher', id: id}); setTimeout(refreshMasterLedger, 500); } }
         async function triggerCardDelete(id) { if(confirm('Revoke pass?')) { toggleOverlayLoader(true); await cloudFetchEngine("deleteCard", {card_id: id}); setTimeout(refreshMasterLedger, 500); } }
         function downloadCardSideAsPNG(id, sc, fn) { const wr = document.getElementById(`wrap-${id}`); let ts = wr.querySelector(`.${sc}`); html2canvas(ts, { useCORS: true, allowTaint: true, backgroundColor: "#020617", scale: 3 }).then(canvas => { let link = document.createElement('a'); link.download = `${fn}.png`; link.href = canvas.toDataURL('image/png'); link.click(); }); }
