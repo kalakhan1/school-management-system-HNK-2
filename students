@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enterprise Ledger Data Matrix</title>
+    <title>Student Records Matrix | Console</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
@@ -21,16 +21,21 @@
 <body class="text-slate-100 min-h-screen flex flex-col justify-between">
 
     <script>
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx6OSzyntoj7b0HhyognqXN5F_dnbsZ6gWgw9QFE7rjb1_HC1Ju-9LNHpDdzxpVygJS/exec";
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx6OSzyntoj7b0HhyognXN5F_dnbsZ6gWgw9QFE7rjb1_HC1Ju-9LNHpDdzxpVygJS/exec";
     </script>
 
     <header class="border-b border-slate-900 bg-slate-950/80 backdrop-blur-md sticky top-0 z-50 p-5 shadow-xl">
         <div class="max-w-[96%] mx-auto flex flex-col sm:flex-row gap-4 items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="w-3.5 h-3.5 rounded-full bg-emerald-500 animate-pulse"></div>
-                <h1 class="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent uppercase">
-                    Student Ledger Matrix Monitor
-                </h1>
+            <div class="flex items-center gap-4">
+                <a href="index.html" class="bg-slate-900 hover:bg-slate-850 border border-slate-800 text-slate-300 text-sm font-bold px-4 py-2.5 rounded-xl transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-arrow-left"></i> Hub
+                </a>
+                <div class="flex items-center gap-3">
+                    <div class="w-3.5 h-3.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                    <h1 class="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent uppercase">
+                        Student Ledger Matrix
+                    </h1>
+                </div>
             </div>
             <div class="flex items-center gap-3">
                 <button onclick="copyFilteredDataToClipboard()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm px-5 py-3 rounded-xl shadow-lg transition-all flex items-center gap-2">
