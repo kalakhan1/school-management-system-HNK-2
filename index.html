@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise Operational Control Portal | HNK & SHEEKAN</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #030712; }
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: #0b1329; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
+    </style>
+</head>
+<body class="text-slate-100 min-h-screen flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
+
+    <script>
+        // ==========================================
+        // PASTE YOUR GOOGLE WEB APP EXEC URL HERE Via GitHub Pages Deployment
+        // ==========================================
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwvMnMHGOFtszOfWrsjqq-bG00h5gZ_K1LW76OxPGsJNxpGBTJJT-HR2gdlRUY1qFY/exec";
+    </script>
+
+    <header class="border-b border-slate-900 bg-slate-950/80 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row gap-4 items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-500 flex items-center justify-center text-white shadow-xl shadow-indigo-950/50">
+                    <i class="fa-solid fa-circle-nodes text-lg"></i>
+                </div>
+                <div class="text-center md:text-left">
+                    <h1 class="text-lg font-extrabold tracking-tight">Quantum Unified Management Core</h1>
+                    <p class="text-xs text-indigo-400 font-semibold tracking-wide">HNK & SHEEKAN TECH AND STUDIO</p>
+                </div>
+            </div>
+            <div class="flex flex-wrap justify-center gap-2 text-[11px] font-bold">
+                <span class="bg-slate-900 border border-slate-800 text-slate-400 px-2.5 py-1.5 rounded-xl">Reg: <span id="countReg" class="text-emerald-400">0</span></span>
+                <span class="bg-slate-900 border border-slate-800 text-slate-400 px-2.5 py-1.5 rounded-xl">Schedules: <span id="countSch" class="text-purple-400">0</span></span>
+                <span class="bg-slate-900 border border-slate-800 text-slate-400 px-2.5 py-1.5 rounded-xl">Invoices: <span id="countFee" class="text-orange-400">0</span></span>
+                <span class="bg-slate-900 border border-slate-800 text-slate-400 px-2.5 py-1.5 rounded-xl">Cards: <span id="countCard" class="text-sky-400">0</span></span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto w-full p-4 md:py-8 grid grid-cols-1 lg:grid-cols-12 gap-8 flex-grow">
+        
+        <section class="lg:col-span-5 space-y-6">
+            <div class="relative bg-slate-900/40 border border-slate-800 p-1 rounded-2xl hidden" id="masterLoaderBox">
+                <div class="p-3 text-xs flex items-center justify-center gap-3 text-indigo-400 font-medium">
+                    <div class="w-4 h-4 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+                    Executing Secure Cloud Database Multi-Tenant Pipeline Request...
+                </div>
+            </div>
+
+            <div class="bg-slate-900/80 border border-emerald-950/40 rounded-2xl p-5 shadow-xl">
+                <h3 id="regFormTitle" class="text-sm font-extrabold text-white mb-3 uppercase text-emerald-400 flex items-center gap-1.5"><i class="fa-solid fa-user-plus"></i> Base Profiles Enrollment</h3>
+                <form id="registryForm" onsubmit="commitRegistryRecord(event)" class="space-y-3">
+                    <input type="hidden" id="reg_id">
+                    <div class="grid grid-cols-2 gap-2 p-1 bg-slate-950 rounded-xl border border-slate-800">
+                        <button type="button" id="roleBtnStudent" onclick="switchRegistryRole('student')" class="py-1 text-xs font-bold rounded bg-emerald-600 text-white">Student Profile</button>
+                        <button type="button" id="roleBtnTeacher" onclick="switchRegistryRole('teacher')" class="py-1 text-xs font-bold rounded text-slate-400">Faculty Profile</button>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="text" id="reg_name" required placeholder="Full Name" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white focus:outline-none focus:border-emerald-500">
+                        <input type="text" id="reg_son_of" required placeholder="Father/Son of" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white focus:outline-none focus:border-emerald-500">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="text" id="reg_cnic" required placeholder="CNIC Token String" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white focus:outline-none focus:border-emerald-500">
+                        <input type="text" id="reg_contact" required placeholder="Active Contact Link" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white focus:outline-none focus:border-emerald-500">
+                    </div>
+                    <input type="text" id="reg_address" required placeholder="Permanent Destination Address" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white focus:outline-none focus:border-emerald-500">
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="text" id="reg_class" required placeholder="Target Class" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white focus:outline-none focus:border-emerald-500">
+                        <input type="text" id="reg_section" required placeholder="Allocated Section" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white focus:outline-none focus:border-emerald-500">
+                    </div>
+                    <div class="flex gap-2">
+                        <button type="button" onclick="clearRegistryFormState()" class="w-1/3 py-2 bg-slate-800 font-bold rounded-xl text-xs">Clear</button>
+                        <button type="submit" id="regSubmitBtn" class="w-2/3 py-2 bg-emerald-600 font-bold text-white rounded-xl text-xs">Save Profile Entry</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="bg-slate-900/80 border border-purple-950/40 rounded-2xl p-5 shadow-xl">
+                <h3 id="schFormTitle" class="text-sm font-extrabold text-white mb-3 uppercase text-purple-400 flex items-center gap-1.5"><i class="fa-solid fa-clock"></i> Timetable Planner Matrix</h3>
+                <form id="scheduleForm" onsubmit="commitScheduleRecord(event)" class="space-y-3">
+                    <input type="hidden" id="sch_id">
+                    <div>
+                        <select id="sch_teacher_select" required class="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white focus:outline-none"></select>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <select id="sch_day" required class="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white">
+                            <option value="Monday">Monday</option><option value="Tuesday">Tuesday</option><option value="Wednesday">Wednesday</option><option value="Thursday">Thursday</option><option value="Friday">Friday</option>
+                        </select>
+                        <input type="text" id="sch_time_slot" required placeholder="e.g. 09:00 AM - 09:45 AM" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white">
+                    </div>
+                    <div class="grid grid-cols-3 gap-2">
+                        <input type="text" id="sch_subject" required placeholder="Subject" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white">
+                        <input type="text" id="sch_class" required placeholder="Class" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white">
+                        <input type="text" id="sch_section" required placeholder="Sec" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white">
+                    </div>
+                    <div class="flex gap-2">
+                        <button type="button" onclick="clearScheduleFormState()" class="w-1/3 py-2 bg-slate-800 font-bold rounded-xl text-xs">Clear</button>
+                        <button type="submit" id="schSubmitBtn" class="w-2/3 py-2 bg-purple-600 font-bold text-white rounded-xl text-xs">Lock Routine Block</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="bg-slate-900/80 border border-orange-950/40 rounded-2xl p-5 shadow-xl">
+                <h3 id="feeFormTitle" class="text-sm font-extrabold text-white mb-3 uppercase text-orange-400 flex items-center gap-1.5"><i class="fa-solid fa-wallet"></i> Fee Collections Ledger</h3>
+                <form id="feeForm" onsubmit="commitFeeRecord(event)" class="space-y-3">
+                    <input type="hidden" id="fee_invoice_id">
+                    <div>
+                        <select id="fee_student_select" required class="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white"></select>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="text" id="fee_period" required placeholder="e.g. July 2026" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white">
+                        <select id="fee_status" required class="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white">
+                            <option value="Paid">Cleared / Paid</option>
+                            <option value="Unpaid">Pending / Defaulter</option>
+                        </select>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="number" id="fee_due" required placeholder="Due Amount" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white">
+                        <input type="number" id="fee_paid" required placeholder="Amount Paid" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white">
+                    </div>
+                    <div class="flex gap-2">
+                        <button type="button" onclick="clearFeeFormState()" class="w-1/3 py-2 bg-slate-800 font-bold rounded-xl text-xs">Clear</button>
+                        <button type="submit" id="feeSubmitBtn" class="w-2/3 py-2 bg-orange-600 font-bold text-white rounded-xl text-xs">Commit Financial Log</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="bg-slate-900/80 border border-sky-950/40 rounded-2xl p-5 shadow-xl">
+                <h3 id="cardFormTitle" class="text-sm font-extrabold text-white mb-3 uppercase text-sky-400 flex items-center gap-1.5"><i class="fa-solid fa-address-card"></i> ID & Dispatch Processing Engine</h3>
+                <form id="idCardForm" onsubmit="commitIdentityCardRecord(event)" class="space-y-3">
+                    <input type="hidden" id="card_invoice_id">
+                    <div class="grid grid-cols-2 gap-2 p-1 bg-slate-950 rounded-xl border border-slate-800">
+                        <button type="button" id="roleSelectStudent" onclick="toggleCardSelectionRole('student')" class="py-1 text-xs font-bold rounded bg-sky-600 text-white">Target Students</button>
+                        <button type="button" id="roleSelectTeacher" onclick="toggleCardSelectionRole('teacher')" class="py-1 text-xs font-bold rounded text-slate-400">Target Faculty</button>
+                    </div>
+                    <div>
+                        <select id="card_user_select" required class="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white"></select>
+                    </div>
+                    <div>
+                        <input type="url" id="card_avatar" required placeholder="Avatar Image Direct HTTPS Link URL" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <select id="card_channel" required class="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white">
+                            <option value="Gmail">Gmail Routing ID</option>
+                            <option value="WhatsApp">WhatsApp Gateway API</option>
+                        </select>
+                        <input type="text" id="card_destination" required placeholder="name@domain.com or Phone" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white">
+                    </div>
+                    <div class="flex gap-2">
+                        <button type="button" onclick="clearCardFormState()" class="w-1/3 py-2 bg-slate-800 font-bold rounded-xl text-xs">Clear</button>
+                        <button type="submit" id="cardSubmitBtn" class="w-2/3 py-2 bg-sky-600 font-bold text-white rounded-xl text-xs">Compile & Route Alert</button>
+                    </div>
+                </form>
+                <div id="alertBox" class="mt-2 text-center text-[11px] font-bold opacity-0 p-2 rounded-lg bg-slate-950 border border-slate-800"></div>
+            </div>
+        </section>
+
+        <section class="lg:col-span-7 space-y-6">
+            <div class="bg-slate-900/40 border border-slate-800 rounded-2xl p-4 flex flex-wrap gap-3 items-center">
+                <div class="flex-grow min-w-[200px] relative">
+                    <i class="fa-solid fa-filter absolute left-3 top-3 text-slate-500 text-xs"></i>
+                    <input type="text" id="filterSearch" oninput="applyInterfaceRendering()" placeholder="Query dynamic records arrays parameters across global database..." class="w-full text-xs bg-slate-950 border border-slate-800 rounded-xl py-2.5 pl-9 pr-4 text-white focus:outline-none">
+                </div>
+                <div class="flex gap-2 w-full sm:w-auto" id="layoutFilterParameters">
+                    <input type="text" id="filterParamOne" oninput="applyInterfaceRendering()" placeholder="Class" class="w-full sm:w-20 text-xs bg-slate-950 border border-slate-800 rounded-xl py-2 px-3 text-white focus:outline-none">
+                    <input type="text" id="filterParamTwo" oninput="applyInterfaceRendering()" placeholder="Sec" class="w-full sm:w-16 text-xs bg-slate-950 border border-slate-800 rounded-xl py-2 px-3 text-white focus:outline-none">
+                </div>
+            </div>
+
+            <div class="border-b border-slate-800 flex flex-wrap gap-4 text-xs font-bold uppercase tracking-wider overflow-x-auto pb-1">
+                <button onclick="switchViewTab('students')" id="tabBtnStudents" class="pb-2 text-emerald-400 border-b-2 border-emerald-500 px-1 flex items-center gap-1"><i class="fa-solid fa-graduation-cap"></i> Students</button>
+                <button onclick="switchViewTab('teachers')" id="tabBtnTeachers" class="pb-2 text-slate-400 border-b-2 border-transparent px-1 flex items-center gap-1"><i class="fa-solid fa-chalkboard-user"></i> Faculty</button>
+                <button onclick="switchViewTab('schedules')" id="tabBtnSchedules" class="pb-2 text-slate-400 border-b-2 border-transparent px-1 flex items-center gap-1"><i class="fa-solid fa-calendar"></i> Schedules</button>
+                <button onclick="switchViewTab('fees')" id="tabBtnFees" class="pb-2 text-slate-400 border-b-2 border-transparent px-1 flex items-center gap-1"><i class="fa-solid fa-coins"></i> Accounting</button>
+                <button onclick="switchViewTab('cards')" id="tabBtnCards" class="pb-2 text-slate-400 border-b-2 border-transparent px-1 flex items-center gap-1"><i class="fa-solid fa-id-badge"></i> Smart Cards</button>
+            </div>
+
+            <div class="space-y-4 max-h-[1100px] overflow-y-auto pr-1" id="cardsGridContainer"></div>
+        </section>
+    </main>
+
+    <footer class="border-t border-slate-900 bg-slate-950/80 py-4 text-center text-xs text-slate-500 font-medium">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+            <p>Unified CORS-Free Operational Ecosystem Engine v7.0</p>
+            <p class="tracking-widest text-slate-400 font-extrabold uppercase">HNK & SHEEKAN TECH AND STUDIO</p>
+        </div>
+    </footer>
+
+    <script>
+        let state = {
+            registryCurrentRole: 'student', cardCurrentRole: 'student', activeTab: 'students',
+            students: [], teachers: [], schedules: [], fees: [], cards: []
+        };
+
+        document.addEventListener('DOMContentLoaded', refreshMasterLedger);
+
+        // Standard CORS Pipeline Request Handler Wrapper
+        async function cloudFetchEngine(actionName, payloadObj = {}) {
+            try {
+                let options = {
+                    method: 'POST',
+                    mode: 'no-cors', // Enforces silent background transactional tracking clearance
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: actionName, payload: payloadObj })
+                };
+                await fetch(GOOGLE_SCRIPT_URL, options);
+                // Due to no-cors mode, execution returns to local threads for refresh
+                return { success: true, message: "Transaction routed to sheet vault." };
+            } catch(e) {
+                return { success: false, message: e.toString() };
+            }
+        }
+
+        function switchRegistryRole(r) {
+            state.registryCurrentRole = r;
+            document.getElementById('roleBtnStudent').className = r === 'student' ? "py-1 text-xs font-bold rounded bg-emerald-600 text-white" : "py-1 text-xs font-bold rounded text-slate-400";
+            document.getElementById('roleBtnTeacher').className = r === 'teacher' ? "py-1 text-xs font-bold rounded bg-blue-600 text-white" : "py-1 text-xs font-bold rounded text-slate-400";
+        }
+
+        function toggleCardSelectionRole(r) {
+            state.cardCurrentRole = r;
+            document.getElementById('roleSelectStudent').className = r === 'student' ? "py-1 text-xs font-bold rounded bg-sky-600 text-white" : "py-1 text-xs font-bold rounded text-slate-400";
+            document.getElementById('roleSelectTeacher').className = r === 'teacher' ? "py-1 text-xs font-bold rounded bg-blue-600 text-white" : "py-1 text-xs font-bold rounded text-slate-400";
+            populateCardUsersDropdown();
+        }
+
+        function switchViewTab(tab) {
+            state.activeTab = tab;
+            const buttons = {
+                students: ['tabBtnStudents', 'text-emerald-400', 'border-emerald-500'],
+                teachers: ['tabBtnTeachers', 'text-blue-400', 'border-blue-500'],
+                schedules: ['tabBtnSchedules', 'text-purple-400', 'border-purple-500'],
+                fees: ['tabBtnFees', 'text-orange-400', 'border-orange-500'],
+                cards: ['tabBtnCards', 'text-sky-400', 'border-sky-500']
+            };
+            Object.keys(buttons).forEach(k => {
+                let btn = document.getElementById(buttons[k][0]);
+                btn.className = (k === tab) ? `pb-2 ${buttons[k][1]} border-b-2 ${buttons[k][2]} px-1 flex items-center gap-1` : "pb-2 text-slate-400 border-b-2 border-transparent px-1 flex items-center gap-1";
+            });
+            const filterOne = document.getElementById('filterParamOne');
+            const filterTwo = document.getElementById('filterParamTwo');
+            if (tab === 'fees') { filterOne.placeholder = "Status"; filterTwo.style.display = "none"; }
+            else if (tab === 'cards') { filterOne.placeholder = "Role"; filterTwo.style.display = "none"; }
+            else { filterOne.placeholder = "Class"; filterTwo.style.display = "inline-block"; }
+            applyInterfaceRendering();
+        }
+
+        function refreshMasterLedger() {
+            toggleOverlayLoader(true);
+            fetch(GOOGLE_SCRIPT_URL)
+                .then(res => res.json())
+                .then(res => {
+                    toggleOverlayLoader(false);
+                    state.students = res.students || []; state.teachers = res.teachers || [];
+                    state.schedules = res.schedules || []; state.fees = res.fees || []; state.cards = res.cards || [];
+                    
+                    document.getElementById('countReg').innerText = state.students.length + state.teachers.length;
+                    document.getElementById('countSch').innerText = state.schedules.length;
+                    document.getElementById('countFee').innerText = state.fees.length;
+                    document.getElementById('countCard').innerText = state.cards.length;
+                    
+                    populateSchedulesTeacherDropdown(); populateFeeStudentDropdown(); populateCardUsersDropdown();
+                    applyInterfaceRendering();
+                }).catch(err => { toggleOverlayLoader(false); });
+        }
+
+        function populateSchedulesTeacherDropdown() {
+            let el = document.getElementById('sch_teacher_select'); el.innerHTML = '<option value="">-- Choose Faculty --</option>';
+            state.teachers.forEach(t => { el.innerHTML += `<option value="${t.id}">${t.name} (${t.id})</option>`; });
+        }
+        function populateFeeStudentDropdown() {
+            let el = document.getElementById('fee_student_select'); el.innerHTML = '<option value="">-- Choose Student --</option>';
+            state.students.forEach(s => { el.innerHTML += `<option value="${s.id}">${s.name} (${s.id})</option>`; });
+        }
+        function populateCardUsersDropdown() {
+            let el = document.getElementById('card_user_select'); el.innerHTML = '<option value="">-- Choose Account Object Reference --</option>';
+            let list = state.cardCurrentRole === 'student' ? state.students : state.teachers;
+            list.forEach(x => { el.innerHTML += `<option value="${x.id}">${x.name} (${x.id})</option>`; });
+        }
+
+        // CRUD Actions Execution Pipelines
+        async function commitRegistryRecord(e) {
+            e.preventDefault(); toggleOverlayLoader(true);
+            let payload = {
+                id: document.getElementById('reg_id').value, role: state.registryCurrentRole,
+                name: document.getElementById('reg_name').value, son_of: document.getElementById('reg_son_of').value,
+                cnic: document.getElementById('reg_cnic').value, contact: document.getElementById('reg_contact').value,
+                address: document.getElementById('reg_address').value, class_assigned: document.getElementById('reg_class').value,
+                section_assigned: document.getElementById('reg_section').value, extra_field: state.registryCurrentRole === 'student' ? 'Unpaid' : 'False'
+            };
+            await cloudFetchEngine("saveRegistry", payload);
+            triggerToast("Profile submission transmitted securely.", "text-emerald-400");
+            clearRegistryFormState(); setTimeout(refreshMasterLedger, 1500);
+        }
+
+        async function commitScheduleRecord(e) {
+            e.preventDefault(); toggleOverlayLoader(true);
+            let el = document.getElementById('sch_teacher_select');
+            let payload = {
+                sch_id: document.getElementById('sch_id').value, teacher_id: el.value, teacher_name: el.options[el.selectedIndex].text.split(' (')[0],
+                day: document.getElementById('sch_day').value, time_slot: document.getElementById('sch_time_slot').value, subject: document.getElementById('sch_subject').value,
+                class_assigned: document.getElementById('sch_class').value, section_assigned: document.getElementById('sch_section').value
+            };
+            await cloudFetchEngine("saveSchedule", payload);
+            triggerToast("Timetable alteration transmitted securely.", "text-purple-400");
+            clearScheduleFormState(); setTimeout(refreshMasterLedger, 1500);
+        }
+
+        async function commitFeeRecord(e) {
+            e.preventDefault(); toggleOverlayLoader(true);
+            let el = document.getElementById('fee_student_select');
+            let payload = {
+                invoice_id: document.getElementById('fee_invoice_id').value, student_id: el.value, student_name: el.options[el.selectedIndex].text.split(' (')[0],
+                billing_period: document.getElementById('fee_period').value, status: document.getElementById('fee_status').value,
+                amount_due: document.getElementById('fee_due').value, amount_paid: document.getElementById('fee_paid').value
+            };
+            await cloudFetchEngine("saveFee", payload);
+            triggerToast("Accounting transaction data logged.", "text-orange-400");
+            clearFeeFormState(); setTimeout(refreshMasterLedger, 1500);
+        }
+
+        async function commitIdentityCardRecord(e) {
+            e.preventDefault(); toggleOverlayLoader(true);
+            let el = document.getElementById('card_user_select');
+            let payload = {
+                card_id: document.getElementById('card_invoice_id').value, role: state.cardCurrentRole, user_id: el.value,
+                name: el.options[el.selectedIndex].text.split(' (')[0], avatar: document.getElementById('card_avatar').value,
+                channel: document.getElementById('card_channel').value, destination: document.getElementById('card_destination').value
+            };
+            await cloudFetchEngine("saveCard", payload);
+            triggerToast("Card generated and dispatch engine executed.", "text-sky-400");
+            clearCardFormState(); setTimeout(refreshMasterLedger, 1500);
+        }
+
+        function applyInterfaceRendering() {
+            const container = document.getElementById('cardsGridContainer'); container.innerHTML = "";
+            const search = document.getElementById('filterSearch').value.toLowerCase();
+            const p1 = document.getElementById('filterParamOne').value.toLowerCase();
+            const p2 = document.getElementById('filterParamTwo').value.toLowerCase();
+            
+            if (state.activeTab === 'students' || state.activeTab === 'teachers') {
+                let targetArray = state.activeTab === 'students' ? state.students : state.teachers;
+                let colorTheme = state.activeTab === 'students' ? 'border-emerald-500' : 'border-blue-500';
+                targetArray.forEach(item => {
+                    if ((item.name.toLowerCase().includes(search) || item.id.toLowerCase().includes(search)) && item.class.toLowerCase().includes(p1) && item.section.toLowerCase().includes(p2)) {
+                        let card = document.createElement('div');
+                        card.className = `bg-slate-900/50 border-l-4 ${colorTheme} border-y-slate-800 border-r-slate-800 border p-3.5 rounded-r-xl flex justify-between items-center`;
+                        card.innerHTML = `<div><h4 class="text-xs font-bold text-white">${item.name} (${item.id})</h4><p class="text-[11px] text-slate-400 mt-0.5">S/O: ${item.son_of} | CNIC: ${item.cnic}</p><p class="text-[11px] text-slate-500">Contact: ${item.contact} | Class Space: ${item.class}-${item.section}</p></div><div class="flex gap-1"><button onclick="triggerRegistryEdit('${item.id}', '${state.activeTab}')" class="w-7 h-7 rounded bg-slate-950 text-slate-400 hover:text-white flex items-center justify-center"><i class="fa-solid fa-pen text-[10px]"></i></button><button onclick="triggerRegistryDelete('${item.id}', '${state.activeTab}')" class="w-7 h-7 rounded bg-slate-950 text-slate-400 hover:text-rose-500 flex items-center justify-center"><i class="fa-solid fa-trash text-[10px]"></i></button></div>`;
+                        container.appendChild(card);
+                    }
+                });
+            } else if (state.activeTab === 'schedules') {
+                state.schedules.forEach(item => {
+                    if ((item.teacher_name.toLowerCase().includes(search) || item.subject.toLowerCase().includes(search)) && item.class.toLowerCase().includes(p1) && item.section.toLowerCase().includes(p2)) {
+                        let card = document.createElement('div');
+                        card.className = "bg-slate-900/50 border-l-4 border-purple-500 border-y-slate-800 border-r-slate-800 border p-3.5 rounded-r-xl flex justify-between items-center";
+                        card.innerHTML = `<div><span class="text-[9px] font-bold bg-purple-950/40 text-purple-400 px-2 py-0.5 rounded uppercase tracking-wider">${item.day} [${item.time_slot}]</span><h4 class="text-xs font-bold text-white mt-1">${item.subject} <span class="text-slate-400 font-normal">by ${item.teacher_name}</span></h4><p class="text-[11px] text-slate-500">Target Class Allocation: ${item.class}-${item.section}</p></div><div class="flex gap-1"><button onclick="triggerScheduleEdit('${item.sch_id}')" class="w-7 h-7 rounded bg-slate-950 text-slate-400 hover:text-purple-400 flex items-center justify-center"><i class="fa-solid fa-pen text-[10px]"></i></button><button onclick="triggerScheduleDelete('${item.sch_id}')" class="w-7 h-7 rounded bg-slate-950 text-slate-400 hover:text-rose-500 flex items-center justify-center"><i class="fa-solid fa-trash text-[10px]"></i></button></div>`;
+                        container.appendChild(card);
+                    }
+                });
+            } else if (state.activeTab === 'fees') {
+                state.fees.forEach(item => {
+                    if ((item.student_name.toLowerCase().includes(search) || item.invoice_id.toLowerCase().includes(search)) && item.status.toLowerCase().includes(p1)) {
+                        let card = document.createElement('div'); let isPaid = item.status === 'Paid';
+                        card.className = "bg-slate-900/50 border-l-4 border-orange-500 border-y-slate-800 border-r-slate-800 border p-3.5 rounded-r-xl flex justify-between items-center";
+                        card.innerHTML = `<div><div class="flex items-center gap-2"><span class="text-[10px] font-mono font-bold text-orange-400 bg-orange-950/40 px-2 py-0.5 rounded">${item.invoice_id}</span><h4 class="text-xs font-bold text-white">${item.student_name}</h4><span class="text-[9px] px-2 py-0.5 rounded font-extrabold ${isPaid?'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20':'bg-rose-500/10 text-rose-400 border border-rose-500/20'}">${item.status}</span></div><p class="text-[11px] text-slate-400 mt-1">Period Cycle Month: ${item.billing_period} | Account Ref: ${item.student_id}</p><p class="text-[11px] text-slate-500">Net Due: ${item.amount_due} PKR | Received: <span class="text-emerald-400 font-bold">${item.amount_paid} PKR</span></p></div><div class="flex gap-1"><button onclick="triggerFeeEdit('${item.invoice_id}')" class="w-7 h-7 rounded bg-slate-950 text-slate-400 hover:text-orange-400 flex items-center justify-center"><i class="fa-solid fa-pen text-[10px]"></i></button><button onclick="triggerFeeDelete('${item.invoice_id}')" class="w-7 h-7 rounded bg-slate-950 text-slate-400 hover:text-rose-500 flex items-center justify-center"><i class="fa-solid fa-trash text-[10px]"></i></button></div>`;
+                        container.appendChild(card);
+                    }
+                });
+            } else if (state.activeTab === 'cards') {
+                state.cards.forEach(item => {
+                    if ((item.name.toLowerCase().includes(search) || item.card_id.toLowerCase().includes(search)) && item.role.toLowerCase().includes(p1)) {
+                        let card = document.createElement('div'); var qrSrc = "https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=" + encodeURIComponent(item.user_id + " | Name: " + item.name);
+                        card.className = "bg-slate-950/60 border border-slate-800 p-4 rounded-2xl flex flex-col sm:flex-row gap-4 items-center justify-between";
+                        card.innerHTML = `<div class="flex items-center gap-3 w-full sm:w-auto"><img src="${item.avatar}" class="w-12 h-12 rounded-full object-cover border border-sky-500" onerror="this.src='https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100'"><div><h4 class="text-xs font-bold text-white">${item.name} <span class="text-[9px] uppercase text-sky-400 bg-sky-950/40 px-1.5 py-0.5 rounded ml-1">${item.role}</span></h4><p class="text-[11px] text-slate-400">Account: ${item.user_id} | Token: ${item.card_id}</p><p class="text-[10px] text-slate-500"><i class="fa-solid fa-paper-plane text-[9px]"></i> Sent via ${item.channel} -> ${item.destination}</p></div></div><div class="flex items-center gap-3 w-full sm:w-auto justify-end"><div class="bg-white p-0.5 rounded-lg"><img src="${qrSrc}" class="w-11 h-11"></div><div class="flex sm:flex-col gap-1"><button onclick="triggerCardEdit('${item.card_id}')" class="w-6 h-6 rounded bg-slate-900 text-slate-400 hover:text-sky-400 flex items-center justify-center"><i class="fa-solid fa-pen text-[9px]"></i></button><button onclick="triggerCardDelete('${item.card_id}')" class="w-6 h-6 rounded bg-slate-900 text-slate-400 hover:text-rose-400 flex items-center justify-center"><i class="fa-solid fa-trash text-[9px]"></i></button></div></div>`;
+                        container.appendChild(card);
+                    }
+                });
+            }
+            if(container.innerHTML === "") container.innerHTML = `<div class="text-center py-12 border border-dashed border-slate-800 rounded-2xl text-xs text-slate-500">No matching tracking data found inside active array logs stream.</div>`;
+        }
+
+        function triggerRegistryEdit(id, tab) {
+            let list = tab === 'students' ? state.students : state.teachers; let match = list.find(x => x.id === id); if(!match) return;
+            switchRegistryRole(tab === 'students' ? 'student' : 'teacher');
+            document.getElementById('reg_id').value = match.id; document.getElementById('reg_name').value = match.name;
+            document.getElementById('reg_son_of').value = match.son_of; document.getElementById('reg_cnic').value = match.cnic;
+            document.getElementById('reg_contact').value = match.contact; document.getElementById('reg_address').value = match.address;
+            document.getElementById('reg_class').value = match.class; document.getElementById('reg_section').value = match.section;
+            document.getElementById('regFormTitle').innerText = "Modify Registry Record Profile"; document.getElementById('regSubmitBtn').innerText = "Override Registry Log";
+        }
+        function triggerScheduleEdit(id) {
+            let match = state.schedules.find(x => x.sch_id === id); if(!match) return;
+            document.getElementById('sch_id').value = match.sch_id; document.getElementById('sch_teacher_select').value = match.teacher_id;
+            document.getElementById('sch_day').value = match.day; document.getElementById('sch_time_slot').value = match.time_slot;
+            document.getElementById('sch_subject').value = match.subject; document.getElementById('sch_class').value = match.class;
+            document.getElementById('sch_section').value = match.section; document.getElementById('schFormTitle').innerText = "Recalibrate Schedule Timetable Block"; document.getElementById('schSubmitBtn').innerText = "Override Schedule Slot";
+        }
+        function triggerFeeEdit(id) {
+            let match = state.fees.find(x => x.invoice_id === id); if(!match) return;
+            document.getElementById('fee_invoice_id').value = match.invoice_id; document.getElementById('fee_student_select').value = match.student_id;
+            document.getElementById('fee_period').value = match.billing_period; document.getElementById('fee_status').value = match.status;
+            document.getElementById('fee_due').value = match.amount_due; document.getElementById('fee_paid').value = match.amount_paid;
+            document.getElementById('feeFormTitle').innerText = "Edit Collection Invoice Sheet"; document.getElementById('feeSubmitBtn').innerText = "Override Transaction Data";
+        }
+        function triggerCardEdit(id) {
+            let match = state.cards.find(x => x.card_id === id); if(!match) return;
+            toggleCardSelectionRole(match.role);
+            document.getElementById('card_invoice_id').value = match.card_id; document.getElementById('card_user_select').value = match.user_id;
+            document.getElementById('card_avatar').value = match.avatar; document.getElementById('card_channel').value = match.channel;
+            document.getElementById('card_destination').value = match.destination;
+            document.getElementById('cardFormTitle').innerText = "Recalibrate Identity Route Configuration"; document.getElementById('cardSubmitBtn').innerText = "Override Token Parameters";
+        }
+
+        async function triggerRegistryDelete(id, role) { if(confirm('Erase profile registry?')) { toggleOverlayLoader(true); await cloudFetchEngine("deleteRegistry", {role: role === 'students'?'student':'teacher', id: id}); setTimeout(refreshMasterLedger, 1500); } }
+        async function triggerScheduleDelete(id) { if(confirm('Drop schedule block?')) { toggleOverlayLoader(true); await cloudFetchEngine("deleteSchedule", {sch_id: id}); setTimeout(refreshMasterLedger, 1500); } }
+        async function triggerFeeDelete(id) { if(confirm('Erase financial tracking sheet?')) { toggleOverlayLoader(true); await cloudFetchEngine("deleteFee", {invoice_id: id}); setTimeout(refreshMasterLedger, 1500); } }
+        async function triggerCardDelete(id) { if(confirm('Revoke credential asset configuration token?')) { toggleOverlayLoader(true); await cloudFetchEngine("deleteCard", {card_id: id}); setTimeout(refreshMasterLedger, 1500); } }
+
+        function clearRegistryFormState() { document.getElementById('registryForm').reset(); document.getElementById('reg_id').value = ""; document.getElementById('regFormTitle').innerText = "Base Profiles Enrollment"; document.getElementById('regSubmitBtn').innerText = "Save Profile Entry"; }
+        function clearScheduleFormState() { document.getElementById('scheduleForm').reset(); document.getElementById('sch_id').value = ""; document.getElementById('schFormTitle').innerText = "Timetable Planner Matrix"; document.getElementById('schSubmitBtn').innerText = "Lock Routine Block"; }
+        function clearFeeFormState() { document.getElementById('feeForm').reset(); document.getElementById('fee_invoice_id').value = ""; document.getElementById('feeFormTitle').innerText = "Fee Collections Ledger"; document.getElementById('feeSubmitBtn').innerText = "Commit Financial Log"; }
+        function clearCardFormState() { document.getElementById('idCardForm').reset(); document.getElementById('card_invoice_id').value = ""; document.getElementById('cardFormTitle').innerText = "ID & Dispatch Processing Engine"; document.getElementById('cardSubmitBtn').innerText = "Compile & Route Alert"; }
+
+        function toggleOverlayLoader(show) { const box = document.getElementById('masterLoaderBox'); if(box) { if(show) box.classList.remove('hidden'); else box.classList.add('hidden'); } }
+        function triggerToast(m, c) { const b = document.getElementById('alertBox'); b.className = "mt-2 text-center text-[11px] font-bold p-2 rounded-lg bg-slate-950 border border-slate-800 " + c; b.innerText = m; b.style.opacity = '1'; setTimeout(() => { b.style.opacity = '0'; }, 5000); }
+    </script>
+</body>
+</html>
