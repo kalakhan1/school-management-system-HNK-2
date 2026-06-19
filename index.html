@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quantum Node Studio v11.5 | Double-Sided System</title>
+    <title>Quantum Node Studio v11.6 | Double-Sided System</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=300;400;500;600;700;800&display=swap');
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #020617; }
         .glow-card { transition: all 0.3s ease; }
         .glow-card:hover { transform: translateY(-2px); border-color: rgba(99, 102, 241, 0.3); }
@@ -17,7 +17,11 @@
         .id-card-wrapper { perspective: 1200px; width: 320px; height: 460px; }
         .id-card-inner { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
         .id-card-front, .id-card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 1.25rem; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); }
+        
+        /* FIX: Mirror content inverted calculation handled natively inside backend framework */
         .id-card-back { transform: rotateY(180deg); }
+        .id-card-back-content { transform: rotateY(180deg); width: 100%; height: 100%; display: flex; flex-col: justify-between; }
+        
         .flipped .id-card-inner { transform: rotateY(180deg); }
     </style>
 </head>
@@ -204,10 +208,10 @@
             </div>
 
             <div class="border-b border-slate-900 flex flex-wrap gap-4 text-xs font-black uppercase tracking-widest pb-1 overflow-x-auto">
-                <button onclick="switchViewTab('students')" id="tabBtnStudents" class="pb-2 text-emerald-400 border-b-2 border-emerald-500 px-1 flex items-center gap-2"><i class="fa-solid fa-graduation-cap"></i> Students</button>
-                <button onclick="switchViewTab('teachers')" id="tabBtnTeachers" class="pb-2 text-slate-500 border-b-2 border-transparent px-1 flex items-center gap-2"><i class="fa-solid fa-user-shield"></i> Faculty</button>
-                <button onclick="switchViewTab('schedules')" id="tabBtnSchedules" class="pb-2 text-slate-500 border-b-2 border-transparent px-1 flex items-center gap-2"><i class="fa-solid fa-calendar-days"></i> Matrix</button>
-                <button onclick="switchViewTab('cards')" id="tabBtnCards" class="pb-2 text-slate-500 border-b-2 border-transparent px-1 flex items-center gap-2"><i class="fa-solid fa-address-card"></i> Passes (Double Sided)</button>
+                <button onclick="switchViewTab('students')" id="tabBtnStudents" class="pb-2 text-emerald-400 border-b-2 border-emerald-500 px-1 flex items-center gap-2 transition-all"><i class="fa-solid fa-graduation-cap"></i> Students</button>
+                <button onclick="switchViewTab('teachers')" id="tabBtnTeachers" class="pb-2 text-slate-500 border-b-2 border-transparent px-1 flex items-center gap-2 transition-all"><i class="fa-solid fa-user-shield"></i> Faculty</button>
+                <button onclick="switchViewTab('schedules')" id="tabBtnSchedules" class="pb-2 text-slate-500 border-b-2 border-transparent px-1 flex items-center gap-2 transition-all"><i class="fa-solid fa-calendar-days"></i> Matrix</button>
+                <button onclick="switchViewTab('cards')" id="tabBtnCards" class="pb-2 text-slate-500 border-b-2 border-transparent px-1 flex items-center gap-2 transition-all"><i class="fa-solid fa-address-card"></i> Passes (Double Sided)</button>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start justify-items-center md:justify-items-start" id="cardsGridContainer"></div>
@@ -216,7 +220,7 @@
 
     <footer class="border-t border-slate-900 bg-slate-950/90 py-4 text-center text-xs text-slate-500 font-semibold tracking-wider">
         <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-            <p>Unified Node Core v11.5</p>
+            <p>Unified Node Core v11.6</p>
             <p id="bottomDynamicFooter" class="tracking-widest text-slate-400 font-black uppercase">---</p>
         </div>
     </footer>
@@ -266,8 +270,20 @@
             populateCardUsersDropdown();
         }
 
+        // FIX: Renders the active layout green line highlight flawlessly to selected node
         function switchViewTab(tab) {
             state.activeTab = tab;
+            const tabs = ['students', 'teachers', 'schedules', 'cards'];
+            
+            tabs.forEach(t => {
+                const el = document.getElementById(`tabBtn${t.charAt(0).toUpperCase() + t.slice(1)}`);
+                if(t === tab) {
+                    el.className = "pb-2 text-emerald-400 border-b-2 border-emerald-500 px-1 flex items-center gap-2 transition-all font-black";
+                } else {
+                    el.className = "pb-2 text-slate-500 border-b-2 border-transparent px-1 flex items-center gap-2 transition-all";
+                }
+            });
+
             const container = document.getElementById('cardsGridContainer');
             container.className = (tab === 'cards' || tab === 'schedules') ? "grid grid-cols-1 md:grid-cols-2 gap-6 w-full" : "grid grid-cols-1 gap-4 w-full";
             applyInterfaceRendering();
@@ -408,23 +424,20 @@
             clearCardFormState(); setTimeout(refreshMasterLedger, 500);
         }
 
-        // DIRECT JS FLIP FIX (BYPASSING OVERLAPPING LAYER COLLISION)
         function toggleCardFlip(cardId) {
             const el = document.getElementById(`wrap-${cardId}`);
             if(el) el.classList.toggle('flipped');
         }
 
-        // DEEP IMAGE EXTRACTION NODE ENGINE FOR ALL MOBILE PHONES
         function downloadCardSideAsPNG(cardId, sideClass, fileName) {
             const wrapper = document.getElementById(`wrap-${cardId}`);
-            const targetSide = wrapper.querySelector(`.${sideClass}`);
+            let targetSide = wrapper.querySelector(`.${sideClass}`);
             
-            // Generate snapshot rendering via html2canvas engine
             html2canvas(targetSide, {
                 useCORS: true,
                 allowTaint: true,
                 backgroundColor: "#020617",
-                scale: 3 // High definition resolution scaling
+                scale: 3
             }).then(canvas => {
                 const link = document.createElement('a');
                 link.download = `${fileName}.png`;
@@ -521,11 +534,11 @@
                                 <div class="id-card-inner">
                                     
                                     <div class="id-card-front bg-slate-950 border-2 border-slate-800 flex flex-col justify-between p-5 text-left">
-                                        <div class="flex items-center gap-3 border-b border-slate-900 pb-3">
-                                            <img src="${logo}" class="w-10 h-10 rounded-xl object-cover border border-slate-800 bg-slate-900">
-                                            <div>
-                                                <h5 class="text-[11px] font-black tracking-tight text-white uppercase truncate max-w-[170px]">${sName}</h5>
-                                                <p class="text-[9px] text-slate-500 font-bold">${sCity}</p>
+                                        <div class="flex items-center gap-3 border-b border-slate-900 pb-3 w-full overflow-hidden">
+                                            <img src="${logo}" class="w-10 h-10 rounded-xl object-cover border border-slate-800 bg-slate-900 shrink-0">
+                                            <div class="min-w-0 flex-grow">
+                                                <h5 class="text-xs font-black tracking-wide text-white uppercase break-words leading-tight">${sName}</h5>
+                                                <p class="text-[9px] text-slate-500 font-bold mt-0.5">${sCity}</p>
                                             </div>
                                         </div>
                                         <div class="flex flex-col items-center text-center my-2 space-y-2">
@@ -550,22 +563,24 @@
                                         </div>
                                     </div>
 
-                                    <div class="id-card-back bg-slate-950 border-2 border-slate-800 flex flex-col justify-between p-6 text-center">
-                                        <div class="flex flex-col items-center justify-center my-auto space-y-4">
-                                            <img src="${logo}" class="w-16 h-16 rounded-2xl object-cover border border-slate-800 bg-slate-900">
-                                            <div>
-                                                <h4 class="text-xs font-black text-white tracking-widest uppercase">${sName}</h4>
-                                                <p class="text-[9px] text-slate-400 font-bold"><i class="fa-solid fa-phone text-sky-400 mr-1"></i>${sContact}</p>
+                                    <div class="id-card-back bg-slate-950 border-2 border-slate-800 p-6">
+                                        <div class="id-card-back-content">
+                                            <div class="flex flex-col items-center justify-center my-auto space-y-4 w-full">
+                                                <img src="${logo}" class="w-16 h-16 rounded-2xl object-cover border border-slate-800 bg-slate-900 shrink-0">
+                                                <div class="text-center w-full min-w-0">
+                                                    <h4 class="text-xs font-black text-white tracking-widest uppercase break-words px-1">${sName}</h4>
+                                                    <p class="text-[9px] text-slate-400 font-bold mt-1"><i class="fa-solid fa-phone text-sky-400 mr-1"></i>${sContact}</p>
+                                                </div>
+                                                <div class="bg-white p-1.5 rounded-xl inline-block border border-slate-800 shrink-0">
+                                                    <img src="${qrSrc}" class="w-20 h-20">
+                                                </div>
                                             </div>
-                                            <div class="bg-white p-1.5 rounded-xl inline-block border border-slate-800">
-                                                <img src="${qrSrc}" class="w-20 h-20">
+                                            <div class="space-y-1.5 text-left border-t border-slate-900 pt-3 w-full">
+                                                <p class="text-[8px] text-slate-500 leading-relaxed font-medium">1. Loss of this pass must be reported instantly to the control desk row.</p>
+                                                <p class="text-[8px] text-slate-500 leading-relaxed font-medium">2. Card validation requires active digital status profiling ledger tracking.</p>
                                             </div>
+                                            <p class="text-[8px] font-black tracking-widest text-slate-600 uppercase mt-2 pt-2 border-t border-slate-900/40 text-center w-full">HNK & SHEEKAN STUDIO</p>
                                         </div>
-                                        <div class="space-y-1.5 text-left border-t border-slate-900 pt-3">
-                                            <p class="text-[8px] text-slate-500 leading-relaxed font-medium">1. Loss of this pass must be reported instantly to the control desk row.</p>
-                                            <p class="text-[8px] text-slate-500 leading-relaxed font-medium">2. Card validation requires active digital status profiling ledger tracking.</p>
-                                        </div>
-                                        <p class="text-[8px] font-black tracking-widest text-slate-600 uppercase mt-2 pt-2 border-t border-slate-900/40">HNK & SHEEKAN STUDIO</p>
                                     </div>
 
                                 </div>
@@ -582,7 +597,7 @@
                                 </div>
                                 <div class="grid grid-cols-2 gap-1.5 border-t border-slate-900 pt-1.5">
                                     <button onclick="downloadCardSideAsPNG('${item.card_id}', 'id-card-front', 'Front_${item.name.replace(/\\s+/g, '_')}')" class="py-1 bg-slate-900 hover:bg-slate-800 text-[10px] text-slate-300 font-bold rounded-md flex items-center justify-center gap-1"><i class="fa-solid fa-download text-sky-400"></i> Front PNG</button>
-                                    <button onclick="downloadCardSideAsPNG('${item.card_id}', 'id-card-back', 'Back_${item.name.replace(/\\s+/g, '_')}')" class="py-1 bg-slate-900 hover:bg-slate-800 text-[10px] text-slate-300 font-bold rounded-md flex items-center justify-center gap-1"><i class="fa-solid fa-download text-purple-400"></i> Back PNG</button>
+                                    <button onclick="downloadCardSideAsPNG('${item.card_id}', 'id-card-back', 'id-card-back-content', 'Back_${item.name.replace(/\\s+/g, '_')}')" class="py-1 bg-slate-900 hover:bg-slate-800 text-[10px] text-slate-300 font-bold rounded-md flex items-center justify-center gap-1"><i class="fa-solid fa-download text-purple-400"></i> Back PNG</button>
                                 </div>
                             </div>`;
                         container.appendChild(cardWrapper);
