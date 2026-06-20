@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Node Studio v13.0 | Roster & Card Management Core</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #0f172a; scroll-behavior: smooth; }
+        .glow-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .glow-card:hover { transform: translateY(-2px); border-color: #cbd5e1; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05); }
+        
+        /* Premium Double Sided Flip Card 3D Engine (Light Theme Optimised) */
+        .id-card-wrapper { perspective: 1200px; width: 320px; height: 460px; }
+        .id-card-inner { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+        .id-card-front, .id-card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 1.25rem; overflow: hidden; box-shadow: 0 20px 40px -10px rgba(15, 23, 42, 0.12); }
+        
+        .id-card-back { transform: rotateY(180deg); }
+        .flipped .id-card-inner { transform: rotateY(180deg); }
+
+        /* Full Screen Block Architecture */
+        .fullscreen-block { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding-top: 6rem; padding-bottom: 3rem; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen">
+
+    <script>
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx6OSzyntoj7b0HhyognqXN5F_dnbsZ6gWgw9QFE7rjb1_HC1Ju-9LNHpDdzxpVygJS/exec";
+    </script>
+
+    <header class="border-b border-slate-200/80 bg-white/80 backdrop-blur-md fixed top-0 left-0 w-full z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col lg:flex-row gap-4 items-center justify-between">
+            <div class="flex items-center gap-3 text-center lg:text-left flex-col sm:flex-row">
+                <img id="topSchoolLogo" src="" class="w-10 h-10 object-cover rounded-xl border border-slate-200 bg-slate-50">
+                <div>
+                    <h1 id="topSchoolName" class="text-md font-extrabold tracking-tight text-slate-900">---</h1>
+                    <div class="flex flex-wrap justify-center lg:justify-start gap-x-3 text-[11px] text-slate-500 font-medium mt-0.5">
+                        <p><i class="fa-solid fa-location-dot text-emerald-600 mr-1"></i><span id="topCityName">---</span></p>
+                        <p><i class="fa-solid fa-phone text-sky-600 mr-1"></i><span id="topContactNo">---</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="flex items-center gap-1 sm:gap-1.5 bg-slate-100 border border-slate-200/60 p-1 rounded-xl overflow-x-auto max-w-full">
+                <a href="#setupBlock" class="px-3 py-1.5 text-[11px] font-semibold rounded-lg text-slate-600 hover:text-slate-900 hover:bg-white/60 transition-all flex items-center gap-1.5"><i class="fa-solid fa-sliders text-red-500"></i> Setup</a>
+                <a href="#onboardingBlock" class="px-3 py-1.5 text-[11px] font-semibold rounded-lg text-slate-600 hover:text-slate-900 hover:bg-white/60 transition-all flex items-center gap-1.5"><i class="fa-solid fa-address-book text-emerald-600"></i> Onboarding</a>
+                <a href="#identityBlock" class="px-3 py-1.5 text-[11px] font-semibold rounded-lg text-slate-600 hover:text-slate-900 hover:bg-white/60 transition-all flex items-center gap-1.5"><i class="fa-solid fa-camera-retro text-sky-600"></i> Cards_Assembly</a>
+                <a href="#databaseBlock" class="px-3 py-1.5 text-[11px] font-semibold rounded-lg text-slate-600 hover:text-slate-900 hover:bg-white/60 transition-all flex items-center gap-1.5"><i class="fa-solid fa-database text-indigo-600"></i> Main_Database</a>
+            </nav>
+
+            <div class="hidden lg:block">
+                <span class="bg-slate-100 border border-slate-200 text-[11px] text-slate-600 font-mono font-bold px-3 py-1.5 rounded-xl">Registry Stream Metrics: <span id="countReg" class="text-emerald-600 font-bold">0</span> Units</span>
+            </div>
+        </div>
+    </header>
+
+    <div id="alertBox" class="fixed top-24 right-4 z-50 max-w-sm text-xs font-bold p-3 rounded-xl bg-white border border-slate-200 opacity-0 transition-all duration-300 transform translate-x-5 pointer-events-none shadow-xl"></div>
+
+    <div class="fixed top-[73px] left-0 w-full z-50 px-4 hidden" id="masterLoaderBox">
+        <div class="max-w-7xl mx-auto bg-white/90 border border-indigo-100 backdrop-blur-md rounded-xl p-2.5 text-[11px] flex items-center justify-center gap-3 text-indigo-600 font-semibold shadow-md">
+            <div class="w-3.5 h-3.5 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+            Syncing Secure Clouds Database Engine...
+        </div>
+    </div>
+
+    <main class="w-full flex flex-col">
+        
+        <section id="setupBlock" class="fullscreen-block px-4 max-w-4xl mx-auto w-full">
+            <div class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm my-auto w-full">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-6">
+                    <div>
+                        <h3 class="text-xs font-bold text-red-500 uppercase tracking-wider flex items-center gap-2"><i class="fa-solid fa-sliders text-sm"></i> Dynamic Hub Core Setup</h3>
+                        <p class="text-xs text-slate-400 mt-1">Configure structural metadata elements and branding vectors</p>
+                    </div>
+                    <i class="fa-solid fa-gear text-xl text-slate-300"></i>
+                </div>
+                <form onsubmit="commitSchoolConfig(event)" class="space-y-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="space-y-1.5">
+                            <label class="text-[10px] font-mono tracking-wider text-slate-400 uppercase">School / Hub Identity</label>
+                            <input type="text" id="cfg_school_name" required placeholder="School Name" class="w-full text-xs bg-slate-50 border border-slate-200 rounded-xl p-3 text-slate-900 outline-none focus:border-red-500 transition-colors">
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-[10px] font-mono tracking-wider text-slate-400 uppercase">City / Location Index</label>
+                            <input type="text" id="cfg_city_name" required placeholder="City / Location" class="w-full text-xs bg-slate-50 border border-slate-200 rounded-xl p-3 text-slate-900 outline-none focus:border-red-500 transition-colors">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="space-y-1.5">
+                            <label class="text-[10px] font-mono tracking-wider text-slate-400 uppercase">Contact Gateway Mapping</label>
+                            <input type="text" id="cfg_contact_no" required placeholder="Contact Mapping" class="w-full text-xs bg-slate-50 border border-slate-200 rounded-xl p-3 text-slate-900 outline-none focus:border-red-500 transition-colors">
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-[10px] font-mono tracking-wider text-slate-400 uppercase">Footer Branding Signature</label>
+                            <input type="text" id="cfg_footer_text" required placeholder="Footer Branding Signature" class="w-full text-xs bg-slate-50 border border-slate-200 rounded-xl p-3 text-slate-900 outline-none focus:border-red-500 transition-colors">
+                        </div>
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-[10px] font-mono tracking-wider text-slate-400 uppercase">Notice Ticker Bulletin</label>
+                        <input type="text" id="cfg_notice_board" required placeholder="Notice Ticker Text" class="w-full text-xs bg-slate-50 border border-slate-200 rounded-xl p-3 text-slate-900 outline-none focus:border-red-500 transition-colors">
+                    </div>
+                    <div class="flex items-center gap-4 bg-slate-50 p-3 rounded-xl border border-slate-200/60">
+                        <label class="cursor-pointer bg-white hover:bg-slate-50 border border-slate-200 text-center rounded-xl py-2 px-4 text-xs font-bold block transition-colors shrink-0">
+                            Choose Logo File <input type="file" accept="image/*" class="hidden" onchange="processSchoolLogoFile(this)">
+                        </label>
+                        <div class="flex items-center gap-3 overflow-hidden">
+                            <img id="cfg_logo_preview" src="" class="w-10 h-10 rounded-xl object-cover border border-slate-200 bg-white shrink-0">
+                            <input type="hidden" id="cfg_logo_base64">
+                            <span class="text-[10px] font-mono text-slate-400 truncate">Branding vector logo stream</span>
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full py-3 bg-red-600 hover:bg-red-500 font-bold text-white rounded-xl text-xs transition-all shadow-md uppercase tracking-wider">Deploy Branding Engine</button>
+                </form>
+            </div>
+        </section>
+
+        <section id="onboardingBlock" class="fullscreen-block px-4 max-w-4xl mx-auto w-full">
+            <div class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm my-auto w-full">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-6">
+                    <div>
+                        <h3 id="regFormTitle" class="text-xs font-bold text-emerald-600 uppercase tracking-wider flex items-center gap-2"><i class="fa-solid fa-address-book text-sm"></i> Registry Onboarding Rails</h3>
+                        <p class="text-xs text-slate-400 mt-1">Inject system object profiles inside centralized cluster matrices</p>
+                    </div>
+                    <i class="fa-solid fa-user-plus text-xl text-slate-300"></i>
+                </div>
+                <form id="registryForm" onsubmit="commitRegistryRecord(event)" class="space-y-4">
+                    <input type="hidden" id="reg_id">
+                    <div class="grid grid-cols-2 gap-1 p-1 bg-slate-50 rounded-xl border border-slate-200/80 max-w-xs">
+                        <button type="button" id="roleBtnStudent" onclick="switchRegistryRole('student')" class="py-2 text-xs font-bold rounded-lg bg-emerald-600 text-white transition-all">Student Mode</button>
+                        <button type="button" id="roleBtnTeacher" onclick="switchRegistryRole('teacher')" class="py-2 text-xs font-bold rounded-lg text-slate-500 transition-all">Faculty Mode</button>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <input type="text" id="reg_name" required placeholder="Legal Full Name" class="w-full text-xs bg-slate-50 border border-slate-200 rounded-xl p-3 text-slate-900 outline-none focus:border-emerald-500 transition-colors">
+                        <input type="text" id="reg_son_of" required placeholder="Father / Guardian Name" class="w-full text-xs bg-slate-50 border border-slate-200 rounded-xl p-3 text-slate-900 outline-none focus:border-emerald-500 transition-colors">
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <input type="text" id="reg_cnic" required placeholder="CNIC Token String" class="w-full text-xs bg-slate-50 border border-slate-200 rounded-xl p-3 text-slate-900 outline-none focus:border-emerald-500 transition-colors">
+                        <input type="text" id="reg_contact" required placeholder="Contact Gateway" class="w-full text-xs bg-slate-50 border border-slate-200 rounded-xl p-3 text-slate-900 outline-none focus:border-emerald-500 transition-colors">
+                    </div>
+                    <input type="text" id="reg_address" required placeholder="Residence Address" class="w-full text-xs bg-slate-50 border border-slate-200 rounded-xl p-3 text-slate-900 outline-none focus:border-emerald-500 transition-colors">
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <input type="text" id="reg_class" required placeholder="Class / Dept" class="w-full text-xs bg-slate-50 border border-slate-200 rounded-xl p-3 text-slate-900 outline-none focus:border-emerald-500 transition-colors">
+                        <input type="text" id="reg_section" required placeholder="Sec / Room" class="w-full text-xs bg-slate-50 border border-slate-200 rounded-xl p-3 text-slate-900 outline-none focus:border-emerald-500 transition-colors">
+                        <select id="reg_extra" onchange="calculateFormBalance()" class="w-full text-xs bg-slate-50 border border-slate-200 rounded-xl p-3 text-slate-900 outline-none focus:border-emerald-500 transition-colors">
+                            <option value="Paid">Paid</option>
+                            <option value="Unpaid">Unpaid</option>
+                            <option value="Balance">Balance</option>
+                        </select>
+                    </div>
+
+                    <div id="feeDynamicAddons" class="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-3">
+                        <p class="text-[10px] font-mono tracking-widest text-slate-400 uppercase">Billing Period Ledger</p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <select id="reg_fee_month" class="w-full text-xs bg-white border border-slate-200 rounded-xl p-2.5 text-slate-900 outline-none">
+                                <option value="January">January</option><option value="February">February</option><option value="March">March</option><option value="April">April</option><option value="May">May</option><option value="June">June</option><option value="July">July</option><option value="August">August</option><option value="September">September</option><option value="October">October</option><option value="November">November</option><option value="December">December</option>
+                            </select>
+                            <input type="number" id="reg_fee_total" oninput="calculateFormBalance()" placeholder="Total Fee Amount" class="w-full text-xs bg-white border border-slate-200 rounded-xl p-2.5 text-slate-900 outline-none">
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <input type="number" id="reg_fee_paid" oninput="calculateFormBalance()" placeholder="Paid Amount" class="w-full text-xs bg-white border border-slate-200 rounded-xl p-2.5 text-slate-900 outline-none">
+                            <input type="number" id="reg_fee_balance" readonly placeholder="Remaining Due" class="w-full text-xs bg-slate-100 border border-slate-200 rounded-xl p-2.5 text-rose-600 font-bold font-mono outline-none">
+                        </div>
+                    </div>
+
+                    <div class="flex gap-3 pt-2">
+                        <button type="button" onclick="clearRegistryFormState()" class="w-1/3 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition-colors uppercase tracking-wider">Reset</button>
+                        <button type="submit" id="regSubmitBtn" class="w-2/3 py-3 bg-emerald-600 hover:bg-emerald-500 font-bold text-white rounded-xl text-xs transition-all shadow-md uppercase tracking-wider">Deploy Record Block</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <section id="identityBlock" class="fullscreen-block px-4 max-w-4xl mx-auto w-full">
+            <div class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm my-auto w-full">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-6">
+                    <div>
+                        <h3 class="text-xs font-bold text-sky-600 uppercase tracking-wider flex items-center gap-2"><i class="fa-solid fa-camera-retro text-sm"></i> Digital ID Assembly Platform</h3>
+                        <p class="text-xs text-slate-400 mt-1">Compile double-sided security passes and capture live avatars</p>
+                    </div>
+                    <i class="fa-solid fa-id-card text-xl text-slate-300"></i>
+                </div>
+                <form id="idCardForm" onsubmit="commitIdentityCardRecord(event)" class="space-y-4">
+                    <div class="grid grid-cols-2 gap-1 p-1 bg-slate-50 rounded-xl border border-slate-200 max-w-xs">
+                        <button type="button" id="roleSelectStudent" onclick="toggleCardSelectionRole('student')" class="py-2 text-xs font-bold rounded-lg bg-sky-600 text-white transition-all">Students</button>
+                        <button type="button" id="roleSelectTeacher" onclick="toggleCardSelectionRole('teacher')" class="py-2 text-xs font-bold rounded-lg text-slate-500 transition-all">Faculty</button>
+                    </div>
+                    <select id="card_user_select" required class="w-full text-xs bg-slate-50 border border-slate-200 rounded-xl p-3 text-slate-900 outline-none focus:border-sky-500 transition-colors"></select>
+                    
+                    <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-3">
+                        <div class="grid grid-cols-2 gap-3">
+                            <label class="cursor-pointer bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 text-center rounded-xl p-2.5 text-xs font-bold block transition-colors shadow-sm">
+                                <i class="fa-solid fa-image mr-1 text-slate-400"></i> Gallery Asset
+                                <input type="file" accept="image/*" class="hidden" onchange="processGalleryImage(this)">
+                            </label>
+                            <button type="button" onclick="initializeHardwareCamera()" class="bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-xl p-2.5 text-xs font-bold transition-colors shadow-sm">
+                                <i class="fa-solid fa-video mr-1 text-rose-500"></i> Live Cam Engine
+                            </button>
+                        </div>
+                        <div id="cameraDeckWrapper" class="hidden space-y-2">
+                            <video id="hardwareVideoStream" autoplay playsinline class="w-full aspect-video rounded-xl bg-black object-cover max-h-60 border border-slate-200"></video>
+                            <button type="button" onclick="executeCameraCaptureSnapshot()" class="w-full py-2.5 bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs rounded-xl transition-all shadow-md uppercase tracking-wider">Snap Frame Element</button>
+                        </div>
+                        <canvas id="hiddenCaptureCanvas" class="hidden"></canvas>
+                        <div class="flex items-center gap-4 bg-white p-2.5 rounded-xl border border-slate-200 shadow-sm">
+                            <img id="avatarDataPreview" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100" class="w-12 h-12 rounded-full object-cover border border-slate-200 shadow-sm">
+                            <input type="hidden" id="card_avatar_base64">
+                            <span class="text-[10px] font-mono text-slate-400 truncate" id="avatarStatusLabel">No asset cached inside matrix.</span>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <select id="card_channel" required class="w-full text-xs bg-slate-50 border border-slate-200 rounded-xl p-3 text-slate-900 outline-none focus:border-sky-500 transition-colors">
+                            <option value="WhatsApp">WhatsApp Route</option>
+                            <option value="Gmail">Direct Email Client</option>
+                        </select>
+                        <input type="text" id="card_destination" required placeholder="Destination Token Mapping" class="w-full text-xs bg-slate-50 border border-slate-200 rounded-xl p-3 text-slate-900 outline-none focus:border-sky-500 transition-colors">
+                    </div>
+                    <button type="submit" class="w-full py-3 bg-sky-600 hover:bg-sky-500 font-bold text-white rounded-xl text-xs transition-all shadow-md uppercase tracking-wider">Compile System Identity</button>
+                </form>
+            </div>
+        </section>
+
+        <section id="databaseBlock" class="fullscreen-block px-4 max-w-6xl mx-auto w-full">
+            <div class="bg-white border border-slate-200 rounded-3xl p-4 sm:p-6 shadow-sm my-auto w-full min-h-[75vh] flex flex-col">
+                
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200/60 flex flex-col md:flex-row gap-4 items-center mb-6">
+                    <div class="flex-grow w-full relative">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-slate-400 text-xs"></i>
+                        <input type="text" id="filterSearch" oninput="applyInterfaceRendering()" placeholder="Type parameter strings to look up databases instantly..." class="w-full text-xs bg-white border border-slate-200 rounded-xl py-3 pl-10 pr-4 text-slate-900 outline-none focus:border-indigo-500 transition-colors shadow-sm">
+                    </div>
+                    <div class="flex gap-2 w-full md:w-auto shrink-0 justify-end">
+                        <input type="text" id="filterParamOne" oninput="applyInterfaceRendering()" placeholder="Class" class="w-24 text-xs bg-white border border-slate-200 rounded-xl py-2 px-3 text-slate-900 outline-none focus:border-indigo-500 shadow-sm">
+                        <input type="text" id="filterParamTwo" oninput="applyInterfaceRendering()" placeholder="Sec" class="w-20 text-xs bg-white border border-slate-200 rounded-xl py-2 px-3 text-slate-900 outline-none focus:border-indigo-500 shadow-sm">
+                    </div>
+                </div>
+
+                <div class="border-b border-slate-100 flex flex-wrap gap-4 text-xs font-bold uppercase tracking-wider pb-1 mb-4 overflow-x-auto">
+                    <button onclick="switchViewTab('students')" id="tabBtnStudents" class="pb-2 text-emerald-600 border-b-2 border-emerald-600 px-1 flex items-center gap-2 font-bold transition-all"><i class="fa-solid fa-graduation-cap"></i> Students</button>
+                    <button onclick="switchViewTab('teachers')" id="tabBtnTeachers" class="pb-2 text-slate-400 border-b-2 border-transparent px-1 flex items-center gap-2 transition-all"><i class="fa-solid fa-user-shield"></i> Faculty</button>
+                    <button onclick="switchViewTab('cards')" id="tabBtnCards" class="pb-2 text-slate-400 border-b-2 border-transparent px-1 flex items-center gap-2 transition-all"><i class="fa-solid fa-address-card"></i> Passes (Double Sided)</button>
+                </div>
+
+                <div id="feeFilterDeckPanel" class="flex flex-wrap gap-2 bg-slate-50 p-2.5 rounded-xl border border-slate-200/60 mb-6">
+                    <button onclick="adjustFeeGlobalSort('all')" id="feeSortAll" class="px-3 py-1.5 text-[10px] font-bold uppercase rounded-lg border border-emerald-200 bg-emerald-50 text-emerald-700 transition-colors">All Accounts</button>
+                    <button onclick="adjustFeeGlobalSort('pending')" id="feeSortPending" class="px-3 py-1.5 text-[10px] font-bold uppercase rounded-lg border border-slate-200 bg-white text-slate-600 hover:text-rose-600 transition-colors">Pending Fees (This Month)</button>
+                    <button onclick="adjustFeeGlobalSort('balance')" id="feeSortBalance" class="px-3 py-1.5 text-[10px] font-bold uppercase rounded-lg border border-slate-200 bg-white text-slate-600 hover:text-amber-600 transition-colors">Balance Tracker</button>
+                </div>
+
+                <div class="grid grid-cols-1 gap-4 w-full overflow-y-auto flex-grow max-h-[50vh] pr-1" id="cardsGridContainer"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="border-t border-slate-200 bg-white py-4 text-center text-xs text-slate-400 font-medium tracking-wider mt-12 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+            <p>Unified Node Core v13.0</p>
+            <p id="bottomDynamicFooter" class="tracking-widest text-slate-600 font-bold uppercase">---</p>
+        </div>
+    </footer>
+
+    <div id="receiptSecureRenderZone" class="fixed -left-[9999px] top-0 bg-white border border-slate-200 p-6 rounded-2xl w-[350px] font-sans text-slate-800 shadow-lg">
+        <div class="text-center border-b border-slate-100 pb-3 mb-3">
+            <h2 id="rec_sh_name" class="text-sm font-bold uppercase tracking-wider text-slate-900">---</h2>
+            <p id="rec_sh_city" class="text-[10px] text-slate-400 font-medium">---</p>
+        </div>
+        <div class="space-y-2 text-xs border-b border-slate-100 pb-3 mb-3">
+            <div class="flex justify-between"><span class="text-slate-400">Receipt Token:</span><span id="rec_token" class="font-mono text-slate-900 font-bold">---</span></div>
+            <div class="flex justify-between"><span class="text-slate-400">Student Name:</span><span id="rec_st_name" class="font-bold text-slate-900">---</span></div>
+            <div class="flex justify-between"><span class="text-slate-400">Class Matrix:</span><span id="rec_st_class" class="font-semibold text-slate-800">---</span></div>
+            <div class="flex justify-between"><span class="text-slate-400">Target Month:</span><span id="rec_month" class="text-indigo-600 font-bold">---</span></div>
+        </div>
+        <div class="space-y-1.5 text-xs bg-slate-50 p-3 rounded-xl border border-slate-100 mb-3">
+            <div class="flex justify-between"><span class="text-slate-500">Total Demanded Amount:</span><span id="rec_total" class="font-mono text-slate-700">0.00</span></div>
+            <div class="flex justify-between"><span class="text-slate-500">Captured Paid Volume:</span><span id="rec_paid" class="font-mono text-emerald-600 font-bold">0.00</span></div>
+            <div class="flex justify-between border-t border-slate-200/60 pt-1.5 mt-1.5"><span class="text-slate-600 font-bold">Outstanding Arrears:</span><span id="rec_balance" class="font-mono text-rose-600 font-extrabold">0.00</span></div>
+        </div>
+        <div class="text-center">
+            <div class="inline-block bg-white border border-slate-100 p-1 rounded-lg mb-2"><img id="rec_qr" class="w-16 h-16"></div>
+            <p class="text-[8px] tracking-widest text-slate-400 font-bold uppercase">HNK & SHEEKAN TECH AND STUDIO</p>
+        </div>
+    </div>
+
+    <script>
+        let state = {
+            registryCurrentRole: 'student', cardCurrentRole: 'student', activeTab: 'students', feeSort: 'all',
+            students: [], teachers: [], cards: [], config: {}, localVideoStream: null
+        };
+
+        document.addEventListener('DOMContentLoaded', refreshMasterLedger);
+
+        function calculateFormBalance() {
+            let total = parseFloat(document.getElementById('reg_fee_total').value) || 0;
+            let paid = parseFloat(document.getElementById('reg_fee_paid').value) || 0;
+            let bal = total - paid;
+            document.getElementById('reg_fee_balance').value = bal >= 0 ? bal : 0;
+        }
+
+        function adjustFeeGlobalSort(mode) {
+            state.feeSort = mode;
+            ['all', 'pending', 'balance'].forEach(m => {
+                const el = document.getElementById(`feeSort${m.charAt(0).toUpperCase() + m.slice(1)}`);
+                if(m === mode) {
+                    el.className = `px-3 py-1.5 text-[10px] font-bold uppercase rounded-lg border ${m==='pending'?'border-rose-200 bg-rose-50 text-rose-700':m==='balance'?'border-amber-200 bg-amber-50 text-amber-700':'border-emerald-200 bg-emerald-50 text-emerald-700'}`;
+                } else {
+                    el.className = "px-3 py-1.5 text-[10px] font-bold uppercase rounded-lg border border-slate-200 bg-white text-slate-500 hover:text-slate-800";
+                }
+            });
+            applyInterfaceRendering();
+        }
+
+        async function cloudFetchEngine(actionName, payloadObj = {}) {
+            try {
+                const formBody = new URLSearchParams();
+                formBody.append('action', actionName);
+                formBody.append('payload', JSON.stringify(payloadObj));
+                let response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+                    body: formBody.toString()
+                });
+                return await response.json();
+            } catch(e) { return { success: false, message: "Handshake matrix core broken." }; }
+        }
+
+        function switchRegistryRole(r) {
+            state.registryCurrentRole = r;
+            const extraEl = document.getElementById('reg_extra');
+            const feeAddon = document.getElementById('feeDynamicAddons');
+            
+            if(r === 'student') {
+                document.getElementById('roleBtnStudent').className = "py-2 text-xs font-bold rounded-lg bg-emerald-600 text-white";
+                document.getElementById('roleBtnTeacher').className = "py-2 text-xs font-bold rounded-lg text-slate-400";
+                extraEl.innerHTML = '<option value="Paid">Paid</option><option value="Unpaid">Unpaid</option><option value="Balance">Balance</option>';
+                feeAddon.classList.remove('hidden');
+            } else {
+                document.getElementById('roleBtnStudent').className = "py-2 text-xs font-bold rounded-lg text-slate-400";
+                document.getElementById('roleBtnTeacher').className = "py-2 text-xs font-bold rounded-lg bg-blue-600 text-white";
+                extraEl.innerHTML = '<option value="Faculty Staff">Faculty</option><option value="Management Head">Head Faculty</option>';
+                feeAddon.classList.add('hidden');
+            }
+        }
+
+        function switchViewTab(tab) {
+            state.activeTab = tab;
+            ['students', 'teachers', 'cards'].forEach(t => {
+                const el = document.getElementById(`tabBtn${t.charAt(0).toUpperCase() + t.slice(1)}`);
+                el.className = t === tab ? "pb-2 text-emerald-600 border-b-2 border-emerald-600 px-1 flex items-center gap-2 font-bold transition-all" : "pb-2 text-slate-400 border-b-2 border-transparent px-1 flex items-center gap-2 transition-all";
+            });
+            document.getElementById('feeFilterDeckPanel').style.display = (tab === 'students') ? 'flex' : 'none';
+            document.getElementById('cardsGridContainer').className = (tab === 'cards') ? "grid grid-cols-1 md:grid-cols-2 gap-6 w-full" : "grid grid-cols-1 gap-4 w-full";
+            applyInterfaceRendering();
+        }
+
+        function refreshMasterLedger() {
+            toggleOverlayLoader(true);
+            fetch(GOOGLE_SCRIPT_URL).then(res => res.json()).then(res => {
+                toggleOverlayLoader(false);
+                state.students = res.students || []; state.teachers = res.teachers || []; state.cards = res.cards || []; state.config = res.config || {};
+                
+                if(state.config.school_name) { document.getElementById('topSchoolName').innerText = state.config.school_name; document.getElementById('cfg_school_name').value = state.config.school_name; }
+                if(state.config.city_name) { document.getElementById('topCityName').innerText = state.config.city_name; document.getElementById('cfg_city_name').value = state.config.city_name; }
+                if(state.config.contact_no) { document.getElementById('topContactNo').innerText = state.config.contact_no; document.getElementById('cfg_contact_no').value = state.config.contact_no; }
+                if(state.config.school_logo) { document.getElementById('topSchoolLogo').src = state.config.school_logo; document.getElementById('cfg_logo_preview').src = state.config.school_logo; document.getElementById('cfg_logo_base64').value = state.config.school_logo; }
+                if(state.config.footer_text) { document.getElementById('bottomDynamicFooter').innerText = state.config.footer_text; document.getElementById('cfg_footer_text').value = state.config.footer_text; }
+
+                document.getElementById('countReg').innerText = state.students.length + state.teachers.length;
+                populateCardUsersDropdown(); applyInterfaceRendering();
+            }).catch(err => { toggleOverlayLoader(false); });
+        }
+
+        function applyInterfaceRendering() {
+            const container = document.getElementById('cardsGridContainer'); container.innerHTML = "";
+            const search = document.getElementById('filterSearch').value.toLowerCase();
+            const p1 = document.getElementById('filterParamOne').value.toLowerCase();
+            const p2 = document.getElementById('filterParamTwo').value.toLowerCase();
+            const logo = state.config.school_logo || 'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=150';
+            const sName = state.config.school_name || 'HNK SCHOOLS SANAWAN';
+            const sCity = state.config.city_name || 'Sanawan';
+            const sContact = state.config.contact_no || '+92 300 0000000';
+
+            if (state.activeTab === 'students' || state.activeTab === 'teachers') {
+                let targetArray = state.activeTab === 'students' ? state.students : state.teachers;
+                let isStudent = state.activeTab === 'students';
+                
+                targetArray.forEach(item => {
+                    if (isStudent) {
+                        if (state.feeSort === 'pending' && (item.fee_status === 'Paid')) return;
+                        if (state.feeSort === 'balance' && (item.fee_status !== 'Balance')) return;
+                    }
+                    
+                    if ((item.name.toLowerCase().includes(search) || item.id.toLowerCase().includes(search)) && item.class.toLowerCase().includes(p1) && item.section.toLowerCase().includes(p2)) {
+                        let card = document.createElement('div');
+                        card.className = `glow-card bg-white border border-slate-200 p-5 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 w-full shadow-sm`;
+                        
+                        let statusBadge = isStudent 
+                            ? `<span class="text-[10px] font-bold px-2 py-0.5 rounded-md ${item.fee_status==='Paid'?'bg-emerald-50 text-emerald-700 border border-emerald-200':item.fee_status==='Balance'?'bg-amber-50 text-amber-700 border border-amber-200':'bg-rose-50 text-rose-700 border border-rose-200'}"><i class="fa-solid fa-money-check-dollar mr-1"></i>${item.fee_status} (${item.fee_month || 'N/A'})</span>`
+                            : `<span class="text-[10px] font-bold px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 border border-blue-200">${item.extra_field || 'Faculty'}</span>`;
+
+                        let dataSection = isStudent ? `
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1 text-xs text-slate-500">
+                                <p><span class="text-slate-400 font-semibold">Total/Paid:</span> Rs. ${item.fee_total || 0} / ${item.fee_paid || 0}</p>
+                                <p><span class="text-slate-400 font-semibold">Remaining Bal:</span> Rs. ${item.fee_balance || 0}</p>
+                                <p><span class="text-slate-400 font-semibold">Contact:</span> ${item.contact}</p>
+                                <p class="truncate"><span class="text-slate-400 font-semibold">Address:</span> ${item.address}</p>
+                            </div>
+                        ` : `
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1 text-xs text-slate-500">
+                                <p><span class="text-slate-400 font-semibold">Contact:</span> ${item.contact}</p>
+                                <p class="truncate"><span class="text-slate-400 font-semibold">CNIC Token:</span> ${item.cnic}</p>
+                                <p class="truncate"><span class="text-slate-400 font-semibold">Address:</span> ${item.address}</p>
+                            </div>
+                        `;
+
+                        card.innerHTML = `
+                            <div class="space-y-2 flex-grow w-full">
+                                <div class="flex items-center justify-between border-b border-slate-50 pb-2">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-[9px] font-mono px-2 py-0.5 rounded-md font-bold ${isStudent?'bg-emerald-50 text-emerald-700':'bg-blue-50 text-blue-700'}">${item.id}</span>
+                                        <h4 class="text-xs font-bold text-slate-800">${item.name}</h4>
+                                        ${statusBadge}
+                                    </div>
+                                    <span class="text-[10px] text-slate-400 font-bold">${item.class}-${item.section}</span>
+                                </div>
+                                ${dataSection}
+                            </div>
+                            <div class="flex items-center gap-1.5 bg-slate-50 p-1.5 rounded-xl border border-slate-200 shrink-0">
+                                ${isStudent ? `<button onclick="processReceiptOperations('${item.id}', 'download')" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-sky-600 hover:bg-slate-100 flex items-center justify-center shadow-sm" title="Receipt Downloader"><i class="fa-solid fa-receipt text-[11px]"></i></button>` : ''}
+                                <button onclick="triggerRegistryEdit('${item.id}', '${state.activeTab}')" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 flex items-center justify-center shadow-sm"><i class="fa-solid fa-pencil text-[11px]"></i></button>
+                                <button onclick="triggerRegistryDelete('${item.id}', '${state.activeTab}')" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-400 hover:bg-slate-100 flex items-center justify-center shadow-sm"><i class="fa-solid fa-trash-can text-[11px]"></i></button>
+                            </div>`;
+                        container.appendChild(card);
+                    }
+                });
+            } else if (state.activeTab === 'cards') {
+                state.cards.forEach(item => {
+                    if (item.name.toLowerCase().includes(search) || item.card_id.toLowerCase().includes(search)) {
+                        let qrSrc = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + encodeURIComponent(item.user_id);
+                        let matchedObject = item.role === 'student' ? state.students.find(s=>s.id===item.user_id) : state.teachers.find(t=>t.id===item.user_id);
+                        
+                        let subInfoValue = 'Active';
+                        if(matchedObject) {
+                            subInfoValue = item.role==='student' ? `Fee: ${matchedObject.fee_status}` : `${matchedObject.extra_field || 'Faculty'}`;
+                        }
+                        let classValue = matchedObject ? `${matchedObject.class}-${matchedObject.section}` : 'N/A';
+
+                        let cardWrapper = document.createElement('div');
+                        cardWrapper.className = "flex flex-col items-center gap-3 my-2";
+                        cardWrapper.innerHTML = `
+                            <div class="id-card-wrapper" id="wrap-${item.card_id}">
+                                <div class="id-card-inner">
+                                    <div class="id-card-front bg-white border border-slate-200 flex flex-col justify-between p-5 text-left">
+                                        <div class="flex items-center gap-3 border-b border-slate-100 pb-3 w-full overflow-hidden">
+                                            <img src="${logo}" class="w-10 h-10 rounded-xl object-cover border border-slate-200 bg-slate-50 shrink-0">
+                                            <div class="min-w-0 flex-grow">
+                                                <h5 class="text-xs font-bold tracking-wide text-slate-900 uppercase break-words leading-tight">${sName}</h5>
+                                                <p class="text-[9px] text-slate-400 font-bold mt-0.5">${sCity}</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex flex-col items-center text-center my-2 space-y-2">
+                                            <img src="${item.avatar}" class="w-24 h-24 rounded-2xl object-cover border-2 ${item.role==='student'?'border-emerald-500':'border-blue-500'} bg-slate-50 shadow-sm">
+                                            <div>
+                                                <h4 class="text-sm font-bold text-slate-900">${item.name}</h4>
+                                                <p class="text-[10px] text-slate-400 font-mono">ID: ${item.user_id}</p>
+                                            </div>
+                                        </div>
+                                        <div class="bg-slate-50 border border-slate-100 rounded-xl p-3 space-y-1.5 text-xs">
+                                            <div class="flex justify-between"><span class="text-slate-400 font-medium">Class / Dept:</span><span class="text-slate-800 font-bold">${classValue}</span></div>
+                                            <div class="flex justify-between"><span class="text-slate-400 font-medium">Duty Status:</span><span class="text-emerald-600 font-bold">${subInfoValue}</span></div>
+                                        </div>
+                                        <div class="flex items-center justify-between border-t border-slate-100 pt-2.5 text-[9px] font-mono text-slate-400">
+                                            <span>TOKEN: ${item.card_id}</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="id-card-back bg-white border border-slate-200 p-6 flex flex-col justify-between text-center">
+                                        <div class="flex flex-col items-center justify-center my-auto space-y-4 w-full">
+                                            <img src="${logo}" class="w-14 h-14 rounded-2xl object-cover border border-slate-200 bg-slate-50">
+                                            <div class="text-center w-full">
+                                                <h4 class="text-xs font-bold text-slate-900 uppercase break-words px-1">${sName}</h4>
+                                                <p class="text-[9px] text-slate-500 font-semibold mt-1">${sContact}</p>
+                                            </div>
+                                            <div class="bg-white p-1 border border-slate-100 rounded-xl shadow-sm"><img src="${qrSrc}" class="w-16 h-16"></div>
+                                        </div>
+                                        <p class="text-[8px] font-bold tracking-widest text-slate-400 uppercase text-center w-full">HNK & SHEEKAN STUDIO</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-white border border-slate-200 p-2 rounded-xl w-[320px] space-y-2 shadow-sm">
+                                <div class="flex justify-between items-center gap-2">
+                                    <button onclick="toggleCardFlip('${item.card_id}')" class="py-1 px-3 rounded-lg bg-slate-50 border border-slate-200 text-[10px] font-bold text-indigo-600 flex items-center gap-1 shadow-sm"><i class="fa-solid fa-arrows-rotate"></i> Flip Pass</button>
+                                    <div class="flex gap-1">
+                                        <button onclick="executeDirectSocialShare('${item.card_id}', 'whatsapp')" class="w-7 h-7 rounded-lg bg-slate-50 border border-slate-200 text-emerald-600 flex items-center justify-center text-xs shadow-sm"><i class="fa-brands fa-whatsapp"></i></button>
+                                        <button onclick="executeDirectSocialShare('${item.card_id}', 'gmail')" class="w-7 h-7 rounded-lg bg-slate-50 border border-slate-200 text-rose-500 flex items-center justify-center text-xs shadow-sm"><i class="fa-regular fa-envelope"></i></button>
+                                        <button onclick="triggerCardDelete('${item.card_id}')" class="w-7 h-7 rounded-lg bg-slate-50 border border-slate-200 text-slate-400 flex items-center justify-center text-xs shadow-sm"><i class="fa-solid fa-trash-can"></i></button>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-1.5 border-t border-slate-100 pt-1.5">
+                                    <button onclick="downloadCardSideAsPNG('${item.card_id}', 'id-card-front', 'Front_${item.name.replace(/\\s+/g, '_')}')" class="py-1 bg-slate-50 border border-slate-200 text-[10px] text-slate-700 font-medium rounded-md flex items-center justify-center gap-1 shadow-sm"><i class="fa-solid fa-download text-sky-600"></i> Front PNG</button>
+                                    <button onclick="downloadCardSideAsPNG('${item.card_id}', 'id-card-back', 'Back_${item.name.replace(/\\s+/g, '_')}')" class="py-1 bg-slate-50 border border-slate-200 text-[10px] text-slate-700 font-medium rounded-md flex items-center justify-center gap-1 shadow-sm"><i class="fa-solid fa-download text-purple-600"></i> Back PNG</button>
+                                </div>
+                                ${item.role === 'student' ? `
+                                <div class="grid grid-cols-2 gap-1.5 border-t border-slate-100 pt-1.5">
+                                    <button onclick="processReceiptOperations('${item.user_id}', 'whatsapp')" class="py-1 bg-emerald-50 border border-emerald-200 text-[9px] text-emerald-700 font-bold rounded-md shadow-sm"><i class="fa-brands fa-whatsapp mr-1"></i>Receipt WA</button>
+                                    <button onclick="processReceiptOperations('${item.user_id}', 'gmail')" class="py-1 bg-rose-50 border border-rose-200 text-[9px] text-rose-700 font-bold rounded-md shadow-sm"><i class="fa-regular fa-envelope mr-1"></i>Receipt Mail</button>
+                                </div>` : ''}
+                            </div>`;
+                        container.appendChild(cardWrapper);
+                    }
+                });
+            }
+            if(container.innerHTML === "") container.innerHTML = `<div class="text-center py-16 border border-dashed border-slate-200 rounded-2xl text-xs text-slate-400 w-full bg-white">No records found inside cluster database.</div>`;
+        }
+
+        function processReceiptOperations(studentId, mode) {
+            let s = state.students.find(x => x.id === studentId);
+            if(!s) { triggerToast("Profile lookup failure.", "text-rose-600"); return; }
+            
+            document.getElementById('rec_sh_name').innerText = state.config.school_name || 'HNK INSTITUTION';
+            document.getElementById('rec_sh_city').innerText = state.config.city_name || 'Sanawan Core';
+            document.getElementById('rec_token').innerText = "REC-" + s.id + "-" + Math.floor(100 + Math.random() * 900);
+            document.getElementById('rec_st_name').innerText = s.name;
+            document.getElementById('rec_st_class').innerText = `${s.class}-${s.section}`;
+            document.getElementById('rec_month').innerText = s.fee_month || 'Current Cycle';
+            document.getElementById('rec_total').innerText = parseFloat(s.fee_total || 0).toFixed(2);
+            document.getElementById('rec_paid').innerText = parseFloat(s.fee_paid || 0).toFixed(2);
+            document.getElementById('rec_balance').innerText = parseFloat(s.fee_balance || 0).toFixed(2);
+            document.getElementById('rec_qr').src = "https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=" + encodeURIComponent(`ID:${s.id}|Month:${s.fee_month}|Bal:${s.fee_balance}`);
+
+            let element = document.getElementById('receiptSecureRenderZone');
+            html2canvas(element, { useCORS: true, allowTaint: true, scale: 3 }).then(canvas => {
+                let imgData = canvas.toDataURL('image/png');
+                let message = `Dear Guardian, Fee Receipt Voucher for student ${s.name} (Class: ${s.class}-${s.section}) for the month of ${s.fee_month || 'Current'} has been generated.\nTotal: Rs.${s.fee_total}\nPaid: Rs.${s.fee_paid}\nOutstanding Balance: Rs.${s.fee_balance}.`;
+                
+                if(mode === 'download') {
+                    let link = document.createElement('a');
+                    link.download = `Receipt_${s.name.replace(/\s+/g, '_')}.png`;
+                    link.href = imgData;
+                    link.click();
+                    triggerToast("Receipt processing successful.", "text-emerald-600");
+                } else if(mode === 'whatsapp') {
+                    window.open(`https://api.whatsapp.com/send?phone=${s.contact.replace(/[^0-9]/g, '')}&text=${encodeURIComponent(message)}`, '_blank');
+                } else if(mode === 'gmail') {
+                    window.open(`mailto:${s.contact}?subject=Fee Statement Notification&body=${encodeURIComponent(message)}`, '_blank');
+                }
+            });
+        }
+
+        async function commitRegistryRecord(e) {
+            e.preventDefault(); toggleOverlayLoader(true);
+            let payload = {
+                id: document.getElementById('reg_id').value, role: state.registryCurrentRole,
+                name: document.getElementById('reg_name').value, son_of: document.getElementById('reg_son_of').value,
+                cnic: document.getElementById('reg_cnic').value, contact: document.getElementById('reg_contact').value,
+                address: document.getElementById('reg_address').value, class_assigned: document.getElementById('reg_class').value,
+                section_assigned: document.getElementById('reg_section').value, extra_field: document.getElementById('reg_extra').value,
+                fee_month: document.getElementById('reg_fee_month').value, fee_total: document.getElementById('reg_fee_total').value,
+                fee_paid: document.getElementById('reg_fee_paid').value, fee_balance: document.getElementById('reg_fee_balance').value
+            };
+            let response = await cloudFetchEngine("saveRegistry", payload);
+            triggerToast(response.message, response.success ? "text-emerald-600" : "text-rose-600");
+            if(response.success) { clearRegistryFormState(); setTimeout(refreshMasterLedger, 500); } else { toggleOverlayLoader(false); }
+        }
+
+        function triggerRegistryEdit(id, tab) {
+            let list = tab === 'students' ? state.students : state.teachers; 
+            let match = list.find(x => x.id === id); if(!match) return;
+            switchRegistryRole(tab === 'students' ? 'student' : 'teacher');
+            document.getElementById('reg_id').value = match.id; 
+            document.getElementById('reg_name').value = match.name;
+            document.getElementById('reg_son_of').value = match.son_of; 
+            document.getElementById('reg_cnic').value = match.cnic;
+            document.getElementById('reg_contact').value = match.contact; 
+            document.getElementById('reg_address').value = match.address;
+            document.getElementById('reg_class').value = match.class; 
+            document.getElementById('reg_section').value = match.section;
+            document.getElementById('reg_extra').value = tab === 'students' ? match.fee_status : match.extra_field;
+            
+            if(tab === 'students') {
+                document.getElementById('reg_fee_month').value = match.fee_month || 'January';
+                document.getElementById('reg_fee_total').value = match.fee_total || 0;
+                document.getElementById('reg_fee_paid').value = match.fee_paid || 0;
+                document.getElementById('reg_fee_balance').value = match.fee_balance || 0;
+            }
+            document.getElementById('regFormTitle').innerHTML = `<i class="fa-solid fa-user-pen"></i> Overhaul Block: ${match.id}`; 
+            document.getElementById('regSubmitBtn').innerText = "Override Roster Row";
+            
+            document.getElementById('onboardingBlock').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function populateCardUsersDropdown() {
+            let el = document.getElementById('card_user_select'); el.innerHTML = '<option value="">-- Choose Target Object Profile --</option>';
+            let list = state.cardCurrentRole === 'student' ? state.students : state.teachers;
+            list.forEach(x => { el.innerHTML += `<option value="${x.id}">${x.name} (${x.id})</option>`; });
+        }
+        function toggleCardSelectionRole(r) { state.cardCurrentRole = r; document.getElementById('roleSelectStudent').className = r === 'student' ? "py-2 text-xs font-bold rounded-lg bg-sky-600 text-white" : "py-2 text-xs font-bold rounded-lg text-slate-500"; document.getElementById('roleSelectTeacher').className = r === 'teacher' ? "py-2 text-xs font-bold rounded-lg bg-blue-600 text-white" : "py-2 text-xs font-bold rounded-lg text-slate-500"; populateCardUsersDropdown(); }
+        function toggleCardFlip(cardId) { const el = document.getElementById(`wrap-${cardId}`); if(el) el.classList.toggle('flipped'); }
+        function processSchoolLogoFile(i) { if (i.files && i.files[0]) { let r = new FileReader(); r.onload = function(e) { document.getElementById('cfg_logo_preview').src = e.target.result; document.getElementById('cfg_logo_base64').value = e.target.result; }; r.readAsDataURL(i.files[0]); } }
+        async function commitSchoolConfig(e) { e.preventDefault(); toggleOverlayLoader(true); let payload = { school_name: document.getElementById('cfg_school_name').value, city_name: document.getElementById('cfg_city_name').value, contact_no: document.getElementById('cfg_contact_no').value, notice_board: document.getElementById('cfg_notice_board').value, school_logo: document.getElementById('cfg_logo_base64').value, footer_text: document.getElementById('cfg_footer_text').value }; await cloudFetchEngine("saveSchoolConfig", payload); triggerToast("Configuration deployed.", "text-red-600"); setTimeout(refreshMasterLedger, 500); }
+        function processGalleryImage(i) { if (i.files && i.files[0]) { let r = new FileReader(); r.onload = function(e) { document.getElementById('avatarDataPreview').src = e.target.result; document.getElementById('card_avatar_base64').value = e.target.result; document.getElementById('avatarStatusLabel').innerText = "Asset locked."; }; r.readAsDataURL(i.files[0]); } }
+        async function initializeHardwareCamera() { const w = document.getElementById('cameraDeckWrapper'); const v = document.getElementById('hardwareVideoStream'); w.classList.remove('hidden'); try { if(state.localVideoStream) { state.localVideoStream.getTracks().forEach(t => t.stop()); } state.localVideoStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false }); v.srcObject = state.localVideoStream; } catch (err) { triggerToast("Camera error.", "text-rose-600"); w.classList.add('hidden'); } }
+        function executeCameraCaptureSnapshot() { const v = document.getElementById('hardwareVideoStream'); const c = document.getElementById('hiddenCaptureCanvas'); const ctx = c.getContext('2d'); c.width = v.videoWidth || 640; c.height = v.videoHeight || 480; ctx.drawImage(v, 0, 0, c.width, c.height); const d = c.toDataURL('image/jpeg'); document.getElementById('avatarDataPreview').src = d; document.getElementById('card_avatar_base64').value = d; if(state.localVideoStream) { state.localVideoStream.getTracks().forEach(t => t.stop()); } document.getElementById('cameraDeckWrapper').classList.add('hidden'); }
+        async function commitIdentityCardRecord(e) { e.preventDefault(); toggleOverlayLoader(true); let el = document.getElementById('card_user_select'); let payload = { role: state.cardCurrentRole, user_id: el.value, name: el.options[el.selectedIndex].text.split(' (')[0], avatar: document.getElementById('card_avatar_base64').value || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100', channel: document.getElementById('card_channel').value, destination: document.getElementById('card_destination').value }; await cloudFetchEngine("saveCard", payload); triggerToast("Identity Pass Compiled.", "text-sky-600"); clearCardFormState(); setTimeout(refreshMasterLedger, 500); }
+        function executeDirectSocialShare(cardId, type) { let match = state.cards.find(x => x.card_id === cardId); if(!match) return; let msg = `Double-Sided Identity Pass Asset processed for ${match.name}. Tracking Token: ${match.card_id}.`; if(type === 'whatsapp') { window.open(`https://api.whatsapp.com/send?phone=${match.destination.replace(/[^0-9]/g, '')}&text=${encodeURIComponent(msg)}`, '_blank'); } else if(type === 'gmail') { window.open(`mailto:${match.destination}?subject=Security Token&body=${encodeURIComponent(msg)}`, '_blank'); } }
+        async function triggerRegistryDelete(id, role) { if(confirm('Erase row?')) { toggleOverlayLoader(true); await cloudFetchEngine("deleteRegistry", {role: role==='students'?'student':'teacher', id: id}); setTimeout(refreshMasterLedger, 500); } }
+        async function triggerCardDelete(id) { if(confirm('Revoke pass?')) { toggleOverlayLoader(true); await cloudFetchEngine("deleteCard", {card_id: id}); setTimeout(refreshMasterLedger, 500); } }
+        function downloadCardSideAsPNG(id, sc, fn) { const wr = document.getElementById(`wrap-${id}`); let ts = wr.querySelector(`.${sc}`); html2canvas(ts, { useCORS: true, allowTaint: true, backgroundColor: "#ffffff", scale: 3 }).then(canvas => { let link = document.createElement('a'); link.download = `${fn}.png`; link.href = canvas.toDataURL('image/png'); link.click(); }); }
+        function clearRegistryFormState() { document.getElementById('registryForm').reset(); document.getElementById('reg_id').value = ""; document.getElementById('regFormTitle').innerHTML = `<i class="fa-solid fa-address-book"></i> Registry Onboarding Rails`; }
+        function clearCardFormState() { document.getElementById('idCardForm').reset(); document.getElementById('card_avatar_base64').value = ""; document.getElementById('avatarDataPreview').src = "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100"; }
+        function toggleOverlayLoader(show) { const box = document.getElementById('masterLoaderBox'); if(box) { if(show) box.classList.remove('hidden'); else box.className = "hidden"; } }
+        function triggerToast(m, c) { const b = document.getElementById('alertBox'); b.className = "fixed top-24 right-4 z-50 max-w-sm text-xs font-bold p-3 rounded-xl bg-white border border-slate-200 shadow-xl " + c; b.innerText = m; b.style.opacity = '1'; setTimeout(() => { b.style.opacity = '0'; }, 4000); }
+    </script>
+</body>
+</html>
